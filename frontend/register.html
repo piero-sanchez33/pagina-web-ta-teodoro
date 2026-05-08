@@ -21,22 +21,28 @@ async function registrar() {
   const correo = document.getElementById("correo").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:3000/registro", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      nombre,
-      apellido,
-      correo,
-      password
-    })
-  });
+  try {
+    const res = await fetch("https://pagina-web-ta-teodoro.onrender.com/registro", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre,
+        apellido,
+        correo,
+        password
+      })
+    });
 
-  const data = await res.json();
-  console.log(data);
-  alert(data.mensaje);
+    const data = await res.json();
+    console.log(data);
+    alert(data.mensaje);
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Error al registrar usuario");
+  }
 }
 </script>
 
