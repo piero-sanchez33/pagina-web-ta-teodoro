@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro</title>
+</head>
+<body>
+
+<h1>Registro</h1>
+
+<input type="text" id="nombre" placeholder="Nombre"><br>
+<input type="text" id="apellido" placeholder="Apellido"><br>
+<input type="email" id="correo" placeholder="Correo"><br>
+<input type="password" id="password" placeholder="Password"><br>
+
+<button onclick="registrar()">Registrar</button>
+
+<script>
+async function registrar() {
+  const nombre = document.getElementById("nombre").value;
+  const apellido = document.getElementById("apellido").value;
+  const correo = document.getElementById("correo").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("http://localhost:3000/registro", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nombre,
+      apellido,
+      correo,
+      password
+    })
+  });
+
+  const data = await res.json();
+  console.log(data);
+  alert(data.mensaje);
+}
+</script>
+
+</body>
+</html>

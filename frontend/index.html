@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tienda</title>
+</head>
+<body>
+
+<h1>Productos</h1>
+<div id="productos"></div>
+
+<script>
+fetch("http://localhost:3000/productos")
+  .then(res => res.json())
+  .then(data => {
+    const contenedor = document.getElementById("productos");
+
+    data.forEach(p => {
+      const item = document.createElement("p");
+      item.textContent = p.nombre + " - S/" + p.precio;
+      contenedor.appendChild(item);
+    });
+  });
+</script>
+
+</body>
+</html>
