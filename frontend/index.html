@@ -9,7 +9,7 @@
 <div id="productos"></div>
 
 <script>
-fetch("http://localhost:3000/productos")
+fetch("https://pagina-web-ta-teodoro.onrender.com/productos")
   .then(res => res.json())
   .then(data => {
     const contenedor = document.getElementById("productos");
@@ -19,6 +19,11 @@ fetch("http://localhost:3000/productos")
       item.textContent = p.nombre + " - S/" + p.precio;
       contenedor.appendChild(item);
     });
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    document.getElementById("productos").innerHTML =
+      "<p>Error cargando productos</p>";
   });
 </script>
 
