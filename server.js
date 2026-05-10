@@ -41,6 +41,9 @@ app.get("/productos", (req, res) => {
 
 // REGISTRO
 app.post("/registro", async (req, res) => {
+
+  console.log(req.body);
+  
   const { nombre, apellido, correo, password } = req.body;
 
   try {
