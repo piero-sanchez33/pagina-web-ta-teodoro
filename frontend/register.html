@@ -1,27 +1,426 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Registro</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>GOODISH | Registro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      min-height:100vh;
+
+      background:
+      linear-gradient(
+        135deg,
+        #050816 0%,
+        #0a0f1f 30%,
+        #12091f 60%,
+        #1c0d2b 100%
+      );
+
+      overflow-x:hidden;
+      color:white;
+      position:relative;
+    }
+
+    /* FONDOS DECORATIVOS */
+
+    .blur1{
+      position:absolute;
+      width:350px;
+      height:350px;
+      background:#ff4da6;
+      border-radius:50%;
+      filter:blur(150px);
+      opacity:.25;
+      top:-120px;
+      right:-100px;
+    }
+
+    .blur2{
+      position:absolute;
+      width:300px;
+      height:300px;
+      background:#8b5cf6;
+      border-radius:50%;
+      filter:blur(140px);
+      opacity:.2;
+      bottom:-100px;
+      left:-100px;
+    }
+
+    .container{
+      width:100%;
+      min-height:100vh;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+
+      padding:40px;
+      position:relative;
+      z-index:2;
+    }
+
+    .card{
+
+      width:1100px;
+      min-height:650px;
+
+      background:rgba(255,255,255,0.05);
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      backdrop-filter:blur(15px);
+
+      border-radius:35px;
+
+      overflow:hidden;
+
+      display:grid;
+      grid-template-columns:1fr 1fr;
+
+      box-shadow:
+      0 0 50px rgba(255,0,128,.15);
+
+    }
+
+    /* IZQUIERDA */
+
+    .left{
+
+      position:relative;
+
+      background:
+      linear-gradient(
+      180deg,
+      rgba(255,0,128,.18),
+      rgba(139,92,246,.08)
+      );
+
+      padding:60px;
+
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .logo{
+      width:140px;
+      height:140px;
+      border-radius:50%;
+
+      object-fit:cover;
+
+      border:5px solid #ff3ea5;
+
+      box-shadow:
+      0 0 30px rgba(255,62,165,.5);
+
+      margin-bottom:30px;
+    }
+
+    .brand{
+      font-size:4rem;
+      font-weight:700;
+
+      background:linear-gradient(
+      90deg,
+      #ff4da6,
+      #ff89c6,
+      #ffffff
+      );
+
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+
+      margin-bottom:20px;
+    }
+
+    .desc{
+      color:#d7d7d7;
+      line-height:1.8;
+      font-size:1rem;
+
+      max-width:450px;
+    }
+
+    .tags{
+      margin-top:30px;
+
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+    }
+
+    .tag{
+      padding:10px 18px;
+
+      border-radius:999px;
+
+      background:rgba(255,255,255,.08);
+
+      border:1px solid rgba(255,255,255,.12);
+
+      color:#fff;
+
+      font-size:.9rem;
+    }
+
+    .social{
+      margin-top:35px;
+    }
+
+    .social a{
+      text-decoration:none;
+      color:#ff7bc1;
+      font-weight:600;
+    }
+
+    /* DERECHA */
+
+    .right{
+      padding:60px;
+
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .title{
+      font-size:2.7rem;
+      margin-bottom:10px;
+    }
+
+    .subtitle{
+      color:#cfcfcf;
+      margin-bottom:40px;
+    }
+
+    .input-group{
+      margin-bottom:22px;
+    }
+
+    .input-group label{
+      display:block;
+      margin-bottom:10px;
+      color:#ececec;
+      font-size:.95rem;
+    }
+
+    .input-group input{
+
+      width:100%;
+      padding:18px;
+
+      border:none;
+      outline:none;
+
+      border-radius:18px;
+
+      background:rgba(255,255,255,.06);
+
+      border:1px solid rgba(255,255,255,.08);
+
+      color:white;
+
+      font-size:1rem;
+
+      transition:.3s;
+    }
+
+    .input-group input:focus{
+      border:1px solid #ff4da6;
+
+      box-shadow:
+      0 0 20px rgba(255,77,166,.3);
+    }
+
+    .input-group input::placeholder{
+      color:#9f9f9f;
+    }
+
+    .btn{
+
+      width:100%;
+
+      padding:18px;
+
+      border:none;
+
+      border-radius:18px;
+
+      background:linear-gradient(
+      90deg,
+      #ff3ea5,
+      #ff6bbf
+      );
+
+      color:white;
+
+      font-size:1rem;
+
+      font-weight:700;
+
+      cursor:pointer;
+
+      transition:.3s;
+
+      margin-top:10px;
+
+      box-shadow:
+      0 10px 25px rgba(255,62,165,.3);
+
+    }
+
+    .btn:hover{
+      transform:translateY(-3px);
+
+      box-shadow:
+      0 15px 35px rgba(255,62,165,.45);
+    }
+
+    .footer{
+      margin-top:25px;
+      color:#bdbdbd;
+      font-size:.9rem;
+      text-align:center;
+    }
+
+    @media(max-width:980px){
+
+      .card{
+        grid-template-columns:1fr;
+      }
+
+      .left{
+        display:none;
+      }
+
+      .right{
+        padding:40px 30px;
+      }
+
+      .title{
+        font-size:2rem;
+      }
+
+    }
+
+  </style>
 </head>
+
 <body>
 
-<h1>Registro</h1>
+  <div class="blur1"></div>
+  <div class="blur2"></div>
 
-<input type="text" id="nombre" placeholder="Nombre"><br>
-<input type="text" id="apellido" placeholder="Apellido"><br>
-<input type="email" id="correo" placeholder="Correo"><br>
-<input type="password" id="password" placeholder="Password"><br>
+  <div class="container">
 
-<button onclick="registrar()">Registrar</button>
+    <div class="card">
+
+      <!-- IZQUIERDA -->
+      <div class="left">
+
+        <!-- CAMBIA ESTA IMAGEN -->
+        <img src="images/logo.png" class="logo">
+
+        <h1 class="brand">GOODISH</h1>
+
+        <p class="desc">
+          Thrift online store inspirada en moda vintage,
+          fairy, boho y retro ✨
+          <br><br>
+          Encuentra prendas únicas con estética Y2K,
+          streetwear y outfits alternativos hechos
+          para destacar.
+        </p>
+
+        <div class="tags">
+          <div class="tag">Vintage</div>
+          <div class="tag">Fairy</div>
+          <div class="tag">Boho</div>
+          <div class="tag">Retro</div>
+        </div>
+
+        <div class="social">
+          TikTok:
+          <a href="https://www.tiktok.com/@goodish.pe" target="_blank">
+            @goodish.pe
+          </a>
+        </div>
+
+      </div>
+
+      <!-- DERECHA -->
+      <div class="right">
+
+        <h1 class="title">Crea tu cuenta 💗</h1>
+
+        <p class="subtitle">
+          Regístrate para acceder a drops exclusivos,
+          promociones y nuevas prendas.
+        </p>
+
+        <div class="input-group">
+          <label>Nombre</label>
+          <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+        </div>
+
+        <div class="input-group">
+          <label>Apellido</label>
+          <input type="text" id="apellido" placeholder="Ingresa tu apellido">
+        </div>
+
+        <div class="input-group">
+          <label>Correo</label>
+          <input type="email" id="correo" placeholder="Ingresa tu correo">
+        </div>
+
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Ingresa tu contraseña">
+        </div>
+
+        <button class="btn" onclick="registrar()">
+          Registrarme
+        </button>
+
+        <div class="footer">
+          GOODISH © 2026
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 <script>
+
 async function registrar() {
+
   const nombre = document.getElementById("nombre").value;
   const apellido = document.getElementById("apellido").value;
   const correo = document.getElementById("correo").value;
   const password = document.getElementById("password").value;
 
   try {
+
     const res = await fetch("https://pagina-web-ta-teodoro.onrender.com/registro", {
       method: "POST",
       headers: {
@@ -36,14 +435,21 @@ async function registrar() {
     });
 
     const data = await res.json();
+
     console.log(data);
+
     alert(data.mensaje);
 
   } catch (error) {
+
     console.error("Error:", error);
+
     alert("Error al registrar usuario");
+
   }
+
 }
+
 </script>
 
 </body>
