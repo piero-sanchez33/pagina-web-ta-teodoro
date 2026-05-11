@@ -327,14 +327,17 @@ window.registrar = async function () {
   }
 
   const { data, error } = await supabase
-    .from("usuarios")
-    .insert([
-      {
-        nombre_cli: nombre,
-        apellido_cli: apellido,
-        correo_cli: correo
-      }
-    ]);
+  .from("usuarios")
+  .insert([
+    {
+      nombre_cli: nombre,
+      apellido_cli: apellido,
+      correo_cli: correo,
+      celular_cli: null,
+      ciudad_cli: "Lima",
+      sexo_cli: "O"
+    }
+  ]);
 
   if (error) {
     console.error(error);
