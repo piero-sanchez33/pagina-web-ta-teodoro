@@ -8,7 +8,6 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -21,13 +20,7 @@
     body{
       font-family:'Poppins',sans-serif;
       min-height:100vh;
-      background: linear-gradient(
-        135deg,
-        #050816 0%,
-        #0a0f1f 30%,
-        #12091f 60%,
-        #1c0d2b 100%
-      );
+      background:linear-gradient(135deg,#050816 0%,#0a0f1f 30%,#12091f 60%,#1c0d2b 100%);
       overflow-x:hidden;
       color:white;
       position:relative;
@@ -82,12 +75,7 @@
     }
 
     .left{
-      position:relative;
-      background:linear-gradient(
-        180deg,
-        rgba(255,0,128,.18),
-        rgba(139,92,246,.08)
-      );
+      background:linear-gradient(180deg,rgba(255,0,128,.18),rgba(139,92,246,.08));
       padding:60px;
       display:flex;
       flex-direction:column;
@@ -107,12 +95,7 @@
     .brand{
       font-size:4rem;
       font-weight:700;
-      background:linear-gradient(
-        90deg,
-        #ff4da6,
-        #ff89c6,
-        #ffffff
-      );
+      background:linear-gradient(90deg,#ff4da6,#ff89c6,#ffffff);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
       margin-bottom:20px;
@@ -121,7 +104,6 @@
     .desc{
       color:#d7d7d7;
       line-height:1.8;
-      font-size:1rem;
       max-width:450px;
     }
 
@@ -137,7 +119,6 @@
       border-radius:999px;
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.12);
-      color:#fff;
       font-size:.9rem;
     }
 
@@ -175,8 +156,6 @@
     .input-group label{
       display:block;
       margin-bottom:10px;
-      color:#ececec;
-      font-size:.95rem;
     }
 
     .input-group input{
@@ -196,11 +175,7 @@
       padding:18px;
       border:none;
       border-radius:18px;
-      background:linear-gradient(
-        90deg,
-        #ff3ea5,
-        #ff6bbf
-      );
+      background:linear-gradient(90deg,#ff3ea5,#ff6bbf);
       color:white;
       font-size:1rem;
       font-weight:700;
@@ -230,7 +205,6 @@
     }
   </style>
 </head>
-
 <body>
 
 <div class="blur1"></div>
@@ -240,7 +214,7 @@
   <div class="card">
 
     <div class="left">
-      <img src="images/logo.png" class="logo">
+      <img src="images/logo.png" class="logo" alt="logo">
 
       <h1 class="brand">GOODISH</h1>
 
@@ -271,29 +245,31 @@
         Regístrate para acceder a drops exclusivos.
       </p>
 
-      <div class="input-group">
-        <label>Nombre</label>
-        <input type="text" id="nombre" placeholder="Ingresa tu nombre">
-      </div>
+      <form id="registroForm">
+        <div class="input-group">
+          <label>Nombre</label>
+          <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+        </div>
 
-      <div class="input-group">
-        <label>Apellido</label>
-        <input type="text" id="apellido" placeholder="Ingresa tu apellido">
-      </div>
+        <div class="input-group">
+          <label>Apellido</label>
+          <input type="text" id="apellido" placeholder="Ingresa tu apellido">
+        </div>
 
-      <div class="input-group">
-        <label>Correo</label>
-        <input type="email" id="correo" placeholder="Ingresa tu correo">
-      </div>
+        <div class="input-group">
+          <label>Correo</label>
+          <input type="email" id="correo" placeholder="Ingresa tu correo">
+        </div>
 
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Ingresa tu contraseña">
-      </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Ingresa tu contraseña">
+        </div>
 
-      <button class="btn" onclick="registrar()">
-        Registrarme
-      </button>
+        <button type="button" class="btn" onclick="registrar()">
+          Registrarme
+        </button>
+      </form>
 
       <div class="footer">
         GOODISH © 2026
@@ -309,49 +285,50 @@
 const supabaseUrl = "https://oqojlcgkmvbxmmwoexih.supabase.co";
 const supabaseKey = "sb_publishable_FJvX6aKfJO-f-SAzx2vu0Q_F4ex4L0T";
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
 
 window.registrar = async function () {
+  try {
+    const nombre = document.getElementById("nombre").value.trim();
+    const apellido = document.getElementById("apellido").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  const nombre = document.getElementById("nombre").value;
-  const apellido = document.getElementById("apellido").value;
-  const correo = document.getElementById("correo").value;
-  const password = document.getElementById("password").value;
-
-  if (!nombre || !apellido || !correo || !password) {
-    alert("Completa todos los campos");
-    return;
-  }
-
-  const { data, error } = await supabase
-  .from("usuarios")
-  .insert([
-    {
-      nombre_cli: nombre,
-      apellido_cli: apellido,
-      correo_cli: correo,
-      celular_cli: null,
-      ciudad_cli: "Lima",
-      sexo_cli: "O"
+    if (!nombre || !apellido || !correo || !password) {
+      alert("Completa todos los campos");
+      return;
     }
-  ]);
 
-  if (error) {
-    console.error(error);
-    alert("Error: " + error.message);
-    return;
+    const { error } = await supabaseClient
+      .from("usuarios")
+      .insert([
+        {
+          nombre_cli: nombre,
+          apellido_cli: apellido,
+          correo_cli: correo,
+          celular_cli: null,
+          ciudad_cli: "Lima",
+          sexo_cli: "O"
+        }
+      ]);
+
+    if (error) {
+      console.error(error);
+      alert("Error: " + error.message);
+      return;
+    }
+
+    alert("Usuario registrado correctamente");
+    document.getElementById("registroForm").reset();
+
+  } catch (err) {
+    console.error(err);
+    alert("Ocurrió un error inesperado");
   }
-
-  alert("Usuario registrado correctamente");
-
-  document.getElementById("nombre").value = "";
-  document.getElementById("apellido").value = "";
-  document.getElementById("correo").value = "";
-  document.getElementById("password").value = "";
-}
+};
 </script>
 
 </body>
