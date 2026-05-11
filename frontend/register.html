@@ -314,7 +314,7 @@ const supabase = window.supabase.createClient(
   supabaseKey
 );
 
-async function registrar() {
+window.registrar = async function () {
 
   const nombre = document.getElementById("nombre").value;
   const apellido = document.getElementById("apellido").value;
