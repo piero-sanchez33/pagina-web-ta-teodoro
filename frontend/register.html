@@ -8,10 +8,28 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
+    :root{
+      --bg-main:#050816;
+      --bg-soft:#0a0f1f;
+      --bg-card:rgba(255,255,255,.055);
+      --bg-card-strong:rgba(255,255,255,.09);
+      --text-main:#ffffff;
+      --text-soft:#d7d7e6;
+      --text-muted:#aaa7bb;
+      --pink:#ff3ea5;
+      --pink-soft:#ff7bc1;
+      --pink-light:#ffb3dc;
+      --purple:#8b5cf6;
+      --border:rgba(255,255,255,.1);
+      --shadow-pink:rgba(255,62,165,.35);
+      --glass:rgba(255,255,255,.07);
+    }
 
     *{
       margin:0;
@@ -19,292 +37,755 @@
       box-sizing:border-box;
     }
 
+    html{
+      scroll-behavior:smooth;
+    }
+
     body{
       font-family:'Poppins',sans-serif;
       min-height:100vh;
-
       background:
-      linear-gradient(
-        135deg,
-        #050816 0%,
-        #0a0f1f 30%,
-        #12091f 60%,
-        #1c0d2b 100%
-      );
-
+        radial-gradient(circle at 12% 10%, rgba(255,62,165,.18), transparent 35%),
+        radial-gradient(circle at 90% 80%, rgba(139,92,246,.18), transparent 35%),
+        linear-gradient(135deg,#050816 0%,#0a0f1f 30%,#12091f 60%,#1c0d2b 100%);
       overflow-x:hidden;
-      color:white;
+      color:var(--text-main);
       position:relative;
     }
 
-    /* FONDOS DECORATIVOS */
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    ::selection{
+      background:var(--pink);
+      color:#fff;
+    }
+
+    /* FONDO */
 
     .blur1{
-      position:absolute;
-      width:350px;
-      height:350px;
+      position:fixed;
+      width:380px;
+      height:380px;
       background:#ff4da6;
       border-radius:50%;
-      filter:blur(150px);
-      opacity:.25;
+      filter:blur(155px);
+      opacity:.24;
       top:-120px;
       right:-100px;
+      pointer-events:none;
+      z-index:0;
     }
 
     .blur2{
-      position:absolute;
-      width:300px;
-      height:300px;
+      position:fixed;
+      width:330px;
+      height:330px;
       background:#8b5cf6;
       border-radius:50%;
-      filter:blur(140px);
+      filter:blur(145px);
       opacity:.2;
       bottom:-100px;
       left:-100px;
+      pointer-events:none;
+      z-index:0;
     }
+
+    .blur3{
+      position:fixed;
+      width:300px;
+      height:300px;
+      background:#ff7bc1;
+      border-radius:50%;
+      filter:blur(150px);
+      opacity:.12;
+      top:45%;
+      left:45%;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .spark-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    .spark{
+      position:absolute;
+      width:4px;
+      height:4px;
+      opacity:.7;
+      animation:sparkFall linear infinite;
+    }
+
+    .spark.dot{
+      border-radius:50%;
+      background:rgba(255,255,255,.88);
+      box-shadow:
+        0 0 8px rgba(255,255,255,.85),
+        0 0 14px rgba(255,62,165,.6);
+    }
+
+    .spark.diamond{
+      border-radius:2px;
+      background:rgba(255,179,220,.9);
+      box-shadow:
+        0 0 9px rgba(255,143,203,.8),
+        0 0 16px rgba(139,92,246,.38);
+      transform:rotate(45deg);
+    }
+
+    .spark.star{
+      background:transparent;
+    }
+
+    .spark.star::before,
+    .spark.star::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:2px;
+      height:11px;
+      border-radius:999px;
+      background:rgba(255,255,255,.9);
+      box-shadow:0 0 10px rgba(255,143,203,.85);
+      transform:translate(-50%,-50%);
+    }
+
+    .spark.star::after{
+      transform:translate(-50%,-50%) rotate(90deg);
+    }
+
+    @keyframes sparkFall{
+      0%{
+        transform:translateY(-30px) translateX(0) scale(.35) rotate(0deg);
+        opacity:0;
+      }
+
+      15%{
+        opacity:.8;
+      }
+
+      100%{
+        transform:translateY(110vh) translateX(35px) scale(1) rotate(220deg);
+        opacity:0;
+      }
+    }
+
+    /* BOTÓN VOLVER */
+
+    .back-home{
+      position:fixed;
+      top:24px;
+      left:28px;
+      z-index:20;
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      padding:12px 18px;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid var(--border);
+      color:var(--text-soft);
+      backdrop-filter:blur(16px);
+      font-size:.9rem;
+      font-weight:600;
+      box-shadow:0 15px 35px rgba(0,0,0,.16);
+      transition:.3s ease;
+    }
+
+    .back-home:hover{
+      color:#fff;
+      border-color:rgba(255,62,165,.38);
+      transform:translateY(-3px);
+      box-shadow:0 18px 40px rgba(255,62,165,.14);
+    }
+
+    /* TOAST */
+
+    .toast{
+      position:fixed;
+      top:24px;
+      right:28px;
+      z-index:50;
+      min-width:280px;
+      max-width:370px;
+      padding:16px 18px;
+      border-radius:20px;
+      background:rgba(15,15,30,.82);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(18px);
+      box-shadow:0 22px 55px rgba(0,0,0,.25);
+      color:#fff;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      transform:translateY(-20px);
+      opacity:0;
+      pointer-events:none;
+      transition:.35s ease;
+    }
+
+    .toast.show{
+      transform:translateY(0);
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .toast-icon{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      flex:none;
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      box-shadow:0 0 18px rgba(255,62,165,.35);
+    }
+
+    .toast-content strong{
+      display:block;
+      font-size:.95rem;
+      margin-bottom:3px;
+    }
+
+    .toast-content span{
+      color:#d7d7e6;
+      font-size:.86rem;
+      line-height:1.4;
+    }
+
+    .toast.error .toast-icon{
+      background:linear-gradient(135deg,#ff4d6d,#ff8f70);
+    }
+
+    .toast.success .toast-icon{
+      background:linear-gradient(135deg,#ff3ea5,#8b5cf6);
+    }
+
+    /* LAYOUT */
 
     .container{
       width:100%;
       min-height:100vh;
-
       display:flex;
       justify-content:center;
       align-items:center;
-
-      padding:40px;
+      padding:74px 40px 40px;
       position:relative;
       z-index:2;
     }
 
     .card{
-
-      width:1100px;
-      min-height:650px;
-
-      background:rgba(255,255,255,0.05);
-
-      border:1px solid rgba(255,255,255,0.08);
-
-      backdrop-filter:blur(15px);
-
-      border-radius:35px;
-
+      width:1120px;
+      min-height:680px;
+      background:var(--bg-card);
+      border:1px solid rgba(255,255,255,0.09);
+      backdrop-filter:blur(18px);
+      border-radius:38px;
       overflow:hidden;
-
       display:grid;
       grid-template-columns:1fr 1fr;
-
       box-shadow:
-      0 0 50px rgba(255,0,128,.15);
-
+        0 0 50px rgba(255,0,128,.13),
+        0 28px 80px rgba(0,0,0,.28);
+      position:relative;
+      animation:cardEnter .8s ease both;
     }
 
-    /* IZQUIERDA */
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      padding:1px;
+      background:linear-gradient(
+        135deg,
+        rgba(255,143,203,.35),
+        transparent,
+        rgba(139,92,246,.26),
+        transparent
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
+      pointer-events:none;
+      opacity:.75;
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      width:360px;
+      height:360px;
+      border-radius:50%;
+      background:rgba(255,62,165,.1);
+      filter:blur(90px);
+      right:-130px;
+      bottom:-140px;
+      pointer-events:none;
+    }
+
+    @keyframes cardEnter{
+      from{
+        opacity:0;
+        transform:translateY(34px) scale(.985);
+      }
+
+      to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+    }
 
     .left{
-
       position:relative;
-
       background:
-      linear-gradient(
-      180deg,
-      rgba(255,0,128,.18),
-      rgba(139,92,246,.08)
-      );
-
-      padding:60px;
-
+        radial-gradient(circle at 20% 18%, rgba(255,62,165,.26), transparent 38%),
+        radial-gradient(circle at 85% 88%, rgba(139,92,246,.2), transparent 40%),
+        linear-gradient(180deg,rgba(255,0,128,.16),rgba(139,92,246,.07));
+      padding:62px;
       display:flex;
       flex-direction:column;
       justify-content:center;
+      overflow:hidden;
+    }
+
+    .left::before{
+      content:"";
+      position:absolute;
+      inset:20px;
+      border-radius:30px;
+      border:1px solid rgba(255,255,255,.08);
+      pointer-events:none;
+    }
+
+    .left::after{
+      content:"";
+      position:absolute;
+      top:-30%;
+      left:-70%;
+      width:80%;
+      height:160%;
+      background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.09),
+        transparent
+      );
+      transform:rotate(18deg);
+      animation:leftShine 6s ease-in-out infinite;
+      pointer-events:none;
+    }
+
+    @keyframes leftShine{
+      0%,45%{
+        left:-80%;
+      }
+
+      75%,100%{
+        left:120%;
+      }
     }
 
     .logo{
       width:140px;
       height:140px;
       border-radius:50%;
-
       object-fit:cover;
-
       border:5px solid #ff3ea5;
-
       box-shadow:
-      0 0 30px rgba(255,62,165,.5);
-
+        0 0 30px rgba(255,62,165,.5),
+        0 18px 40px rgba(0,0,0,.22);
       margin-bottom:30px;
+      position:relative;
+      z-index:2;
+      animation:logoPulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse{
+      0%,100%{
+        transform:scale(1);
+        box-shadow:
+          0 0 30px rgba(255,62,165,.45),
+          0 18px 40px rgba(0,0,0,.22);
+      }
+
+      50%{
+        transform:scale(1.035);
+        box-shadow:
+          0 0 44px rgba(255,62,165,.65),
+          0 18px 40px rgba(0,0,0,.22);
+      }
     }
 
     .brand{
       font-size:4rem;
-      font-weight:700;
-
-      background:linear-gradient(
-      90deg,
-      #ff4da6,
-      #ff89c6,
-      #ffffff
-      );
-
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-1px;
+      background:linear-gradient(90deg,#ff4da6,#ff89c6,#ffffff);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
-
       margin-bottom:20px;
+      position:relative;
+      z-index:2;
     }
 
     .desc{
       color:#d7d7d7;
-      line-height:1.8;
-      font-size:1rem;
-
+      line-height:1.85;
       max-width:450px;
+      position:relative;
+      z-index:2;
     }
 
     .tags{
       margin-top:30px;
-
       display:flex;
-      gap:15px;
+      gap:13px;
       flex-wrap:wrap;
+      position:relative;
+      z-index:2;
     }
 
     .tag{
       padding:10px 18px;
-
       border-radius:999px;
-
       background:rgba(255,255,255,.08);
-
       border:1px solid rgba(255,255,255,.12);
-
-      color:#fff;
-
       font-size:.9rem;
+      color:#f4edf7;
+      transition:.25s ease;
+    }
+
+    .tag:hover{
+      transform:translateY(-3px);
+      border-color:rgba(255,62,165,.36);
+      background:rgba(255,62,165,.12);
+    }
+
+    .benefits{
+      margin-top:34px;
+      display:grid;
+      gap:13px;
+      position:relative;
+      z-index:2;
+    }
+
+    .benefit{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#dfd7e6;
+      font-size:.94rem;
+    }
+
+    .benefit span{
+      width:27px;
+      height:27px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:rgba(255,62,165,.14);
+      border:1px solid rgba(255,62,165,.22);
+      color:#ffb3dc;
+      font-size:.8rem;
+      flex:none;
     }
 
     .social{
-      margin-top:35px;
+      margin-top:34px;
+      position:relative;
+      z-index:2;
+      color:#d8d8e8;
     }
 
     .social a{
       text-decoration:none;
       color:#ff7bc1;
-      font-weight:600;
+      font-weight:700;
+      transition:.25s ease;
     }
 
-    /* DERECHA */
+    .social a:hover{
+      color:#ffb3dc;
+    }
 
     .right{
-      padding:60px;
-
+      padding:62px;
       display:flex;
       flex-direction:column;
       justify-content:center;
+      position:relative;
+      z-index:2;
+    }
+
+    .form-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:9px 15px;
+      border-radius:999px;
+      background:rgba(255,62,165,.11);
+      border:1px solid rgba(255,62,165,.22);
+      color:#ffb3dc;
+      font-size:.84rem;
+      font-weight:700;
+      margin-bottom:20px;
     }
 
     .title{
-      font-size:2.7rem;
+      font-size:2.8rem;
+      line-height:1.1;
       margin-bottom:10px;
+      letter-spacing:-.8px;
+    }
+
+    .title span{
+      background:linear-gradient(90deg,#ff3ea5,#ffb3dc,#fff);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
     }
 
     .subtitle{
-      color:#cfcfcf;
-      margin-bottom:40px;
+      color:#cfcfe0;
+      margin-bottom:34px;
+      line-height:1.7;
     }
 
     .input-group{
-      margin-bottom:22px;
+      margin-bottom:20px;
+      position:relative;
     }
 
     .input-group label{
       display:block;
       margin-bottom:10px;
-      color:#ececec;
-      font-size:.95rem;
+      color:#f1edf4;
+      font-size:.94rem;
+      font-weight:600;
+    }
+
+    .input-wrap{
+      position:relative;
+    }
+
+    .input-icon{
+      position:absolute;
+      left:18px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#ffb3dc;
+      opacity:.9;
+      font-size:1rem;
+      pointer-events:none;
     }
 
     .input-group input{
-
       width:100%;
-      padding:18px;
-
+      padding:18px 18px 18px 50px;
       border:none;
       outline:none;
-
       border-radius:18px;
-
       background:rgba(255,255,255,.06);
-
-      border:1px solid rgba(255,255,255,.08);
-
+      border:1px solid rgba(255,255,255,.09);
       color:white;
-
       font-size:1rem;
-
-      transition:.3s;
-    }
-
-    .input-group input:focus{
-      border:1px solid #ff4da6;
-
-      box-shadow:
-      0 0 20px rgba(255,77,166,.3);
+      transition:.3s ease;
     }
 
     .input-group input::placeholder{
-      color:#9f9f9f;
+      color:rgba(255,255,255,.38);
+    }
+
+    .input-group input:focus{
+      border-color:#ff4da6;
+      background:rgba(255,255,255,.08);
+      box-shadow:
+        0 0 0 4px rgba(255,62,165,.08),
+        0 0 18px rgba(255,77,166,.22);
+    }
+
+    .toggle-password{
+      position:absolute;
+      right:14px;
+      top:50%;
+      transform:translateY(-50%);
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      transition:.25s ease;
+    }
+
+    .toggle-password:hover{
+      border-color:rgba(255,62,165,.36);
+      box-shadow:0 0 16px rgba(255,62,165,.16);
+    }
+
+    .password-strength{
+      margin-top:10px;
+      display:none;
+    }
+
+    .password-strength.show{
+      display:block;
+    }
+
+    .strength-track{
+      width:100%;
+      height:7px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      overflow:hidden;
+      margin-bottom:8px;
+    }
+
+    .strength-bar{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background:#ff4d6d;
+      transition:.25s ease;
+    }
+
+    .strength-text{
+      font-size:.82rem;
+      color:#bdb8c9;
+    }
+
+    .strength-text strong{
+      color:#ffb3dc;
     }
 
     .btn{
-
       width:100%;
-
+      min-height:58px;
       padding:18px;
-
       border:none;
-
       border-radius:18px;
-
-      background:linear-gradient(
-      90deg,
-      #ff3ea5,
-      #ff6bbf
-      );
-
+      background:linear-gradient(90deg,#ff3ea5,#ff6bbf);
       color:white;
-
       font-size:1rem;
-
-      font-weight:700;
-
+      font-weight:800;
       cursor:pointer;
-
-      transition:.3s;
-
       margin-top:10px;
+      transition:.3s ease;
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      box-shadow:0 15px 32px rgba(255,62,165,.24);
+    }
 
-      box-shadow:
-      0 10px 25px rgba(255,62,165,.3);
-
+    .btn::after{
+      content:"";
+      position:absolute;
+      top:0;
+      left:-120%;
+      width:70%;
+      height:100%;
+      background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.36),
+        transparent
+      );
+      transform:skewX(-18deg);
+      transition:left .7s ease;
     }
 
     .btn:hover{
       transform:translateY(-3px);
+      box-shadow:0 16px 36px rgba(255,62,165,.38);
+    }
 
-      box-shadow:
-      0 15px 35px rgba(255,62,165,.45);
+    .btn:hover::after{
+      left:130%;
+    }
+
+    .btn:disabled{
+      opacity:.7;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .spinner{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.35);
+      border-top-color:white;
+      display:none;
+      animation:spin .8s linear infinite;
+    }
+
+    .btn.loading .spinner{
+      display:block;
+    }
+
+    @keyframes spin{
+      to{
+        transform:rotate(360deg);
+      }
+    }
+
+    .form-note{
+      margin-top:18px;
+      color:#aaa7bb;
+      font-size:.82rem;
+      line-height:1.6;
+      text-align:center;
     }
 
     .footer{
-      margin-top:25px;
+      margin-top:24px;
       color:#bdbdbd;
       font-size:.9rem;
       text-align:center;
     }
 
+    .footer a{
+      color:#ff7bc1;
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .footer a:hover{
+      color:#ffb3dc;
+    }
+
     @media(max-width:980px){
+      .back-home{
+        top:16px;
+        left:16px;
+      }
+
+      .container{
+        padding:82px 26px 34px;
+      }
 
       .card{
         grid-template-columns:1fr;
+        width:100%;
+        max-width:620px;
       }
 
       .left{
@@ -312,144 +793,384 @@
       }
 
       .right{
-        padding:40px 30px;
+        padding:44px 34px;
+      }
+
+      .toast{
+        top:16px;
+        right:16px;
+        left:16px;
+        min-width:auto;
+        max-width:none;
+      }
+    }
+
+    @media(max-width:520px){
+      .container{
+        padding:80px 18px 28px;
+      }
+
+      .right{
+        padding:36px 24px;
       }
 
       .title{
-        font-size:2rem;
+        font-size:2.12rem;
       }
 
+      .subtitle{
+        font-size:.94rem;
+      }
+
+      .input-group input{
+        padding-top:16px;
+        padding-bottom:16px;
+      }
+
+      .back-home{
+        padding:10px 14px;
+        font-size:.82rem;
+      }
     }
 
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="blur1"></div>
-  <div class="blur2"></div>
+<a href="index.html" class="back-home">← Volver al inicio</a>
 
-  <div class="container">
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toastIcon">✨</div>
+  <div class="toast-content">
+    <strong id="toastTitle">GOODISH</strong>
+    <span id="toastMessage">Mensaje</span>
+  </div>
+</div>
 
-    <div class="card">
+<div class="spark-layer" id="sparkLayer"></div>
 
-      <!-- IZQUIERDA -->
-      <div class="left">
+<div class="blur1"></div>
+<div class="blur2"></div>
+<div class="blur3"></div>
 
-        <!-- CAMBIA ESTA IMAGEN -->
-        <img src="images/logo.png" class="logo">
+<div class="container">
+  <div class="card">
 
-        <h1 class="brand">GOODISH</h1>
+    <div class="left">
+      <img src="images/logo.png" class="logo" alt="logo GOODISH">
 
-        <p class="desc">
-          Thrift online store inspirada en moda vintage,
-          fairy, boho y retro ✨
-          <br><br>
-          Encuentra prendas únicas con estética Y2K,
-          streetwear y outfits alternativos hechos
-          para destacar.
-        </p>
+      <h1 class="brand">GOODISH</h1>
 
-        <div class="tags">
-          <div class="tag">Vintage</div>
-          <div class="tag">Fairy</div>
-          <div class="tag">Boho</div>
-          <div class="tag">Retro</div>
-        </div>
+      <p class="desc">
+        Thrift online store inspirada en moda vintage,
+        fairy, boho, Y2K y retro ✨
+      </p>
 
-        <div class="social">
-          TikTok:
-          <a href="https://www.tiktok.com/@goodish.pe" target="_blank">
-            @goodish.pe
-          </a>
-        </div>
-
+      <div class="tags">
+        <div class="tag">Vintage</div>
+        <div class="tag">Fairy</div>
+        <div class="tag">Boho</div>
+        <div class="tag">Y2K</div>
       </div>
 
-      <!-- DERECHA -->
-      <div class="right">
+      <div class="benefits">
+        <div class="benefit">
+          <span>✓</span>
+          Accede a drops exclusivos antes que todos.
+        </div>
 
-        <h1 class="title">Crea tu cuenta 💗</h1>
+        <div class="benefit">
+          <span>✓</span>
+          Guarda tus datos para comprar más rápido.
+        </div>
 
-        <p class="subtitle">
-          Regístrate para acceder a drops exclusivos,
-          promociones y nuevas prendas.
-        </p>
+        <div class="benefit">
+          <span>✓</span>
+          Recibe novedades de prendas únicas y limitadas.
+        </div>
+      </div>
 
+      <div class="social">
+        TikTok:
+        <a href="https://www.tiktok.com/@goodish.pe" target="_blank">
+          @goodish.pe
+        </a>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="form-badge">💗 Registro GOODISH</div>
+
+      <h1 class="title">
+        Crea tu <span>cuenta</span>
+      </h1>
+
+      <p class="subtitle">
+        Regístrate para acceder a drops exclusivos, novedades y futuras compras más rápidas.
+      </p>
+
+      <form id="registroForm">
         <div class="input-group">
-          <label>Nombre</label>
-          <input type="text" id="nombre" placeholder="Ingresa tu nombre">
+          <label for="nombre">Nombre</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="nombre" placeholder="Ingresa tu nombre" autocomplete="given-name">
+          </div>
         </div>
 
         <div class="input-group">
-          <label>Apellido</label>
-          <input type="text" id="apellido" placeholder="Ingresa tu apellido">
+          <label for="apellido">Apellido</label>
+          <div class="input-wrap">
+            <span class="input-icon">✨</span>
+            <input type="text" id="apellido" placeholder="Ingresa tu apellido" autocomplete="family-name">
+          </div>
         </div>
 
         <div class="input-group">
-          <label>Correo</label>
-          <input type="email" id="correo" placeholder="Ingresa tu correo">
+          <label for="correo">Correo</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="correo" placeholder="Ingresa tu correo" autocomplete="email">
+          </div>
         </div>
 
         <div class="input-group">
-          <label>Password</label>
-          <input type="password" id="password" placeholder="Ingresa tu contraseña">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" placeholder="Ingresa tu contraseña" autocomplete="new-password">
+            <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">
+              👁️
+            </button>
+          </div>
+
+          <div class="password-strength" id="passwordStrength">
+            <div class="strength-track">
+              <div class="strength-bar" id="strengthBar"></div>
+            </div>
+            <div class="strength-text" id="strengthText">
+              Seguridad: <strong>Escribe una contraseña</strong>
+            </div>
+          </div>
         </div>
 
-        <button class="btn" onclick="registrar()">
-          Registrarme
+        <button type="submit" class="btn" id="btnRegistro">
+          <span class="spinner"></span>
+          <span id="btnText">Registrarme</span>
         </button>
 
-        <div class="footer">
-          GOODISH © 2026
-        </div>
+        <p class="form-note">
+          Al registrarte, tus datos serán usados para identificar tu cuenta GOODISH y futuras compras.
+        </p>
+      </form>
 
+      <div class="footer">
+        GOODISH © 2026 •
+        <a href="index.html">Volver al inicio</a>
       </div>
-
     </div>
 
   </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+const supabaseUrl = "https://oqojlcgkmvbxmmwoexih.supabase.co";
+const supabaseKey = "sb_publishable_FJvX6aKfJO-f-SAzx2vu0Q_F4ex4L0T";
 
-async function registrar() {
+const supabaseClient = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
 
-  const nombre = document.getElementById("nombre").value;
-  const apellido = document.getElementById("apellido").value;
-  const correo = document.getElementById("correo").value;
-  const password = document.getElementById("password").value;
+const registroForm = document.getElementById("registroForm");
+const btnRegistro = document.getElementById("btnRegistro");
+const btnText = document.getElementById("btnText");
 
-  try {
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const passwordStrength = document.getElementById("passwordStrength");
+const strengthBar = document.getElementById("strengthBar");
+const strengthText = document.getElementById("strengthText");
 
-    const res = await fetch("https://pagina-web-ta-teodoro.onrender.com/registro", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        nombre,
-        apellido,
-        correo,
-        password
-      })
-    });
+const toast = document.getElementById("toast");
+const toastIcon = document.getElementById("toastIcon");
+const toastTitle = document.getElementById("toastTitle");
+const toastMessage = document.getElementById("toastMessage");
 
-    const data = await res.json();
+const sparkLayer = document.getElementById("sparkLayer");
 
-    console.log(data);
+/* BRILLITOS SUAVES */
+function createSparkles(){
+  const amount = window.innerWidth < 700 ? 16 : 30;
+  const types = ["dot", "diamond", "star"];
 
-    alert(data.mensaje);
+  for(let i = 0; i < amount; i++){
+    const spark = document.createElement("span");
+    const type = types[Math.floor(Math.random() * types.length)];
 
-  } catch (error) {
+    spark.classList.add("spark", type);
 
-    console.error("Error:", error);
+    const size = Math.random() * 3 + 3;
+    spark.style.width = `${size}px`;
+    spark.style.height = `${size}px`;
+    spark.style.left = `${Math.random() * 100}%`;
+    spark.style.animationDuration = `${Math.random() * 8 + 9}s`;
+    spark.style.animationDelay = `${Math.random() * 8}s`;
+    spark.style.opacity = `${Math.random() * .25 + .38}`;
 
-    alert("Error al registrar usuario");
-
+    sparkLayer.appendChild(spark);
   }
-
 }
 
+createSparkles();
+
+/* TOAST */
+let toastTimer;
+
+function showToast(type, title, message){
+  clearTimeout(toastTimer);
+
+  toast.className = `toast show ${type}`;
+  toastIcon.textContent = type === "success" ? "✓" : type === "error" ? "!" : "✨";
+  toastTitle.textContent = title;
+  toastMessage.textContent = message;
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3600);
+}
+
+/* VER / OCULTAR PASSWORD */
+togglePassword.addEventListener("click", () => {
+  const isPassword = passwordInput.type === "password";
+
+  passwordInput.type = isPassword ? "text" : "password";
+  togglePassword.textContent = isPassword ? "🙈" : "👁️";
+});
+
+/* FUERZA DE CONTRASEÑA */
+passwordInput.addEventListener("input", () => {
+  const value = passwordInput.value;
+  passwordStrength.classList.add("show");
+
+  const score = getPasswordScore(value);
+
+  if(value.length === 0){
+    strengthBar.style.width = "0%";
+    strengthBar.style.background = "#ff4d6d";
+    strengthText.innerHTML = "Seguridad: <strong>Escribe una contraseña</strong>";
+    return;
+  }
+
+  if(score <= 1){
+    strengthBar.style.width = "33%";
+    strengthBar.style.background = "#ff4d6d";
+    strengthText.innerHTML = "Seguridad: <strong>Débil</strong>";
+  } else if(score === 2 || score === 3){
+    strengthBar.style.width = "66%";
+    strengthBar.style.background = "#ffb703";
+    strengthText.innerHTML = "Seguridad: <strong>Media</strong>";
+  } else {
+    strengthBar.style.width = "100%";
+    strengthBar.style.background = "linear-gradient(90deg,#ff3ea5,#8b5cf6)";
+    strengthText.innerHTML = "Seguridad: <strong>Buena</strong>";
+  }
+});
+
+function getPasswordScore(password){
+  let score = 0;
+
+  if(password.length >= 6) score++;
+  if(password.length >= 10) score++;
+  if(/[A-Z]/.test(password)) score++;
+  if(/[0-9]/.test(password)) score++;
+  if(/[^A-Za-z0-9]/.test(password)) score++;
+
+  return score;
+}
+
+/* REGISTRO */
+registroForm.addEventListener("submit", registrar);
+
+async function registrar(event) {
+  event.preventDefault();
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const apellido = document.getElementById("apellido").value.trim();
+  const correo = document.getElementById("correo").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!nombre || !apellido || !correo || !password) {
+    showToast("error", "Campos incompletos", "Completa todos los campos para crear tu cuenta.");
+    return;
+  }
+
+  if (!validarCorreo(correo)) {
+    showToast("error", "Correo inválido", "Ingresa un correo válido, por ejemplo: nombre@gmail.com.");
+    return;
+  }
+
+  if (password.length < 6) {
+    showToast("error", "Contraseña corta", "La contraseña debe tener mínimo 6 caracteres.");
+    return;
+  }
+
+  try {
+    btnRegistro.disabled = true;
+    btnRegistro.classList.add("loading");
+    btnText.textContent = "Registrando...";
+
+    const { error } = await supabaseClient
+      .from("usuarios")
+      .insert([
+        {
+          nombre_cli: nombre,
+          apellido_cli: apellido,
+          correo_cli: correo,
+          password: password,
+          celular_cli: null,
+          ciudad_cli: "Lima",
+          sexo_cli: "O"
+        }
+      ]);
+
+    if (error) {
+      console.error(error);
+      showToast("error", "Error al registrar", error.message);
+      return;
+    }
+
+    showToast("success", "Registro exitoso", "Tu cuenta GOODISH fue creada correctamente.");
+    registroForm.reset();
+
+    passwordStrength.classList.remove("show");
+    strengthBar.style.width = "0%";
+    strengthText.innerHTML = "Seguridad: <strong>Escribe una contraseña</strong>";
+
+  } catch (err) {
+    console.error(err);
+    showToast("error", "Error inesperado", "Ocurrió un error. Intenta nuevamente.");
+  } finally {
+    btnRegistro.disabled = false;
+    btnRegistro.classList.remove("loading");
+    btnText.textContent = "Registrarme";
+  }
+}
+
+function validarCorreo(correo){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+}
 </script>
 
 </body>
