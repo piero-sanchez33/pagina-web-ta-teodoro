@@ -1,553 +1,1939 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>GOODISH | Vintage Store</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    :root {
+      --bg-main: #050816;
+      --bg-secondary: #0a0f1f;
+      --bg-card: rgba(255,255,255,.06);
+      --bg-card-strong: rgba(255,255,255,.1);
+      --text-main: #ffffff;
+      --text-soft: #d8d8e8;
+      --text-muted: #a9a9bd;
+      --pink: #ff3ea5;
+      --pink-soft: #ff8fcb;
+      --pink-light: #ffb3dc;
+      --purple: #8b5cf6;
+      --violet: #c084fc;
+      --border: rgba(255,255,255,.1);
+      --shadow-pink: rgba(255,62,165,.35);
+      --shadow-purple: rgba(139,92,246,.25);
+      --glass: rgba(255,255,255,.07);
+      --nav-bg: rgba(5,8,22,.65);
+      --footer-bg: rgba(255,255,255,.03);
     }
 
-    body{
-      font-family:'Poppins',sans-serif;
-      overflow-x:hidden;
+    body.light {
+      --bg-main: #fff4fb;
+      --bg-secondary: #ffe5f4;
+      --bg-card: rgba(255,255,255,.78);
+      --bg-card-strong: rgba(255,255,255,.95);
+      --text-main: #251527;
+      --text-soft: #4d3b51;
+      --text-muted: #715d75;
+      --pink: #ef2f98;
+      --pink-soft: #d9469f;
+      --pink-light: #ff7fc5;
+      --purple: #7c3aed;
+      --violet: #a855f7;
+      --border: rgba(80,30,80,.12);
+      --shadow-pink: rgba(239,47,152,.25);
+      --shadow-purple: rgba(124,58,237,.18);
+      --glass: rgba(255,255,255,.65);
+      --nav-bg: rgba(255,244,251,.78);
+      --footer-bg: rgba(255,255,255,.6);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
       background:
-      linear-gradient(
-      135deg,
-      #050816 0%,
-      #0a0f1f 25%,
-      #13061f 60%,
-      #1d0b2e 100%
-      );
-
-      color:white;
+        radial-gradient(circle at 8% 10%, rgba(255,62,165,.22), transparent 35%),
+        radial-gradient(circle at 90% 30%, rgba(139,92,246,.20), transparent 35%),
+        linear-gradient(135deg, var(--bg-main) 0%, var(--bg-secondary) 45%, #1d0b2e 100%);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+      transition: background .4s ease, color .4s ease;
     }
 
-    /* FONDOS */
-
-    .blur1{
-      position:absolute;
-      width:450px;
-      height:450px;
-      background:#ff4da6;
-      border-radius:50%;
-      filter:blur(180px);
-      opacity:.22;
-      top:-120px;
-      left:-100px;
-      z-index:0;
+    body.light {
+      background:
+        radial-gradient(circle at 8% 10%, rgba(255,62,165,.18), transparent 35%),
+        radial-gradient(circle at 90% 30%, rgba(139,92,246,.12), transparent 35%),
+        linear-gradient(135deg, var(--bg-main) 0%, var(--bg-secondary) 55%, #fff 100%);
     }
 
-    .blur2{
-      position:absolute;
-      width:400px;
-      height:400px;
-      background:#8b5cf6;
-      border-radius:50%;
-      filter:blur(170px);
-      opacity:.18;
-      right:-120px;
-      top:400px;
-      z-index:0;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .blur3{
-      position:absolute;
-      width:350px;
-      height:350px;
-      background:#ff6bbf;
-      border-radius:50%;
-      filter:blur(160px);
-      opacity:.12;
-      bottom:-100px;
-      left:35%;
-      z-index:0;
+    img {
+      max-width: 100%;
+      display: block;
     }
 
-    /* NAVBAR */
-
-    nav{
-      width:100%;
-      padding:25px 8%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      position:relative;
-      z-index:5;
+    ::selection {
+      background: var(--pink);
+      color: #fff;
     }
 
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:15px;
+    /* PRELOADER */
+
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        radial-gradient(circle at center, rgba(255,62,165,.18), transparent 35%),
+        linear-gradient(135deg, #050816, #15051f);
+      transition: opacity .7s ease, visibility .7s ease;
     }
 
-    .logo img{
-      width:60px;
-      height:60px;
-      border-radius:50%;
-      object-fit:cover;
-      border:3px solid #ff4da6;
-      box-shadow:0 0 20px rgba(255,77,166,.4);
+    .preloader.hide {
+      opacity: 0;
+      visibility: hidden;
     }
 
-    .logo h1{
-      font-size:2rem;
-
-      background:linear-gradient(
-      90deg,
-      #ff4da6,
-      #ff9ad5,
-      white
-      );
-
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .loader-card {
+      width: min(330px, 88%);
+      padding: 40px 28px;
+      border-radius: 32px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(18px);
+      text-align: center;
+      box-shadow: 0 0 60px rgba(255,62,165,.22);
+      position: relative;
+      overflow: hidden;
     }
 
-    .nav-links{
-      display:flex;
-      gap:35px;
-      align-items:center;
+    .loader-card::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,62,165,.28);
+      filter: blur(70px);
+      top: -70px;
+      left: -50px;
     }
 
-    .nav-links a{
-      color:white;
-      text-decoration:none;
-      font-weight:500;
-      transition:.3s;
+    .loader-logo {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--pink);
+      box-shadow: 0 0 32px rgba(255,62,165,.5);
+      animation: pulseLogo 1.8s ease-in-out infinite;
+      position: relative;
+      z-index: 2;
     }
 
-    .nav-links a:hover{
-      color:#ff8fcb;
+    .loader-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--pink), var(--pink-light), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 2;
     }
 
-    .btn-register{
-      padding:14px 28px;
+    .loader-text {
+      color: #d9cfe0;
+      margin-top: 8px;
+      font-size: .9rem;
+      position: relative;
+      z-index: 2;
+    }
 
-      border-radius:999px;
+    .loader-ring {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      margin: 24px auto 0;
+      border: 3px solid rgba(255,255,255,.16);
+      border-top-color: var(--pink);
+      animation: spin 1s linear infinite;
+      position: relative;
+      z-index: 2;
+    }
 
-      background:linear-gradient(
-      90deg,
-      #ff3ea5,
-      #ff6bbf
-      );
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-      color:white !important;
+    @keyframes pulseLogo {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,62,165,0)); }
+      50% { transform: scale(1.06); filter: drop-shadow(0 0 20px rgba(255,62,165,.5)); }
+    }
 
-      font-weight:700;
+    /* TRANSICIÓN ENTRE PÁGINAS */
 
+    .page-transition {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(5,8,22,.9);
+      backdrop-filter: blur(18px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    .page-transition.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .transition-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .transition-box img {
+      width: 84px;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--pink);
+      animation: pulseLogo 1.2s ease-in-out infinite;
+    }
+
+    .transition-box span {
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: .8px;
+    }
+
+    /* GLITTER */
+
+    .glitter-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .spark {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.85);
       box-shadow:
-      0 10px 25px rgba(255,62,165,.3);
+        0 0 8px rgba(255,255,255,.9),
+        0 0 14px rgba(255,62,165,.75);
+      animation: sparkleFall linear infinite;
+      opacity: .75;
+    }
+
+    @keyframes sparkleFall {
+      0% {
+        transform: translateY(-20px) scale(.4) rotate(0deg);
+        opacity: 0;
+      }
+      12% {
+        opacity: .9;
+      }
+      100% {
+        transform: translateY(110vh) scale(1.1) rotate(220deg);
+        opacity: 0;
+      }
+    }
+
+    .bg-blur {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(150px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: .22;
+    }
+
+    .blur-1 {
+      width: 430px;
+      height: 430px;
+      background: var(--pink);
+      top: -120px;
+      left: -120px;
+    }
+
+    .blur-2 {
+      width: 380px;
+      height: 380px;
+      background: var(--purple);
+      right: -120px;
+      top: 320px;
+    }
+
+    .blur-3 {
+      width: 360px;
+      height: 360px;
+      background: #ff7bc8;
+      bottom: -140px;
+      left: 35%;
+      opacity: .16;
+    }
+
+    /* TOP BAR */
+
+    .top-bar {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 10px 8%;
+      text-align: center;
+      font-size: .88rem;
+      color: var(--text-soft);
+      background: rgba(255,255,255,.04);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top-bar span {
+      color: var(--pink-light);
+      font-weight: 700;
+    }
+
+    /* NAV */
+
+    .navbar-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 8%;
+    }
+
+    nav {
+      width: 100%;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: var(--nav-bg);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .logo img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--pink);
+      box-shadow: 0 0 20px rgba(255,62,165,.35);
+    }
+
+    .logo h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: .8px;
+      background: linear-gradient(90deg, var(--pink), var(--pink-light), var(--text-main));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .nav-links a {
+      color: var(--text-soft);
+      font-weight: 500;
+      font-size: .96rem;
+      transition: color .25s ease, transform .25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--pink-light);
+      transform: translateY(-2px);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-btn,
+    .menu-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 1.15rem;
+      display: grid;
+      place-items: center;
+      transition: transform .25s ease, border .25s ease, box-shadow .25s ease;
+    }
+
+    .theme-btn:hover,
+    .menu-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,62,165,.45);
+      box-shadow: 0 0 22px rgba(255,62,165,.18);
+    }
+
+    .menu-btn {
+      display: none;
+    }
+
+    .btn-register {
+      padding: 14px 25px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--pink), #ff6bbf);
+      color: #fff !important;
+      font-weight: 800 !important;
+      box-shadow: 0 12px 30px var(--shadow-pink);
+    }
+
+    /* MOBILE MENU */
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 106px;
+      left: 8%;
+      right: 8%;
+      z-index: 99;
+      padding: 22px;
+      border-radius: 28px;
+      background: var(--nav-bg);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 45px rgba(0,0,0,.2);
+    }
+
+    .mobile-menu.active {
+      display: grid;
+      gap: 16px;
+      animation: menuDrop .25s ease;
+    }
+
+    .mobile-menu a {
+      padding: 14px 16px;
+      border-radius: 18px;
+      color: var(--text-soft);
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+    }
+
+    @keyframes menuDrop {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* GENERAL */
+
+    main {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section {
+      padding: 95px 8%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-title {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 58px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: rgba(255,62,165,.12);
+      border: 1px solid rgba(255,62,165,.22);
+      color: var(--pink-light);
+      font-size: .86rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, var(--pink), var(--pink-light), var(--text-main));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-title h2 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      line-height: 1.12;
+      margin-bottom: 18px;
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(38px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* HERO */
 
-    .hero{
-      width:100%;
-      min-height:90vh;
-
-      display:grid;
-      grid-template-columns:1fr 1fr;
-
-      align-items:center;
-
-      padding:40px 8%;
-
-      position:relative;
-      z-index:2;
+    .hero {
+      min-height: calc(100vh - 150px);
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 55px;
+      padding: 55px 8% 80px;
+      position: relative;
+      z-index: 2;
     }
 
-    .hero-text h2{
-      font-size:1.2rem;
-      color:#ff8fcb;
-      margin-bottom:15px;
-      letter-spacing:2px;
+    .hero-content {
+      position: relative;
     }
 
-    .hero-text h1{
-      font-size:5rem;
-      line-height:1.1;
-      margin-bottom:25px;
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      color: var(--pink-light);
+      font-size: .9rem;
+      font-weight: 700;
+      margin-bottom: 22px;
+      box-shadow: 0 0 28px rgba(255,62,165,.08);
     }
 
-    .gradient{
-      background:linear-gradient(
-      90deg,
-      #ff4da6,
-      #ffb3dc,
-      #ffffff
-      );
-
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .hero h1 {
+      font-size: clamp(3.2rem, 8vw, 6.7rem);
+      line-height: .98;
+      letter-spacing: -3px;
+      margin-bottom: 26px;
     }
 
-    .hero-text p{
-      color:#d0d0d0;
-      line-height:1.9;
-      font-size:1.05rem;
-      max-width:600px;
-      margin-bottom:35px;
+    .hero p {
+      max-width: 670px;
+      color: var(--text-soft);
+      font-size: 1.08rem;
+      line-height: 1.95;
+      margin-bottom: 34px;
     }
 
-    .hero-buttons{
-      display:flex;
-      gap:20px;
-      flex-wrap:wrap;
+    .hero-buttons {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 34px;
     }
 
-    .primary-btn{
-      padding:18px 34px;
-      border-radius:18px;
-      text-decoration:none;
-      font-weight:700;
-      color:white;
+    .primary-btn,
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 17px 30px;
+      border-radius: 19px;
+      font-weight: 800;
+      transition: transform .25s ease, box-shadow .25s ease, border .25s ease;
+    }
 
-      background:linear-gradient(
-      90deg,
-      #ff3ea5,
-      #ff6bbf
-      );
+    .primary-btn {
+      background: linear-gradient(90deg, var(--pink), #ff6bbf);
+      color: #fff;
+      box-shadow: 0 14px 34px var(--shadow-pink);
+    }
 
-      transition:.3s;
+    .secondary-btn {
+      background: var(--glass);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
 
+    .primary-btn:hover,
+    .secondary-btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .secondary-btn:hover {
+      border-color: rgba(255,62,165,.35);
+      box-shadow: 0 0 26px rgba(255,62,165,.14);
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-tags span {
+      padding: 10px 15px;
+      border-radius: 999px;
+      color: var(--text-soft);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.045);
+      font-size: .9rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 580px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-card {
+      position: relative;
+      width: min(470px, 100%);
+      border-radius: 42px;
+      padding: 14px;
+      background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
+      border: 1px solid var(--border);
       box-shadow:
-      0 12px 30px rgba(255,62,165,.35);
+        0 28px 80px rgba(0,0,0,.28),
+        0 0 60px rgba(255,62,165,.14);
+      transform-style: preserve-3d;
+      animation: floatHero 5s ease-in-out infinite;
     }
 
-    .primary-btn:hover{
-      transform:translateY(-4px);
+    .hero-card img {
+      width: 100%;
+      height: 570px;
+      object-fit: cover;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,.1);
     }
 
-    .secondary-btn{
-      padding:18px 34px;
-      border-radius:18px;
-      text-decoration:none;
-      font-weight:600;
-      color:white;
-
-      border:1px solid rgba(255,255,255,.15);
-
-      background:rgba(255,255,255,.05);
-
-      backdrop-filter:blur(10px);
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 32px;
+      background:
+        linear-gradient(180deg, transparent 55%, rgba(0,0,0,.52)),
+        linear-gradient(90deg, rgba(255,62,165,.18), transparent);
+      pointer-events: none;
     }
 
-    /* IMAGEN HERO */
-
-    .hero-image{
-      display:flex;
-      justify-content:center;
-      position:relative;
+    .floating-note {
+      position: absolute;
+      z-index: 5;
+      padding: 15px 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.13);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
+      color: #fff;
+      animation: floatNote 4s ease-in-out infinite;
     }
 
-    .hero-image img{
-      width:90%;
-      max-width:550px;
-
-      border-radius:35px;
-
-      object-fit:cover;
-
-      border:1px solid rgba(255,255,255,.08);
-
-      box-shadow:
-      0 0 60px rgba(255,0,128,.2);
+    .note-1 {
+      top: 65px;
+      left: 0;
     }
 
-    /* CARDS */
-
-    .section{
-      padding:100px 8%;
-      position:relative;
-      z-index:2;
+    .note-2 {
+      right: 0;
+      bottom: 90px;
+      animation-delay: .6s;
     }
 
-    .section-title{
-      text-align:center;
-      margin-bottom:70px;
+    .floating-note strong {
+      display: block;
+      color: var(--pink-light);
+      font-size: .95rem;
     }
 
-    .section-title h2{
-      font-size:3rem;
-      margin-bottom:15px;
+    .floating-note span {
+      font-size: .82rem;
+      color: rgba(255,255,255,.78);
     }
 
-    .section-title p{
-      color:#cfcfcf;
+    @keyframes floatHero {
+      0%,100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-18px) rotate(1deg); }
     }
 
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:30px;
+    @keyframes floatNote {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
     }
 
-    .card{
-      background:rgba(255,255,255,.05);
+    /* CATEGORÍAS */
 
-      border:1px solid rgba(255,255,255,.08);
-
-      border-radius:28px;
-
-      padding:35px;
-
-      backdrop-filter:blur(12px);
-
-      transition:.3s;
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
     }
 
-    .card:hover{
-      transform:translateY(-8px);
-
-      box-shadow:
-      0 0 35px rgba(255,77,166,.15);
+    .category-card {
+      min-height: 250px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      box-shadow: 0 16px 45px rgba(0,0,0,.12);
+      transition: transform .3s ease, box-shadow .3s ease, border .3s ease;
+      cursor: pointer;
     }
 
-    .card img{
-      width:100%;
-      height:260px;
-      object-fit:cover;
-      border-radius:20px;
-      margin-bottom:25px;
+    .category-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,.78));
+      z-index: 1;
     }
 
-    .card h3{
-      font-size:1.5rem;
-      margin-bottom:15px;
+    .category-card::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(255,62,165,.34);
+      filter: blur(60px);
+      right: -35px;
+      top: -35px;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity .3s ease;
     }
 
-    .card p{
-      color:#d2d2d2;
-      line-height:1.8;
+    .category-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(255,62,165,.35);
+      box-shadow: 0 22px 55px rgba(255,62,165,.14);
+    }
+
+    .category-card:hover::after {
+      opacity: 1;
+    }
+
+    .category-card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+
+    .category-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .category-card h3,
+    .category-card p {
+      position: relative;
+      z-index: 3;
+    }
+
+    .category-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 7px;
+    }
+
+    .category-card p {
+      color: rgba(255,255,255,.78);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    /* DROPS */
+
+    .drops {
+      background: rgba(255,255,255,.025);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .product-card {
+      border-radius: 30px;
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.12);
+      transition: transform .3s ease, border .3s ease, box-shadow .3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(255,62,165,.38);
+      box-shadow: 0 25px 60px rgba(255,62,165,.12);
+    }
+
+    .product-img {
+      position: relative;
+      height: 310px;
+      overflow: hidden;
+    }
+
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s ease;
+    }
+
+    .product-card:hover .product-img img {
+      transform: scale(1.08);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(255,62,165,.88);
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+    }
+
+    .product-content {
+      padding: 22px;
+    }
+
+    .product-content h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .product-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: .88rem;
+      margin-bottom: 16px;
+    }
+
+    .price {
+      color: var(--pink-light);
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 17px;
+    }
+
+    .product-btn {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.07);
+      color: var(--text-main);
+      font-weight: 800;
+      border: 1px solid var(--border);
+      transition: background .25s ease, transform .25s ease;
+    }
+
+    .product-btn:hover {
+      background: linear-gradient(90deg, var(--pink), #ff6bbf);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .center-action {
+      text-align: center;
+      margin-top: 42px;
+    }
+
+    /* CÓMO COMPRAR */
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 34px;
+      border-radius: 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      transition: transform .3s ease, border .3s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255,62,165,.35);
+    }
+
+    .step-number {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.25rem;
+      margin-bottom: 22px;
+      box-shadow: 0 12px 30px var(--shadow-pink);
+    }
+
+    .step-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    .step-card p {
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* CONFIANZA */
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .trust-item {
+      padding: 28px 22px;
+      border-radius: 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      text-align: center;
+      backdrop-filter: blur(14px);
+      transition: transform .3s ease;
+    }
+
+    .trust-item:hover {
+      transform: translateY(-7px);
+    }
+
+    .trust-icon {
+      font-size: 2rem;
+      margin-bottom: 14px;
+    }
+
+    .trust-item h3 {
+      font-size: 1rem;
+      margin-bottom: 9px;
+    }
+
+    .trust-item p {
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* REDES */
+
+    .social-section {
+      padding: 90px 8%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .social-box {
+      position: relative;
+      overflow: hidden;
+      border-radius: 42px;
+      padding: 60px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,62,165,.24), transparent 34%),
+        radial-gradient(circle at 80% 50%, rgba(139,92,246,.22), transparent 36%),
+        var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 25px 75px rgba(0,0,0,.16);
+      display: grid;
+      grid-template-columns: 1fr .9fr;
+      gap: 45px;
+      align-items: center;
+    }
+
+    .social-box::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.08);
+      filter: blur(80px);
+      right: -80px;
+      top: -80px;
+    }
+
+    .social-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .social-content h2 {
+      font-size: clamp(2.3rem, 5vw, 4rem);
+      line-height: 1.08;
+      margin-bottom: 18px;
+    }
+
+    .social-content p {
+      color: var(--text-soft);
+      line-height: 1.8;
+      margin-bottom: 28px;
+      max-width: 650px;
+    }
+
+    .social-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-radius: 18px;
+      font-weight: 800;
+      border: 1px solid var(--border);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .social-btn.instagram {
+      background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
+      color: #fff;
+      box-shadow: 0 15px 32px rgba(253,29,29,.18);
+    }
+
+    .social-btn.tiktok {
+      background: rgba(0,0,0,.72);
+      color: #fff;
+      border-color: rgba(255,255,255,.18);
+      box-shadow: 0 15px 32px rgba(0,0,0,.18);
+    }
+
+    .social-btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .social-preview {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .mini-post {
+      min-height: 190px;
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255,255,255,.13);
+      box-shadow: 0 18px 45px rgba(0,0,0,.18);
+    }
+
+    .mini-post img {
+      width: 100%;
+      height: 100%;
+      min-height: 190px;
+      object-fit: cover;
+      transition: transform .4s ease;
+    }
+
+    .mini-post:hover img {
+      transform: scale(1.08);
+    }
+
+    .mini-post span {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 800;
+      backdrop-filter: blur(10px);
     }
 
     /* FOOTER */
 
-    footer{
-      padding:50px 8%;
-      text-align:center;
-      border-top:1px solid rgba(255,255,255,.08);
-      color:#bcbcbc;
-      position:relative;
-      z-index:2;
+    footer {
+      position: relative;
+      z-index: 2;
+      padding: 55px 8% 35px;
+      background: var(--footer-bg);
+      border-top: 1px solid var(--border);
     }
 
-    footer a{
-      color:#ff7ec7;
-      text-decoration:none;
-      font-weight:600;
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr .8fr;
+      gap: 35px;
+      margin-bottom: 35px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .footer-brand img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--pink);
+    }
+
+    .footer-brand h2 {
+      background: linear-gradient(90deg, var(--pink), var(--pink-light), var(--text-main));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .footer-col p {
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-size: .95rem;
+    }
+
+    .footer-col h3 {
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+
+    .footer-col a {
+      display: block;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      transition: color .25s ease, transform .25s ease;
+    }
+
+    .footer-col a:hover {
+      color: var(--pink-light);
+      transform: translateX(4px);
+    }
+
+    .footer-bottom {
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: var(--text-muted);
+      font-size: .9rem;
+    }
+
+    /* WHATSAPP */
+
+    .whatsapp-float {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 80;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: #fff;
+      font-size: 1.8rem;
+      box-shadow: 0 15px 38px rgba(37,211,102,.35);
+      animation: whatsPulse 2s ease-in-out infinite;
+      transition: transform .25s ease;
+    }
+
+    .whatsapp-float:hover {
+      transform: translateY(-6px) scale(1.04);
+    }
+
+    @keyframes whatsPulse {
+      0%,100% { box-shadow: 0 15px 38px rgba(37,211,102,.28); }
+      50% { box-shadow: 0 15px 48px rgba(37,211,102,.55); }
     }
 
     /* RESPONSIVE */
 
-    @media(max-width:980px){
-
-      .hero{
-        grid-template-columns:1fr;
-        gap:60px;
+    @media (max-width: 1180px) {
+      .category-grid,
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .hero-text h1{
-        font-size:3.4rem;
+      .trust-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .nav-links{
-        display:none;
+      .hero {
+        grid-template-columns: 1fr;
       }
 
+      .hero-visual {
+        min-height: auto;
+      }
+
+      .hero-card img {
+        height: 520px;
+      }
+
+      .social-box {
+        grid-template-columns: 1fr;
+      }
     }
 
-  </style>
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
 
+      .menu-btn {
+        display: grid;
+      }
+
+      nav {
+        border-radius: 30px;
+      }
+
+      .hero {
+        padding-top: 35px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1.8px;
+      }
+
+      .floating-note {
+        display: none;
+      }
+
+      .steps-grid,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .social-box {
+        padding: 38px 26px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .top-bar {
+        padding: 10px 5%;
+        font-size: .78rem;
+      }
+
+      .navbar-wrap,
+      .hero,
+      .section,
+      .social-section,
+      footer {
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+
+      .logo h1 {
+        font-size: 1.35rem;
+      }
+
+      .logo img {
+        width: 46px;
+        height: 46px;
+      }
+
+      .theme-btn,
+      .menu-btn {
+        width: 42px;
+        height: 42px;
+      }
+
+      .btn-register {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-bottom: 55px;
+      }
+
+      .hero p {
+        font-size: .98rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        width: 100%;
+      }
+
+      .hero-card img {
+        height: 430px;
+      }
+
+      .category-grid,
+      .products-grid,
+      .trust-grid,
+      .social-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding-top: 75px;
+        padding-bottom: 75px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+
+      .whatsapp-float {
+        width: 56px;
+        height: 56px;
+        right: 18px;
+        bottom: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader">
+    <div class="loader-card">
+      <img src="images/logo.png" alt="GOODISH logo" class="loader-logo">
+      <div class="loader-title">GOODISH</div>
+      <div class="loader-text">cargando nuevo drop...</div>
+      <div class="loader-ring"></div>
+    </div>
+  </div>
 
-  <div class="blur1"></div>
-  <div class="blur2"></div>
-  <div class="blur3"></div>
+  <!-- TRANSICIÓN ENTRE PÁGINAS -->
+  <div class="page-transition" id="pageTransition">
+    <div class="transition-box">
+      <img src="images/logo.png" alt="GOODISH logo">
+      <span>entrando al drop...</span>
+    </div>
+  </div>
+
+  <!-- FONDO -->
+  <div class="glitter-layer" id="glitterLayer"></div>
+  <div class="bg-blur blur-1"></div>
+  <div class="bg-blur blur-2"></div>
+  <div class="bg-blur blur-3"></div>
+
+  <!-- BARRA SUPERIOR -->
+  <div class="top-bar">
+    <span>Nuevo drop pronto ✨</span> prendas vintage, fairy, boho & Y2K seleccionadas para outfits únicos.
+  </div>
 
   <!-- NAVBAR -->
-
-  <nav>
-
-    <div class="logo">
-
-      <!-- CAMBIA ESTA IMAGEN -->
-      <img src="images/logo.png">
-
-      <h1>GOODISH</h1>
-
-    </div>
-
-    <div class="nav-links">
-      <a href="#">Inicio</a>
-      <a href="#">Drops</a>
-      <a href="#">Vintage</a>
-      <a href="#">Contacto</a>
-
-      <a href="register.html" class="btn-register">
-        Registrarme
+  <div class="navbar-wrap">
+    <nav>
+      <a href="index.html" class="logo">
+        <img src="images/logo.png" alt="GOODISH logo">
+        <h1>GOODISH</h1>
       </a>
+
+      <div class="nav-links">
+        <a href="#inicio">Inicio</a>
+        <a href="#estilos">Estilos</a>
+        <a href="#drops">Drops</a>
+        <a href="#comprar">Cómo comprar</a>
+        <a href="#redes">Redes</a>
+        <a href="register.html" class="btn-register page-link">Registrarme</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="theme-btn" id="themeBtn" aria-label="Cambiar modo">🌙</button>
+        <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#inicio">Inicio</a>
+      <a href="#estilos">Estilos</a>
+      <a href="#drops">Drops</a>
+      <a href="#comprar">Cómo comprar</a>
+      <a href="#redes">Redes</a>
+      <a href="register.html" class="page-link">Registrarme</a>
     </div>
+  </div>
 
-  </nav>
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="inicio">
+      <div class="hero-content reveal">
+        <div class="hero-kicker">✨ THRIFT ONLINE STORE • LIMA, PERÚ</div>
 
-  <!-- HERO -->
+        <h1>
+          Moda
+          <span class="gradient">vintage, fairy & retro</span>
+          para outfits únicos
+        </h1>
 
-  <section class="hero">
+        <p>
+          GOODISH combina esencia Y2K, boho, fairy y streetwear alternativo.
+          Descubre prendas seleccionadas, drops limitados y piezas con personalidad propia.
+        </p>
 
-    <div class="hero-text">
+        <div class="hero-buttons">
+          <a href="#drops" class="primary-btn">Ver drops ✨</a>
+          <a href="register.html" class="secondary-btn page-link">Crear cuenta 💗</a>
+        </div>
 
-      <h2>THRIFT ONLINE STORE ✨</h2>
+        <div class="hero-tags">
+          <span>Vintage</span>
+          <span>Fairy</span>
+          <span>Boho</span>
+          <span>Y2K</span>
+          <span>Streetwear</span>
+        </div>
+      </div>
 
-      <h1>
-        Moda
-        <span class="gradient">
-          vintage,
-          fairy &
-          retro
-        </span>
-      </h1>
+      <div class="hero-visual reveal">
+        <div class="floating-note note-1">
+          <strong>Drop limitado</strong>
+          <span>piezas únicas seleccionadas</span>
+        </div>
 
-      <p>
-        GOODISH combina la esencia Y2K,
-        boho y streetwear alternativo
-        para crear outfits únicos.
-        Descubre drops exclusivos,
-        prendas vintage seleccionadas
-        y piezas con personalidad propia.
-      </p>
+        <div class="hero-card">
+          <img src="images/modelo1.jpg" alt="Modelo con outfit GOODISH">
+        </div>
 
-      <div class="hero-buttons">
+        <div class="floating-note note-2">
+          <strong>Outfits aesthetic</strong>
+          <span>fairy • retro • y2k</span>
+        </div>
+      </div>
+    </section>
 
-        <a href="register.html" class="primary-btn">
-          Crear cuenta
+    <!-- ESTILOS -->
+    <section class="section" id="estilos">
+      <div class="section-title reveal">
+        <div class="eyebrow">💫 Explora por vibra</div>
+        <h2 class="gradient">Encuentra tu estilo GOODISH</h2>
+        <p>
+          Cada prenda tiene una vibra distinta. Explora por estética y encuentra piezas que se sientan como tú.
+        </p>
+      </div>
+
+      <div class="category-grid">
+        <a href="#drops" class="category-card reveal">
+          <img src="images/vintage.jpg" alt="Vintage collection">
+          <h3>Vintage</h3>
+          <p>Denim, jackets, tees y piezas retro con historia.</p>
         </a>
 
-        <a href="https://www.tiktok.com/@goodish.pe"
-           target="_blank"
-           class="secondary-btn">
-
-          Ver TikTok
+        <a href="#drops" class="category-card reveal">
+          <img src="images/fairy.jpg" alt="Fairy style">
+          <h3>Fairy</h3>
+          <p>Tonos suaves, texturas dreamy y detalles delicados.</p>
         </a>
 
+        <a href="#drops" class="category-card reveal">
+          <img src="images/y2k.jpg" alt="Y2K style">
+          <h3>Y2K</h3>
+          <p>Brillos, siluetas dosmileras y vibra pop alternativa.</p>
+        </a>
+
+        <a href="#drops" class="category-card reveal">
+          <img src="images/modelo1.jpg" alt="Boho style">
+          <h3>Boho</h3>
+          <p>Looks relajados, naturales y con alma libre.</p>
+        </a>
+
+        <a href="#drops" class="category-card reveal">
+          <img src="images/vintage.jpg" alt="Streetwear style">
+          <h3>Streetwear</h3>
+          <p>Oversized, urbano y cómodo para el día a día.</p>
+        </a>
       </div>
+    </section>
 
-    </div>
-
-    <div class="hero-image">
-
-      <!-- CAMBIA ESTA IMAGEN -->
-      <img src="images/modelo1.jpg">
-
-    </div>
-
-  </section>
-
-  <!-- SECCION -->
-
-  <section class="section">
-
-    <div class="section-title">
-
-      <h2 class="gradient">
-        ¿Qué encontrarás?
-      </h2>
-
-      <p>
-        Estilo alternativo, prendas únicas y mucha vibra aesthetic.
-      </p>
-
-    </div>
-
-    <div class="cards">
-
-      <div class="card">
-
-        <!-- CAMBIA ESTA IMAGEN -->
-        <img src="images/vintage.jpg">
-
-        <h3>Vintage Collection</h3>
-
+    <!-- DROPS -->
+    <section class="section drops" id="drops">
+      <div class="section-title reveal">
+        <div class="eyebrow">🛍️ Últimos drops</div>
+        <h2 class="gradient">Prendas destacadas</h2>
         <p>
-          Ropa vintage auténtica,
-          oversized tees, jackets,
-          denim y piezas retro
-          inspiradas en los 2000s.
+          Una primera mirada a las piezas GOODISH. Luego este apartado puede conectarse a Supabase para mostrar productos reales.
         </p>
-
       </div>
 
-      <div class="card">
+      <div class="products-grid">
+        <article class="product-card reveal">
+          <div class="product-img">
+            <img src="images/fairy.jpg" alt="Top fairy vintage">
+            <span class="product-badge">Fairy</span>
+          </div>
+          <div class="product-content">
+            <h3>Top fairy vintage</h3>
+            <div class="product-meta">
+              <span>Talla S</span>
+              <span>Estado 9/10</span>
+            </div>
+            <div class="price">S/ 29.90</div>
+            <button class="product-btn">Ver producto</button>
+          </div>
+        </article>
 
-        <!-- CAMBIA ESTA IMAGEN -->
-        <img src="images/fairy.jpg">
+        <article class="product-card reveal">
+          <div class="product-img">
+            <img src="images/vintage.jpg" alt="Casaca retro denim">
+            <span class="product-badge">Vintage</span>
+          </div>
+          <div class="product-content">
+            <h3>Casaca retro denim</h3>
+            <div class="product-meta">
+              <span>Talla M</span>
+              <span>Única pieza</span>
+            </div>
+            <div class="price">S/ 59.90</div>
+            <button class="product-btn">Ver producto</button>
+          </div>
+        </article>
 
-        <h3>Fairy & Boho</h3>
+        <article class="product-card reveal">
+          <div class="product-img">
+            <img src="images/y2k.jpg" alt="Mini falda Y2K">
+            <span class="product-badge">Y2K</span>
+          </div>
+          <div class="product-content">
+            <h3>Mini falda Y2K</h3>
+            <div class="product-meta">
+              <span>Talla S/M</span>
+              <span>Estado 8/10</span>
+            </div>
+            <div class="price">S/ 34.90</div>
+            <button class="product-btn">Ver producto</button>
+          </div>
+        </article>
 
+        <article class="product-card reveal">
+          <div class="product-img">
+            <img src="images/modelo1.jpg" alt="Outfit boho set">
+            <span class="product-badge">Boho</span>
+          </div>
+          <div class="product-content">
+            <h3>Outfit boho set</h3>
+            <div class="product-meta">
+              <span>Talla M</span>
+              <span>Drop limitado</span>
+            </div>
+            <div class="price">S/ 49.90</div>
+            <button class="product-btn">Ver producto</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="center-action reveal">
+        <a href="#redes" class="primary-btn">Ver novedades en redes</a>
+      </div>
+    </section>
+
+    <!-- CÓMO COMPRAR -->
+    <section class="section" id="comprar">
+      <div class="section-title reveal">
+        <div class="eyebrow">💌 Compra fácil</div>
+        <h2 class="gradient">¿Cómo comprar en GOODISH?</h2>
         <p>
-          Texturas suaves,
-          tonos pastel,
-          outfits dreamy y
-          accesorios aesthetic
-          para destacar en cualquier lugar.
+          El proceso debe ser simple, rápido y claro para que nadie se pierda al separar su prenda favorita.
         </p>
-
       </div>
 
-      <div class="card">
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-number">1</div>
+          <h3>Elige tu prenda</h3>
+          <p>
+            Revisa los drops, mira la talla, el estado, el precio y el estilo de cada pieza.
+          </p>
+        </div>
 
-        <!-- CAMBIA ESTA IMAGEN -->
-        <img src="images/y2k.jpg">
+        <div class="step-card reveal">
+          <div class="step-number">2</div>
+          <h3>Separa o consulta</h3>
+          <p>
+            Escríbenos por WhatsApp o redes para confirmar disponibilidad antes de que se agote.
+          </p>
+        </div>
 
-        <h3>Streetwear Y2K</h3>
+        <div class="step-card reveal">
+          <div class="step-number">3</div>
+          <h3>Coordina pago y envío</h3>
+          <p>
+            Coordinamos entrega, envío y método de pago. Más adelante este flujo tendrá carrito y checkout.
+          </p>
+        </div>
+      </div>
+    </section>
 
+    <!-- CONFIANZA -->
+    <section class="section">
+      <div class="section-title reveal">
+        <div class="eyebrow">🫶 Detalles que importan</div>
+        <h2 class="gradient">Por qué elegir GOODISH</h2>
         <p>
-          Estética urbana,
-          colores vivos,
-          prendas únicas y
-          drops limitados con
-          identidad propia.
+          Una tienda aesthetic también debe sentirse confiable, clara y cercana.
         </p>
-
       </div>
 
-    </div>
+      <div class="trust-grid">
+        <div class="trust-item reveal">
+          <div class="trust-icon">👗</div>
+          <h3>Prendas seleccionadas</h3>
+          <p>Cada pieza se elige por estilo, vibra y potencial de outfit.</p>
+        </div>
 
-  </section>
+        <div class="trust-item reveal">
+          <div class="trust-icon">✨</div>
+          <h3>Drops limitados</h3>
+          <p>Muchas prendas son únicas, así que cada drop tiene personalidad.</p>
+        </div>
+
+        <div class="trust-item reveal">
+          <div class="trust-icon">📦</div>
+          <h3>Envíos coordinados</h3>
+          <p>Atención para Lima y opciones para provincia según disponibilidad.</p>
+        </div>
+
+        <div class="trust-item reveal">
+          <div class="trust-icon">💬</div>
+          <h3>Atención directa</h3>
+          <p>Consulta tallas, medidas o disponibilidad por WhatsApp o redes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REDES -->
+    <section class="social-section" id="redes">
+      <div class="social-box reveal">
+        <div class="social-content">
+          <div class="eyebrow">📱 Síguenos</div>
+          <h2>
+            Mira los drops, outfits y novedades de
+            <span class="gradient">GOODISH</span>
+          </h2>
+          <p>
+            En TikTok e Instagram puedes ver ideas de outfits, prendas recién llegadas,
+            avisos de nuevos drops y contenido aesthetic de la marca.
+          </p>
+
+          <div class="social-buttons">
+            <a
+              href="https://www.instagram.com/goodish.pe"
+              target="_blank"
+              class="social-btn instagram"
+            >
+              📸 Instagram
+            </a>
+
+            <a
+              href="https://www.tiktok.com/@goodish.pe"
+              target="_blank"
+              class="social-btn tiktok"
+            >
+              ♪ TikTok
+            </a>
+          </div>
+        </div>
+
+        <div class="social-preview">
+          <div class="mini-post">
+            <img src="images/fairy.jpg" alt="Post fairy GOODISH">
+            <span>fairy drop</span>
+          </div>
+
+          <div class="mini-post">
+            <img src="images/y2k.jpg" alt="Post Y2K GOODISH">
+            <span>y2k inspo</span>
+          </div>
+
+          <div class="mini-post">
+            <img src="images/vintage.jpg" alt="Post vintage GOODISH">
+            <span>vintage finds</span>
+          </div>
+
+          <div class="mini-post">
+            <img src="images/modelo1.jpg" alt="Post outfit GOODISH">
+            <span>outfit ideas</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- FOOTER -->
-
   <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <img src="images/logo.png" alt="GOODISH logo">
+          <h2>GOODISH</h2>
+        </div>
+        <p>
+          Thrift online store inspirada en moda vintage, fairy, boho, Y2K y retro.
+          Prendas con vibra, personalidad y mucho estilo.
+        </p>
+      </div>
 
-    <p>
-      GOODISH © 2026 • Lima, Perú 🇵🇪
-    </p>
+      <div class="footer-col">
+        <h3>Navegación</h3>
+        <a href="#inicio">Inicio</a>
+        <a href="#estilos">Estilos</a>
+        <a href="#drops">Drops</a>
+        <a href="#comprar">Cómo comprar</a>
+      </div>
 
-    <br>
+      <div class="footer-col">
+        <h3>Cuenta</h3>
+        <a href="register.html" class="page-link">Registrarme</a>
+        <a href="#drops">Ver prendas</a>
+        <a href="#redes">Redes sociales</a>
+      </div>
 
-    <p>
-      TikTok:
-      <a href="https://www.tiktok.com/@goodish.pe" target="_blank">
-        @goodish.pe
-      </a>
-    </p>
+      <div class="footer-col">
+        <h3>Contacto</h3>
+        <a href="https://www.tiktok.com/@goodish.pe" target="_blank">TikTok: @goodish.pe</a>
+        <a href="https://www.instagram.com/goodish.pe" target="_blank">Instagram: @goodish.pe</a>
+        <a href="https://wa.me/51999999999" target="_blank">WhatsApp</a>
+      </div>
+    </div>
 
+    <div class="footer-bottom">
+      <span>GOODISH © 2026 • Lima, Perú 🇵🇪</span>
+      <span>Vintage • Fairy • Boho • Y2K • Retro</span>
+    </div>
   </footer>
 
+  <!-- WHATSAPP FLOTANTE -->
+  <a
+    href="https://wa.me/51999999999"
+    target="_blank"
+    class="whatsapp-float"
+    aria-label="Contactar por WhatsApp"
+  >
+    ☎
+  </a>
+
+  <script>
+    const preloader = document.getElementById("preloader");
+    const pageTransition = document.getElementById("pageTransition");
+    const glitterLayer = document.getElementById("glitterLayer");
+    const themeBtn = document.getElementById("themeBtn");
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    /* PRELOADER */
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        preloader.classList.add("hide");
+      }, 900);
+    });
+
+    /* LLUVIA DE ESCARCHA */
+    function createSparkles() {
+      const amount = window.innerWidth < 700 ? 32 : 65;
+
+      for (let i = 0; i < amount; i++) {
+        const spark = document.createElement("span");
+        spark.classList.add("spark");
+
+        const size = Math.random() * 4 + 2;
+        spark.style.width = `${size}px`;
+        spark.style.height = `${size}px`;
+
+        spark.style.left = `${Math.random() * 100}%`;
+        spark.style.animationDuration = `${Math.random() * 7 + 7}s`;
+        spark.style.animationDelay = `${Math.random() * 8}s`;
+
+        if (Math.random() > 0.55) {
+          spark.style.background = "rgba(255,143,203,.9)";
+          spark.style.boxShadow = "0 0 10px rgba(255,143,203,.9), 0 0 18px rgba(255,62,165,.7)";
+        }
+
+        glitterLayer.appendChild(spark);
+      }
+    }
+
+    createSparkles();
+
+    /* MODO OSCURO / CLARO */
+    const savedTheme = localStorage.getItem("goodish-theme");
+
+    if (savedTheme === "light") {
+      document.body.classList.add("light");
+      themeBtn.textContent = "☀️";
+    }
+
+    themeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+
+      const isLight = document.body.classList.contains("light");
+      themeBtn.textContent = isLight ? "☀️" : "🌙";
+      localStorage.setItem("goodish-theme", isLight ? "light" : "dark");
+    });
+
+    /* MENÚ MÓVIL */
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("active");
+      menuBtn.textContent = mobileMenu.classList.contains("active") ? "✕" : "☰";
+    });
+
+    document.querySelectorAll(".mobile-menu a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("active");
+        menuBtn.textContent = "☰";
+      });
+    });
+
+    /* ANIMACIONES AL HACER SCROLL */
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.14
+    });
+
+    revealElements.forEach(element => {
+      revealObserver.observe(element);
+    });
+
+    /* TRANSICIÓN PARA LINKS ENTRE PÁGINAS */
+    document.querySelectorAll(".page-link").forEach(link => {
+      link.addEventListener("click", function(event) {
+        const href = this.getAttribute("href");
+
+        if (!href || href.startsWith("#") || this.target === "_blank") {
+          return;
+        }
+
+        event.preventDefault();
+        pageTransition.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = href;
+        }, 650);
+      });
+    });
+
+    /* BOTONES DE PRODUCTO TEMPORALES */
+    document.querySelectorAll(".product-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        pageTransition.classList.add("active");
+
+        setTimeout(() => {
+          pageTransition.classList.remove("active");
+          alert("Luego este botón abrirá el detalle del producto o el catálogo conectado a Supabase.");
+        }, 650);
+      });
+    });
+  </script>
 </body>
 </html>
