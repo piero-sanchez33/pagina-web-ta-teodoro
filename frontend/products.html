@@ -615,7 +615,47 @@
     }
 
     .slider-shell{
-      position:relative;
+    position:relative;
+    }
+
+    .slider-edge{
+    position:absolute;
+    top:38%;
+    transform:translateY(-50%);
+    z-index:6;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.58);
+    color:var(--text-main);
+    backdrop-filter:blur(14px);
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    font-size:1.55rem;
+    font-weight:800;
+    box-shadow:0 14px 32px rgba(0,0,0,.16);
+    transition:.25s ease;
+    }
+
+    .slider-edge:hover{
+    transform:translateY(-50%) scale(1.06);
+    border-color:rgba(255,62,165,.35);
+    box-shadow:0 16px 36px rgba(255,62,165,.18);
+    }
+
+    .slider-edge.left{
+    left:10px;
+    }
+
+    .slider-edge.right{
+    right:10px;
+    }
+
+    body:not(.light) .slider-edge{
+    background:rgba(10,10,22,.62);
+    color:#fff;
     }
 
     .product-slider{
@@ -829,6 +869,24 @@
       transition:.25s ease;
       font-size:.95rem;
       box-shadow:0 10px 24px rgba(0,0,0,.12);
+    }
+
+    .subtle-social svg{
+      width:19px;
+     height:19px;
+     fill:currentColor;
+    }
+
+    .subtle-social a:nth-child(1):hover{
+      color:#ff4fa3;
+    }
+
+    .subtle-social a:nth-child(2):hover{
+      color:#ffffff;
+    }
+
+    .subtle-social a:nth-child(3):hover{
+      color:#25d366;
     }
 
     .subtle-social a:hover{
@@ -1580,11 +1638,25 @@
     </section>
   </main>
 
-  <div class="subtle-social">
-    <a href="https://www.instagram.com/goodish.pe" target="_blank" title="Instagram">IG</a>
-    <a href="https://www.tiktok.com/@goodish.pe" target="_blank" title="TikTok">TT</a>
-    <a href="https://wa.me/51999999999" target="_blank" title="WhatsApp">WA</a>
-  </div>
+    <div class="subtle-social">
+    <a href="https://www.instagram.com/goodish.pe" target="_blank" title="Instagram" aria-label="Instagram">
+        <svg viewBox="0 0 24 24">
+        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 4a4 4 0 1 1 0 8a4 4 0 0 1 0-8Zm0 2a2 2 0 1 0 0 4a2 2 0 0 0 0-4Zm5.5-3.2a1.2 1.2 0 1 1 0 2.4a1.2 1.2 0 0 1 0-2.4Z"/>
+        </svg>
+    </a>
+
+    <a href="https://www.tiktok.com/@goodish.pe" target="_blank" title="TikTok" aria-label="TikTok">
+        <svg viewBox="0 0 24 24">
+        <path d="M16 3c.4 2.6 1.9 4.3 4.5 4.6v3c-1.7 0-3.2-.5-4.5-1.4v6.5A5.3 5.3 0 1 1 10.7 10c.4 0 .8 0 1.2.1v3.2a2.2 2.2 0 1 0 1.6 2.1V3h2.5Z"/>
+        </svg>
+    </a>
+
+    <a href="https://wa.me/51999999999" target="_blank" title="WhatsApp" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24">
+        <path d="M12 2a9.8 9.8 0 0 0-8.4 14.9L2.5 22l5.2-1.1A9.8 9.8 0 1 0 12 2Zm0 2a7.8 7.8 0 1 1-3.7 14.7l-.4-.2l-2.7.6l.6-2.6l-.3-.4A7.8 7.8 0 0 1 12 4Zm-3.3 4.2c-.2 0-.5.1-.7.4c-.2.3-.8.8-.8 2c0 1.2.9 2.4 1 2.6c.1.2 1.7 2.8 4.3 3.8c2.1.8 2.5.6 3 .6c.5-.1 1.5-.6 1.7-1.2c.2-.6.2-1.1.1-1.2c-.1-.1-.2-.2-.5-.4l-1.7-.8c-.3-.1-.5-.1-.7.2l-.7.9c-.1.2-.3.2-.6.1c-.3-.1-1.1-.4-2-1.3c-.8-.7-1.3-1.6-1.4-1.8c-.1-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5c.1-.2.1-.4 0-.6l-.8-1.8c-.2-.4-.4-.4-.6-.4h-.4Z"/>
+        </svg>
+    </a>
+    </div>
 
   <footer>
     <div class="footer-row">
@@ -1672,6 +1744,41 @@
         chip.classList.add("active");
       });
     });
+
+    /* FLECHAS LATERALES AUTOMÁTICAS EN CADA CARRUSEL */
+document.querySelectorAll(".slider-shell").forEach(shell => {
+  const slider = shell.querySelector(".product-slider");
+
+  if (!slider) return;
+
+  const leftButton = document.createElement("button");
+  leftButton.className = "slider-edge left";
+  leftButton.textContent = "‹";
+  leftButton.setAttribute("aria-label", "Ver productos anteriores");
+
+  const rightButton = document.createElement("button");
+  rightButton.className = "slider-edge right";
+  rightButton.textContent = "›";
+  rightButton.setAttribute("aria-label", "Ver más productos");
+
+  shell.prepend(rightButton);
+  shell.prepend(leftButton);
+
+  leftButton.addEventListener("click", () => {
+    slider.scrollBy({
+      left: -(slider.clientWidth * 0.92),
+      behavior: "smooth"
+    });
+  });
+
+  rightButton.addEventListener("click", () => {
+    slider.scrollBy({
+      left: slider.clientWidth * 0.92,
+      behavior: "smooth"
+    });
+  });
+});
+    
   </script>
 </body>
 </html>
