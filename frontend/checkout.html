@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GOODISH | Checkout</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+
+<body>
+
+  <div class="bg-blur blur-1"></div>
+  <div class="bg-blur blur-2"></div>
+  <div class="bg-blur blur-3"></div>
+
+  <main class="checkout-page">
+    <section class="checkout-hero">
+      <div>
+        <div class="checkout-badge">💳 Checkout GOODISH</div>
+
+        <h1>
+          Confirma tu
+          <span class="gradient">pedido</span>
+        </h1>
+
+        <p>
+          Completa tus datos de entrega, revisa el resumen de tus prendas y elige cómo quieres pagar tu compra.
+        </p>
+      </div>
+
+      <div class="checkout-mini-card">
+        <span>Estado</span>
+        <strong>Pendiente</strong>
+        <small>Tu pedido aún no fue creado</small>
+      </div>
+    </section>
+
+    <section class="checkout-layout">
+
+      <form class="checkout-form-panel" id="checkoutForm">
+        <div class="panel-head">
+          <div>
+            <h2>Datos de entrega</h2>
+            <p>Estos datos se usarán para coordinar el envío o recojo de tu pedido.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="customerName">Nombre completo</label>
+            <input
+              type="text"
+              id="customerName"
+              name="customerName"
+              placeholder="Ej: Piero Sánchez"
+              autocomplete="name"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="customerEmail">Correo electrónico</label>
+            <input
+              type="email"
+              id="customerEmail"
+              name="customerEmail"
+              placeholder="Ej: cliente@gmail.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="customerPhone">Celular / WhatsApp</label>
+            <input
+              type="tel"
+              id="customerPhone"
+              name="customerPhone"
+              placeholder="Ej: 999 999 999"
+              autocomplete="tel"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="customerDistrict">Distrito</label>
+            <input
+              type="text"
+              id="customerDistrict"
+              name="customerDistrict"
+              placeholder="Ej: San Miguel"
+              required
+            >
+          </div>
+
+          <div class="form-group full">
+            <label for="customerAddress">Dirección de entrega</label>
+            <input
+              type="text"
+              id="customerAddress"
+              name="customerAddress"
+              placeholder="Av / Jr / Calle, número, interior"
+              autocomplete="street-address"
+              required
+            >
+          </div>
+
+          <div class="form-group full">
+            <label for="customerReference">Referencia</label>
+            <textarea
+              id="customerReference"
+              name="customerReference"
+              rows="3"
+              placeholder="Ej: Frente a una tienda, casa color blanco, portón negro..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="payment-section">
+          <div class="panel-head small">
+            <div>
+              <h2>Método de pago</h2>
+              <p>Por ahora el pedido se crea y luego podrás subir tu comprobante.</p>
+            </div>
+          </div>
+
+          <div class="payment-options">
+            <label class="payment-card">
+              <input type="radio" name="paymentMethod" value="Yape" required>
+              <span class="payment-icon">💜</span>
+              <strong>Yape</strong>
+              <small>Sube comprobante después</small>
+            </label>
+
+            <label class="payment-card">
+              <input type="radio" name="paymentMethod" value="Plin" required>
+              <span class="payment-icon">💙</span>
+              <strong>Plin</strong>
+              <small>Sube comprobante después</small>
+            </label>
+
+            <label class="payment-card">
+              <input type="radio" name="paymentMethod" value="Transferencia" required>
+              <span class="payment-icon">🏦</span>
+              <strong>Transferencia</strong>
+              <small>Pago por banco</small>
+            </label>
+
+            <label class="payment-card">
+              <input type="radio" name="paymentMethod" value="Contraentrega" required>
+              <span class="payment-icon">📦</span>
+              <strong>Contraentrega</strong>
+              <small>Coordinar disponibilidad</small>
+            </label>
+          </div>
+        </div>
+
+        <div class="checkout-actions">
+          <a href="cart.html" class="back-cart-btn">
+            ← Volver al carrito
+          </a>
+
+          <button type="submit" class="create-order-btn" id="createOrderBtn">
+            Crear pedido
+          </button>
+        </div>
+      </form>
+
+      <aside class="checkout-summary">
+        <h2>Resumen del pedido</h2>
+
+        <div class="checkout-items" id="checkoutItems">
+          <div class="checkout-empty">
+            <span>🛍️</span>
+            <p>No hay productos en el carrito.</p>
+          </div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-line">
+            <span>Productos</span>
+            <strong id="checkoutTotalItems">0</strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Subtotal</span>
+            <strong id="checkoutSubtotal">S/ 0.00</strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Delivery</span>
+            <strong id="checkoutDelivery">Por coordinar</strong>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-total">
+            <span>Total</span>
+            <strong id="checkoutTotal">S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="checkout-note">
+          <strong>Importante:</strong>
+          <p>
+            Al crear el pedido se generará un código único. Luego podrás subir tu comprobante de pago para validación.
+          </p>
+        </div>
+      </aside>
+
+    </section>
+  </main>
+
+  <div class="checkout-toast" id="checkoutToast">
+    <span>!</span>
+    <div>
+      <strong id="checkoutToastTitle">Aviso</strong>
+      <p id="checkoutToastText">Completa los datos para continuar.</p>
+    </div>
+  </div>
+
+  <script src="js/navbar.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
