@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>GOODISH | Registro</title>
+  <title>GOODISH | Login</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,6 @@
       --bg-main:#050816;
       --bg-soft:#0a0f1f;
       --bg-card:rgba(255,255,255,.055);
-      --bg-card-strong:rgba(255,255,255,.09);
       --text-main:#ffffff;
       --text-soft:#d7d7e6;
       --text-muted:#aaa7bb;
@@ -27,8 +26,6 @@
       --pink-light:#ffb3dc;
       --purple:#8b5cf6;
       --border:rgba(255,255,255,.1);
-      --shadow-pink:rgba(255,62,165,.35);
-      --glass:rgba(255,255,255,.07);
     }
 
     *{
@@ -62,8 +59,6 @@
       background:var(--pink);
       color:#fff;
     }
-
-    /* FONDO */
 
     .blur1{
       position:fixed;
@@ -178,8 +173,6 @@
       }
     }
 
-    /* BOTÓN VOLVER */
-
     .back-home{
       position:fixed;
       top:24px;
@@ -206,8 +199,6 @@
       transform:translateY(-3px);
       box-shadow:0 18px 40px rgba(255,62,165,.14);
     }
-
-    /* TOAST */
 
     .toast{
       position:fixed;
@@ -269,8 +260,6 @@
       background:linear-gradient(135deg,#ff3ea5,#8b5cf6);
     }
 
-    /* LAYOUT */
-
     .container{
       width:100%;
       min-height:100vh;
@@ -284,7 +273,7 @@
 
     .card{
       width:1120px;
-      min-height:680px;
+      min-height:660px;
       background:var(--bg-card);
       border:1px solid rgba(255,255,255,0.09);
       backdrop-filter:blur(18px);
@@ -638,41 +627,6 @@
       box-shadow:0 0 16px rgba(255,62,165,.16);
     }
 
-    .password-strength{
-      margin-top:10px;
-      display:none;
-    }
-
-    .password-strength.show{
-      display:block;
-    }
-
-    .strength-track{
-      width:100%;
-      height:7px;
-      border-radius:999px;
-      background:rgba(255,255,255,.08);
-      overflow:hidden;
-      margin-bottom:8px;
-    }
-
-    .strength-bar{
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      background:#ff4d6d;
-      transition:.25s ease;
-    }
-
-    .strength-text{
-      font-size:.82rem;
-      color:#bdb8c9;
-    }
-
-    .strength-text strong{
-      color:#ffb3dc;
-    }
-
     .btn{
       width:100%;
       min-height:58px;
@@ -753,6 +707,15 @@
       font-size:.82rem;
       line-height:1.6;
       text-align:center;
+    }
+
+    .form-note a{
+      color:#ff7bc1;
+      font-weight:800;
+    }
+
+    .form-note a:hover{
+      color:#ffb3dc;
     }
 
     .footer{
@@ -871,8 +834,7 @@
       <h1 class="brand">GOODISH</h1>
 
       <p class="desc">
-        Thrift online store inspirada en moda vintage,
-        fairy, boho, Y2K y retro ✨
+        Inicia sesión para comprar más rápido, ver tus pedidos y acceder a drops exclusivos ✨
       </p>
 
       <div class="tags">
@@ -885,17 +847,17 @@
       <div class="benefits">
         <div class="benefit">
           <span>✓</span>
-          Accede a drops exclusivos antes que todos.
+          Compra prendas únicas con tu cuenta.
         </div>
 
         <div class="benefit">
           <span>✓</span>
-          Guarda tus datos para comprar más rápido.
+          Revisa tus futuras compras y comprobantes.
         </div>
 
         <div class="benefit">
           <span>✓</span>
-          Recibe novedades de prendas únicas y limitadas.
+          Accede más rápido al checkout.
         </div>
       </div>
 
@@ -908,33 +870,17 @@
     </div>
 
     <div class="right">
-      <div class="form-badge">💗 Registro GOODISH</div>
+      <div class="form-badge">🔐 Login GOODISH</div>
 
       <h1 class="title">
-        Crea tu <span>cuenta</span>
+        Inicia <span>sesión</span>
       </h1>
 
       <p class="subtitle">
-        Regístrate para acceder a drops exclusivos, novedades y futuras compras más rápidas.
+        Entra con tu correo y contraseña para continuar comprando en GOODISH.
       </p>
 
-      <form id="registroForm">
-        <div class="input-group">
-          <label for="nombre">Nombre</label>
-          <div class="input-wrap">
-            <span class="input-icon">👤</span>
-            <input type="text" id="nombre" placeholder="Ingresa tu nombre" autocomplete="given-name">
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label for="apellido">Apellido</label>
-          <div class="input-wrap">
-            <span class="input-icon">✨</span>
-            <input type="text" id="apellido" placeholder="Ingresa tu apellido" autocomplete="family-name">
-          </div>
-        </div>
-
+      <form id="loginForm">
         <div class="input-group">
           <label for="correo">Correo</label>
           <div class="input-wrap">
@@ -947,29 +893,21 @@
           <label for="password">Password</label>
           <div class="input-wrap">
             <span class="input-icon">🔒</span>
-            <input type="password" id="password" placeholder="Ingresa tu contraseña" autocomplete="new-password">
+            <input type="password" id="password" placeholder="Ingresa tu contraseña" autocomplete="current-password">
             <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">
               👁️
             </button>
           </div>
-
-          <div class="password-strength" id="passwordStrength">
-            <div class="strength-track">
-              <div class="strength-bar" id="strengthBar"></div>
-            </div>
-            <div class="strength-text" id="strengthText">
-              Seguridad: <strong>Escribe una contraseña</strong>
-            </div>
-          </div>
         </div>
 
-        <button type="submit" class="btn" id="btnRegistro">
+        <button type="submit" class="btn" id="btnLogin">
           <span class="spinner"></span>
-          <span id="btnText">Registrarme</span>
+          <span id="btnText">Iniciar sesión</span>
         </button>
 
         <p class="form-note">
-          Al registrarte, tus datos serán usados para identificar tu cuenta GOODISH y futuras compras.
+          ¿No tienes cuenta?
+          <a href="register.html">Regístrate aquí</a>
         </p>
       </form>
 
@@ -993,15 +931,12 @@ const supabaseClient = window.supabase.createClient(
   supabaseKey
 );
 
-const registroForm = document.getElementById("registroForm");
-const btnRegistro = document.getElementById("btnRegistro");
+const loginForm = document.getElementById("loginForm");
+const btnLogin = document.getElementById("btnLogin");
 const btnText = document.getElementById("btnText");
 
 const passwordInput = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
-const passwordStrength = document.getElementById("passwordStrength");
-const strengthBar = document.getElementById("strengthBar");
-const strengthText = document.getElementById("strengthText");
 
 const toast = document.getElementById("toast");
 const toastIcon = document.getElementById("toastIcon");
@@ -1059,120 +994,65 @@ togglePassword.addEventListener("click", () => {
   togglePassword.textContent = isPassword ? "🙈" : "👁️";
 });
 
-/* FUERZA DE CONTRASEÑA */
-passwordInput.addEventListener("input", () => {
-  const value = passwordInput.value;
-  passwordStrength.classList.add("show");
+/* SI YA ESTÁ LOGUEADO, LO MANDO AL CATÁLOGO */
+verificarSesion();
 
-  const score = getPasswordScore(value);
+async function verificarSesion(){
+  const { data } = await supabaseClient.auth.getSession();
 
-  if(value.length === 0){
-    strengthBar.style.width = "0%";
-    strengthBar.style.background = "#ff4d6d";
-    strengthText.innerHTML = "Seguridad: <strong>Escribe una contraseña</strong>";
-    return;
+  if(data.session){
+    window.location.href = "products.html";
   }
-
-  if(score <= 1){
-    strengthBar.style.width = "33%";
-    strengthBar.style.background = "#ff4d6d";
-    strengthText.innerHTML = "Seguridad: <strong>Débil</strong>";
-  } else if(score === 2 || score === 3){
-    strengthBar.style.width = "66%";
-    strengthBar.style.background = "#ffb703";
-    strengthText.innerHTML = "Seguridad: <strong>Media</strong>";
-  } else {
-    strengthBar.style.width = "100%";
-    strengthBar.style.background = "linear-gradient(90deg,#ff3ea5,#8b5cf6)";
-    strengthText.innerHTML = "Seguridad: <strong>Buena</strong>";
-  }
-});
-
-function getPasswordScore(password){
-  let score = 0;
-
-  if(password.length >= 8) score++;
-  if(password.length >= 10) score++;
-  if(/[A-Z]/.test(password)) score++;
-  if(/[0-9]/.test(password)) score++;
-  if(/[^A-Za-z0-9]/.test(password)) score++;
-
-  return score;
 }
 
-/* REGISTRO */
-registroForm.addEventListener("submit", registrar);
+/* LOGIN */
+loginForm.addEventListener("submit", login);
 
-async function registrar(event) {
+async function login(event) {
   event.preventDefault();
 
-  const nombre = document.getElementById("nombre").value.trim();
-  const apellido = document.getElementById("apellido").value.trim();
   const correo = document.getElementById("correo").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  if (!nombre || !apellido || !correo || !password) {
-    showToast("error", "Campos incompletos", "Completa todos los campos para crear tu cuenta.");
+  if (!correo || !password) {
+    showToast("error", "Campos incompletos", "Ingresa tu correo y contraseña.");
     return;
   }
 
   if (!validarCorreo(correo)) {
-    showToast("error", "Correo inválido", "Ingresa un correo válido, por ejemplo: nombre@gmail.com.");
-    return;
-  }
-
-  if (password.length < 8) {
-    showToast("error", "Contraseña corta", "La contraseña debe tener mínimo 8 caracteres.");
+    showToast("error", "Correo inválido", "Ingresa un correo válido.");
     return;
   }
 
   try {
-    btnRegistro.disabled = true;
-    btnRegistro.classList.add("loading");
-    btnText.textContent = "Registrando...";
+    btnLogin.disabled = true;
+    btnLogin.classList.add("loading");
+    btnText.textContent = "Entrando...";
 
-    const { data, error } = await supabaseClient.auth.signUp({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: correo,
-      password: password,
-      options: {
-        data: {
-          nombre_cli: nombre,
-          apellido_cli: apellido,
-          rol: "cliente"
-        },
-        emailRedirectTo: "http://127.0.0.1:5500/frontend/login.html"
-      }
+      password: password
     });
 
     if (error) {
       console.error(error);
-      showToast("error", "Error al registrar", error.message);
+      showToast("error", "Login incorrecto", error.message);
       return;
     }
 
-    showToast(
-      "success",
-      "Registro exitoso",
-      "Tu cuenta GOODISH fue creada correctamente."
-    );
-
-    registroForm.reset();
-
-    passwordStrength.classList.remove("show");
-    strengthBar.style.width = "0%";
-    strengthText.innerHTML = "Seguridad: <strong>Escribe una contraseña</strong>";
+    showToast("success", "Bienvenido", "Inicio de sesión correcto.");
 
     setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1500);
+      window.location.href = "products.html";
+    }, 1000);
 
   } catch (err) {
     console.error(err);
     showToast("error", "Error inesperado", "Ocurrió un error. Intenta nuevamente.");
   } finally {
-    btnRegistro.disabled = false;
-    btnRegistro.classList.remove("loading");
-    btnText.textContent = "Registrarme";
+    btnLogin.disabled = false;
+    btnLogin.classList.remove("loading");
+    btnText.textContent = "Iniciar sesión";
   }
 }
 
