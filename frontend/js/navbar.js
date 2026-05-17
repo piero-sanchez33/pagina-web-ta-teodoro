@@ -22,6 +22,9 @@
           <a href="index.html#comprar">Cómo comprar</a>
           <a href="index.html#redes">Redes</a>
           <a href="login.html" class="page-link ${currentPage === "login.html" ? "active" : ""}">Login</a>
+          <a href="cart.html" class="page-link ${currentPage === "cart.html" ? "active" : ""}">
+            Carrito <span class="goodish-cart-badge" id="goodishCartBadge">0</span>
+          </a>
           <a href="register.html" class="goodish-btn-register page-link ${currentPage === "register.html" ? "active" : ""}">
             Registrarme
           </a>
@@ -33,13 +36,19 @@
         </div>
       </nav>
 
-      <div class="goodish-mobile-menu" id="goodishMobileMenu">
+        <div class="goodish-mobile-menu" id="goodishMobileMenu">
         <a href="index.html#inicio">Inicio</a>
         <a href="index.html#estilos">Estilos</a>
         <a href="products.html" class="page-link">Productos</a>
         <a href="index.html#comprar">Cómo comprar</a>
         <a href="index.html#redes">Redes</a>
         <a href="login.html" class="page-link">Login</a>
+
+        <a href="cart.html" class="page-link">
+            Carrito
+            <span class="goodish-cart-badge" id="goodishCartBadgeMobile">0</span>
+        </a>
+
         <a href="register.html" class="page-link">Registrarme</a>
       </div>
     </div>
@@ -102,4 +111,28 @@
       }, 650);
     });
   });
+
+window.updateNavbarCartCount = function () {
+  const cart = JSON.parse(localStorage.getItem("goodish_cart")) || [];
+
+  const totalItems = cart.reduce((total, item) => {
+    return total + Number(item.quantity || 0);
+  }, 0);
+
+  const badge = document.getElementById("goodishCartBadge");
+  const badgeMobile = document.getElementById("goodishCartBadgeMobile");
+
+  if (badge) {
+    badge.textContent = totalItems;
+    badge.style.display = totalItems > 0 ? "inline-flex" : "none";
+  }
+
+  if (badgeMobile) {
+    badgeMobile.textContent = totalItems;
+    badgeMobile.style.display = totalItems > 0 ? "inline-flex" : "none";
+  }
+};
+
+window.updateNavbarCartCount();
+
 })();

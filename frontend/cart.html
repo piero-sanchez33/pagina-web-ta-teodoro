@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GOODISH | Carrito</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/cart.css">
+</head>
+
+<body>
+
+  <div class="bg-blur blur-1"></div>
+  <div class="bg-blur blur-2"></div>
+  <div class="bg-blur blur-3"></div>
+
+  <main class="cart-page">
+    <section class="cart-hero">
+      <div>
+        <div class="cart-badge">🛒 Carrito GOODISH</div>
+        <h1>
+          Revisa tus
+          <span class="gradient">prendas elegidas</span>
+        </h1>
+        <p>
+          Aquí puedes confirmar cantidades, eliminar prendas y ver el total antes de pasar al checkout.
+        </p>
+      </div>
+
+      <div class="cart-summary-card">
+        <span>Productos</span>
+        <strong id="cartTotalItems">0</strong>
+        <small>prendas en tu carrito</small>
+      </div>
+    </section>
+
+    <section class="cart-layout">
+      <div class="cart-items-panel">
+        <div class="cart-panel-head">
+          <div>
+            <h2>Tu selección</h2>
+            <p>Modifica cantidades o elimina prendas antes de comprar.</p>
+          </div>
+
+          <button class="clear-cart-btn" id="clearCartBtn">
+            Vaciar carrito
+          </button>
+        </div>
+
+        <div class="cart-empty" id="cartEmpty">
+          <div class="empty-icon">🛍️</div>
+          <h3>Tu carrito está vacío</h3>
+          <p>Agrega prendas desde el catálogo para empezar tu pedido.</p>
+          <a href="products.html" class="primary-btn">Ver productos</a>
+        </div>
+
+        <div class="cart-list" id="cartList"></div>
+      </div>
+
+      <aside class="order-summary">
+        <h2>Resumen</h2>
+
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <strong id="subtotalText">S/ 0.00</strong>
+        </div>
+
+        <div class="summary-line">
+          <span>Delivery</span>
+          <strong id="deliveryText">Por coordinar</strong>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-total">
+          <span>Total</span>
+          <strong id="totalText">S/ 0.00</strong>
+        </div>
+
+        <p class="summary-note">
+          El costo de envío se confirmará en el checkout según distrito o tipo de entrega.
+        </p>
+
+        <button class="checkout-btn" id="checkoutBtn">
+          Ir a pagar
+        </button>
+
+        <a href="products.html" class="continue-link">
+          ← Seguir comprando
+        </a>
+      </aside>
+    </section>
+  </main>
+
+  <div class="cart-toast" id="cartToast">
+    <span id="cartToastIcon">✓</span>
+    <div>
+      <strong id="cartToastTitle">Carrito actualizado</strong>
+      <p id="cartToastText">Producto actualizado correctamente.</p>
+    </div>
+  </div>
+
+  <script src="js/navbar.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>
