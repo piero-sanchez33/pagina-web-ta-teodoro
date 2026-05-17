@@ -4,36 +4,36 @@
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
   const navbarHTML = `
-    <div class="top-bar">
+    <div class="goodish-top-bar">
       <span>Nuevo drop pronto ✨</span> prendas vintage, fairy, boho & Y2K seleccionadas para outfits únicos.
     </div>
 
-    <div class="navbar-wrap">
-      <nav>
-        <a href="index.html" class="logo page-link">
+    <div class="goodish-navbar-wrap">
+      <nav class="goodish-navbar">
+        <a href="index.html" class="goodish-logo page-link">
           <img src="images/logo.png" alt="GOODISH logo">
           <h1>GOODISH</h1>
         </a>
 
-        <div class="nav-links">
+        <div class="goodish-nav-links">
           <a href="index.html#inicio" class="${currentPage === "index.html" ? "active" : ""}">Inicio</a>
           <a href="index.html#estilos">Estilos</a>
           <a href="products.html" class="page-link ${currentPage === "products.html" ? "active" : ""}">Productos</a>
           <a href="index.html#comprar">Cómo comprar</a>
           <a href="index.html#redes">Redes</a>
           <a href="login.html" class="page-link ${currentPage === "login.html" ? "active" : ""}">Login</a>
-          <a href="register.html" class="btn-register page-link ${currentPage === "register.html" ? "active" : ""}">
+          <a href="register.html" class="goodish-btn-register page-link ${currentPage === "register.html" ? "active" : ""}">
             Registrarme
           </a>
         </div>
 
-        <div class="nav-actions">
-          <button class="theme-btn" id="themeBtn" aria-label="Cambiar modo">🌙</button>
-          <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
+        <div class="goodish-nav-actions">
+          <button class="goodish-theme-btn" id="goodishThemeBtn" aria-label="Cambiar modo">🌙</button>
+          <button class="goodish-menu-btn" id="goodishMenuBtn" aria-label="Abrir menú">☰</button>
         </div>
       </nav>
 
-      <div class="mobile-menu" id="mobileMenu">
+      <div class="goodish-mobile-menu" id="goodishMobileMenu">
         <a href="index.html#inicio">Inicio</a>
         <a href="index.html#estilos">Estilos</a>
         <a href="products.html" class="page-link">Productos</a>
@@ -47,11 +47,10 @@
 
   document.body.insertAdjacentHTML("afterbegin", navbarHTML);
 
-  const themeBtn = document.getElementById("themeBtn");
-  const menuBtn = document.getElementById("menuBtn");
-  const mobileMenu = document.getElementById("mobileMenu");
+  const themeBtn = document.getElementById("goodishThemeBtn");
+  const menuBtn = document.getElementById("goodishMenuBtn");
+  const mobileMenu = document.getElementById("goodishMobileMenu");
 
-  // MODO CLARO / OSCURO
   const savedTheme = localStorage.getItem("goodish-theme");
 
   if (savedTheme === "light") {
@@ -70,20 +69,18 @@
     localStorage.setItem("goodish-theme", isLight ? "light" : "dark");
   });
 
-  // MENÚ MÓVIL
   menuBtn.addEventListener("click", () => {
     mobileMenu.classList.toggle("active");
     menuBtn.textContent = mobileMenu.classList.contains("active") ? "✕" : "☰";
   });
 
-  document.querySelectorAll(".mobile-menu a").forEach(link => {
+  document.querySelectorAll(".goodish-mobile-menu a").forEach(link => {
     link.addEventListener("click", () => {
       mobileMenu.classList.remove("active");
       menuBtn.textContent = "☰";
     });
   });
 
-  // TRANSICIÓN ENTRE PÁGINAS, si existe #pageTransition
   document.querySelectorAll(".page-link").forEach(link => {
     link.addEventListener("click", function (event) {
       const href = this.getAttribute("href");
