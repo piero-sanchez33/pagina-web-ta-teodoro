@@ -12,6 +12,8 @@
     rel="stylesheet"
   >
 
+  <link rel="stylesheet" href="css/navbar.css">
+
   <style>
     :root{
       --bg-main:#050816;
@@ -133,193 +135,7 @@
       opacity:.14;
     }
 
-    .top-bar{
-      position:relative;
-      z-index:10;
-      width:100%;
-      padding:10px 8%;
-      text-align:center;
-      font-size:.85rem;
-      color:var(--text-soft);
-      background:rgba(255,255,255,.04);
-      border-bottom:1px solid var(--border);
-    }
-
-    .top-bar span{
-      color:var(--pink-light);
-      font-weight:700;
-    }
-
-    .navbar-wrap{
-      position:sticky;
-      top:0;
-      z-index:100;
-      padding:16px 8%;
-    }
-
-    nav{
-      width:100%;
-      min-height:76px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      padding:12px 18px;
-      border-radius:999px;
-      background:var(--nav-bg);
-      border:1px solid var(--border);
-      backdrop-filter:blur(18px);
-      box-shadow:0 18px 50px rgba(0,0,0,.16);
-    }
-
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:13px;
-      flex-shrink:0;
-    }
-
-    .logo img{
-      width:52px;
-      height:52px;
-      object-fit:cover;
-      border-radius:50%;
-      border:3px solid var(--pink);
-      box-shadow:0 0 20px rgba(255,62,165,.35);
-      transition:.3s ease;
-    }
-
-    .logo:hover img{
-      transform:rotate(-4deg) scale(1.05);
-      box-shadow:0 0 28px rgba(255,62,165,.50);
-    }
-
-    .logo h1{
-      font-size:1.7rem;
-      font-weight:800;
-      letter-spacing:.8px;
-      background:linear-gradient(90deg,var(--pink),var(--pink-light),var(--text-main));
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-
-    .nav-links{
-      display:flex;
-      align-items:center;
-      gap:24px;
-      flex-wrap:wrap;
-    }
-
-    .nav-links a{
-      color:var(--text-soft);
-      font-weight:500;
-      font-size:.95rem;
-      position:relative;
-      transition:.25s ease;
-    }
-
-    .nav-links a:hover{
-      color:var(--pink-light);
-      transform:translateY(-2px);
-    }
-
-    .nav-links a::after{
-      content:"";
-      position:absolute;
-      left:0;
-      bottom:-7px;
-      width:0;
-      height:2px;
-      border-radius:999px;
-      background:linear-gradient(90deg,var(--pink),var(--pink-light));
-      transition:width .25s ease;
-    }
-
-    .nav-links a:hover::after,
-    .nav-links a.active::after{
-      width:100%;
-    }
-
-    .nav-links a.active{
-      color:var(--pink-light);
-      font-weight:700;
-    }
-
-    .nav-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-shrink:0;
-    }
-
-    .icon-btn,
-    .theme-btn,
-    .menu-btn{
-      width:46px;
-      height:46px;
-      border-radius:50%;
-      border:1px solid var(--border);
-      background:var(--glass);
-      color:var(--text-main);
-      cursor:pointer;
-      font-size:1.06rem;
-      display:grid;
-      place-items:center;
-      transition:.25s ease;
-    }
-
-    .icon-btn:hover,
-    .theme-btn:hover,
-    .menu-btn:hover{
-      transform:translateY(-2px);
-      border-color:rgba(255,62,165,.36);
-      box-shadow:0 0 20px rgba(255,62,165,.14);
-    }
-
-    .menu-btn{
-      display:none;
-    }
-
-    .mobile-menu{
-      display:none;
-      position:fixed;
-      top:105px;
-      left:8%;
-      right:8%;
-      z-index:99;
-      padding:22px;
-      border-radius:28px;
-      background:var(--nav-bg);
-      border:1px solid var(--border);
-      backdrop-filter:blur(18px);
-      box-shadow:0 20px 45px rgba(0,0,0,.22);
-    }
-
-    .mobile-menu.active{
-      display:grid;
-      gap:14px;
-      animation:dropMenu .25s ease;
-    }
-
-    .mobile-menu a{
-      padding:14px 16px;
-      border-radius:18px;
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--border);
-      color:var(--text-soft);
-    }
-
-    @keyframes dropMenu{
-      from{
-        opacity:0;
-        transform:translateY(-12px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
-    }
-
+    
     main{
       position:relative;
       z-index:2;
@@ -960,14 +776,6 @@
     }
 
     @media (max-width:920px){
-      .nav-links{
-        display:none;
-      }
-
-      .menu-btn{
-        display:grid;
-      }
-
       .hero{
         padding-top:20px;
       }
@@ -989,26 +797,12 @@
     }
 
     @media (max-width:640px){
-      .top-bar{
-        padding:10px 5%;
-        font-size:.78rem;
-      }
 
-      .navbar-wrap,
       .hero,
       .section,
       footer{
         padding-left:5%;
         padding-right:5%;
-      }
-
-      .logo h1{
-        font-size:1.36rem;
-      }
-
-      .logo img{
-        width:46px;
-        height:46px;
       }
 
       .hero h2{
@@ -1073,42 +867,7 @@
 
   <div class="bg-blur blur-1"></div>
   <div class="bg-blur blur-2"></div>
-  <div class="bg-blur blur-3"></div>
-
-  <div class="top-bar">
-    <span>GOODISH products</span> descubre prendas por estilo, categoría y drop.
-  </div>
-
-  <div class="navbar-wrap">
-    <nav>
-      <a href="index.html" class="logo">
-        <img src="images/logo.png" alt="GOODISH logo">
-        <h1>GOODISH</h1>
-      </a>
-
-      <div class="nav-links">
-        <a href="index.html">Inicio</a>
-        <a href="products.html" class="active">Productos</a>
-        <a href="#categorias">Categorías</a>
-        <a href="register.html">Registro</a>
-        <a href="#">Carrito</a>
-      </div>
-
-      <div class="nav-actions">
-        <a href="#" class="icon-btn" title="Carrito">🛒</a>
-        <button class="theme-btn" id="themeBtn" aria-label="Cambiar modo">🌙</button>
-        <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">☰</button>
-      </div>
-    </nav>
-
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">Inicio</a>
-      <a href="products.html">Productos</a>
-      <a href="#categorias">Categorías</a>
-      <a href="register.html">Registro</a>
-      <a href="#">Carrito</a>
-    </div>
-  </div>
+  <div class="bg-blur blur-3"></div> 
 
   <main>
     <section class="hero">
@@ -1674,37 +1433,9 @@
     </div>
   </footer>
 
+  <script src="js/navbar.js"></script>
+
   <script>
-    const themeBtn = document.getElementById("themeBtn");
-    const menuBtn = document.getElementById("menuBtn");
-    const mobileMenu = document.getElementById("mobileMenu");
-
-    const savedTheme = localStorage.getItem("goodish-theme");
-    if(savedTheme === "light"){
-      document.body.classList.add("light");
-      themeBtn.textContent = "☀️";
-    }
-
-    themeBtn.addEventListener("click", () => {
-      document.body.classList.toggle("light");
-
-      const isLight = document.body.classList.contains("light");
-      themeBtn.textContent = isLight ? "☀️" : "🌙";
-      localStorage.setItem("goodish-theme", isLight ? "light" : "dark");
-    });
-
-    menuBtn.addEventListener("click", () => {
-      mobileMenu.classList.toggle("active");
-      menuBtn.textContent = mobileMenu.classList.contains("active") ? "✕" : "☰";
-    });
-
-    document.querySelectorAll(".mobile-menu a").forEach(link => {
-      link.addEventListener("click", () => {
-        mobileMenu.classList.remove("active");
-        menuBtn.textContent = "☰";
-      });
-    });
-
     document.querySelectorAll(".slider-btn").forEach(button => {
       button.addEventListener("click", () => {
         const targetId = button.dataset.target;
