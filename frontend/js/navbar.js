@@ -22,21 +22,23 @@
           <a href="index.html#comprar">Cómo comprar</a>
           <a href="index.html#redes">Redes</a>
           <a href="login.html" class="page-link ${currentPage === "login.html" ? "active" : ""}">Login</a>
-          <a href="cart.html" class="page-link ${currentPage === "cart.html" ? "active" : ""}">
-            Carrito <span class="goodish-cart-badge" id="goodishCartBadge">0</span>
-          </a>
           <a href="register.html" class="goodish-btn-register page-link ${currentPage === "register.html" ? "active" : ""}">
             Registrarme
           </a>
         </div>
 
         <div class="goodish-nav-actions">
+          <a href="cart.html" class="goodish-cart-link page-link ${currentPage === "cart.html" ? "active" : ""}" aria-label="Carrito">
+            <span class="goodish-cart-icon">🛒</span>
+            <span class="goodish-cart-badge" id="goodishCartBadge">0</span>
+          </a>
+
           <button class="goodish-theme-btn" id="goodishThemeBtn" aria-label="Cambiar modo">🌙</button>
           <button class="goodish-menu-btn" id="goodishMenuBtn" aria-label="Abrir menú">☰</button>
         </div>
       </nav>
 
-        <div class="goodish-mobile-menu" id="goodishMobileMenu">
+      <div class="goodish-mobile-menu" id="goodishMobileMenu">
         <a href="index.html#inicio">Inicio</a>
         <a href="index.html#estilos">Estilos</a>
         <a href="products.html" class="page-link">Productos</a>
@@ -44,9 +46,9 @@
         <a href="index.html#redes">Redes</a>
         <a href="login.html" class="page-link">Login</a>
 
-        <a href="cart.html" class="page-link">
-            Carrito
-            <span class="goodish-cart-badge" id="goodishCartBadgeMobile">0</span>
+        <a href="cart.html" class="page-link goodish-mobile-cart-link">
+          🛒 Carrito
+          <span class="goodish-cart-badge" id="goodishCartBadgeMobile">0</span>
         </a>
 
         <a href="register.html" class="page-link">Registrarme</a>
@@ -112,27 +114,32 @@
     });
   });
 
-window.updateNavbarCartCount = function () {
-  const cart = JSON.parse(localStorage.getItem("goodish_cart")) || [];
+  window.updateNavbarCartCount = function () {
+    let cart = [];
 
-  const totalItems = cart.reduce((total, item) => {
-    return total + Number(item.quantity || 0);
-  }, 0);
+    try {
+      cart = JSON.parse(localStorage.getItem("goodish_cart")) || [];
+    } catch {
+      cart = [];
+    }
 
-  const badge = document.getElementById("goodishCartBadge");
-  const badgeMobile = document.getElementById("goodishCartBadgeMobile");
+    const totalItems = cart.reduce((total, item) => {
+      return total + Number(item.quantity || 0);
+    }, 0);
 
-  if (badge) {
-    badge.textContent = totalItems;
-    badge.style.display = totalItems > 0 ? "inline-flex" : "none";
-  }
+    const badge = document.getElementById("goodishCartBadge");
+    const badgeMobile = document.getElementById("goodishCartBadgeMobile");
 
-  if (badgeMobile) {
-    badgeMobile.textContent = totalItems;
-    badgeMobile.style.display = totalItems > 0 ? "inline-flex" : "none";
-  }
-};
+    if (badge) {
+      badge.textContent = totalItems;
+      badge.style.display = totalItems > 0 ? "inline-flex" : "none";
+    }
 
-window.updateNavbarCartCount();
+    if (badgeMobile) {
+      badgeMobile.textContent = totalItems;
+      badgeMobile.style.display = totalItems > 0 ? "inline-flex" : "none";
+    }
+  };
 
+  window.updateNavbarCartCount();
 })();
