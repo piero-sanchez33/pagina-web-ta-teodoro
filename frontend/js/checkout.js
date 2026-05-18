@@ -4,7 +4,12 @@ const CART_KEY = "goodish_cart";
 const ORDERS_KEY = "goodish_orders";
 const CURRENT_ORDER_KEY = "goodish_current_order";
 
-document.addEventListener("DOMContentLoaded", () => {
+const SUPABASE_URL = "https://oqojlcgkmvbxmmwoexih.supabase.co";
+const SUPABASE_KEY = "sb_publishable_FJvX6aKfJO-f-SAzx2vu0Q_F4ex4L0T";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.addEventListener("DOMContentLoaded", async () => {
   const checkoutForm = document.getElementById("checkoutForm");
   const checkoutItems = document.getElementById("checkoutItems");
   const checkoutTotalItems = document.getElementById("checkoutTotalItems");
@@ -17,6 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutUserEmail = document.getElementById("checkoutUserEmail");
   const checkoutToastTitle = document.getElementById("checkoutToastTitle");
   const checkoutToastText = document.getElementById("checkoutToastText");
+
+  let currentUserData = {
+    id: null,
+    name: "Cliente GOODISH",
+    email: "correo-no-disponible@goodish.pe"
+  };
 
   function getCart() {
     try {
@@ -78,8 +89,89 @@ document.addEventListener("DOMContentLoaded", () => {
     return `GOODISH-${year}${month}${day}-${random}`;
   }
 
+  async function getCurrentUserData() {
+    const { data: authData, error: authError } = await supabaseClient.auth.getUser();
+
+    if (authError || !authData?.user) {
+      showToast("Inicia sesión", "Debes iniciar sesión antes de crear un pedido.");
+
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1200);
+
+      return null;
+    }
+
+    const user = authData.user;
+
+    let userData = {
+      id: user.id,
+      name: "Cliente GOODISH",
+      email: user.email || "Correo registrado"
+    };
+
+    const metaNombre =
+      user.user_metadata?.nombre ||
+      user.user_metadata?.nombre_cli ||
+      user.user_metadata?.name ||
+      "";
+
+    const metaApellido =
+      user.user_metadata?.apellido ||
+      user.user_metadata?.apellido_cli ||
+      "";
+
+    const metaFullName = `${metaNombre} ${metaApellido}`.trim();
+
+    if (metaFullName) {
+      userData.name = metaFullName;
+    }
+
+    const { data: perfil, error: perfilError } = await supabaseClient
+      .from("usuarios")
+      .select("nombre_cli, apellido_cli, correo_cli")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!perfilError && perfil) {
+      const nombre = perfil.nombre_cli || "";
+      const apellido = perfil.apellido_cli || "";
+      const fullName = `${nombre} ${apellido}`.trim();
+
+      if (fullName) {
+        userData.name = fullName;
+      }
+
+      if (perfil.correo_cli) {
+        userData.email = perfil.correo_cli;
+      }
+    }
+
+    return userData;
+  }
+
+  async function renderCurrentUserBox() {
+    const user = await getCurrentUserData();
+
+    if (!user) return null;
+
+    currentUserData = user;
+
+    if (checkoutUserName) {
+      checkoutUserName.textContent = user.name;
+    }
+
+    if (checkoutUserEmail) {
+      checkoutUserEmail.textContent = user.email;
+    }
+
+    return user;
+  }
+
   function renderCheckoutSummary() {
     const cart = getCart();
+
+    console.log("CHECKOUT CART:", cart);
 
     checkoutItems.innerHTML = "";
 
@@ -133,72 +225,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function getCurrentUserData() {
-  let userData = {
-    name: "Cliente GOODISH",
-    email: "correo-no-disponible@goodish.pe"
-  };
-
-  try {
-    const supabaseSession = JSON.parse(localStorage.getItem("sb-auth-token"));
-
-    if (supabaseSession?.user?.email) {
-      userData.email = supabaseSession.user.email;
-    }
-
-    if (supabaseSession?.user?.user_metadata?.nombre) {
-      userData.name = `${supabaseSession.user.user_metadata.nombre || ""} ${supabaseSession.user.user_metadata.apellido || ""}`.trim();
-    }
-  } catch {}
-
-  const possibleUserKeys = [
-    "goodish_user",
-    "goodish_current_user",
-    "usuario_goodish"
-  ];
-
-  possibleUserKeys.forEach(key => {
-    try {
-      const savedUser = JSON.parse(localStorage.getItem(key));
-
-      if (savedUser?.email || savedUser?.correo) {
-        userData.email = savedUser.email || savedUser.correo;
-      }
-
-      if (savedUser?.nombre || savedUser?.apellido) {
-        userData.name = `${savedUser.nombre || ""} ${savedUser.apellido || ""}`.trim();
-      }
-    } catch {}
-  });
-
-  return userData;
-}
-
-function renderCurrentUserBox() {
-  const user = getCurrentUserData();
-
-  checkoutUserName.textContent = user.name || "Cliente GOODISH";
-  checkoutUserEmail.textContent = user.email || "Correo registrado";
-
-  return user;
-}
-
   function getFormData() {
-  const formData = new FormData(checkoutForm);
-  const user = getCurrentUserData();
+    const formData = new FormData(checkoutForm);
 
-  return {
-    customerName: user.name,
-    customerEmail: user.email,
-    customerPhone: formData.get("customerPhone")?.trim(),
-    customerDistrict: formData.get("customerDistrict")?.trim(),
-    customerAddress: formData.get("customerAddress")?.trim() || "",
-    customerReference: formData.get("customerReference")?.trim() || "",
-    paymentMethod: formData.get("paymentMethod")
-  };
-}
+    return {
+      customerId: currentUserData.id,
+      customerName: currentUserData.name,
+      customerEmail: currentUserData.email,
+      customerPhone: formData.get("customerPhone")?.trim(),
+      customerDistrict: formData.get("customerDistrict")?.trim(),
+      customerAddress: formData.get("customerAddress")?.trim(),
+      customerReference: formData.get("customerReference")?.trim() || "",
+      paymentMethod: formData.get("paymentMethod")
+    };
+  }
 
   function validateCheckout(data, cart) {
+    if (!currentUserData.id) {
+      showToast("Sesión requerida", "Inicia sesión para crear tu pedido.");
+      return false;
+    }
+
     if (cart.length === 0) {
       showToast("Carrito vacío", "Agrega productos antes de crear un pedido.");
       return false;
@@ -236,10 +283,12 @@ function renderCurrentUserBox() {
       id: orderCode,
       code: orderCode,
       createdAt: new Date().toISOString(),
+      userId: data.customerId,
       status: "PENDIENTE_PAGO",
       paymentStatus: "PENDIENTE",
       paymentMethod: data.paymentMethod,
       customer: {
+        id: data.customerId,
         name: data.customerName,
         email: data.customerEmail,
         phone: data.customerPhone,
@@ -290,6 +339,6 @@ function renderCurrentUserBox() {
     }, 900);
   });
 
-  renderCurrentUserBox();
+  await renderCurrentUserBox();
   renderCheckoutSummary();
 });
