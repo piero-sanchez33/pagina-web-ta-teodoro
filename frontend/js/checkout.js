@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const createOrderBtn = document.getElementById("createOrderBtn");
 
   const checkoutToast = document.getElementById("checkoutToast");
+  const checkoutUserName = document.getElementById("checkoutUserName");
+  const checkoutUserEmail = document.getElementById("checkoutUserEmail");
   const checkoutToastTitle = document.getElementById("checkoutToastTitle");
   const checkoutToastText = document.getElementById("checkoutToastText");
 
@@ -131,33 +133,74 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function getFormData() {
-    const formData = new FormData(checkoutForm);
+  function getCurrentUserData() {
+  let userData = {
+    name: "Cliente GOODISH",
+    email: "correo-no-disponible@goodish.pe"
+  };
 
-    return {
-      customerName: formData.get("customerName")?.trim(),
-      customerEmail: formData.get("customerEmail")?.trim(),
-      customerPhone: formData.get("customerPhone")?.trim(),
-      customerDistrict: formData.get("customerDistrict")?.trim(),
-      customerAddress: formData.get("customerAddress")?.trim(),
-      customerReference: formData.get("customerReference")?.trim() || "",
-      paymentMethod: formData.get("paymentMethod")
-    };
-  }
+  try {
+    const supabaseSession = JSON.parse(localStorage.getItem("sb-auth-token"));
+
+    if (supabaseSession?.user?.email) {
+      userData.email = supabaseSession.user.email;
+    }
+
+    if (supabaseSession?.user?.user_metadata?.nombre) {
+      userData.name = `${supabaseSession.user.user_metadata.nombre || ""} ${supabaseSession.user.user_metadata.apellido || ""}`.trim();
+    }
+  } catch {}
+
+  const possibleUserKeys = [
+    "goodish_user",
+    "goodish_current_user",
+    "usuario_goodish"
+  ];
+
+  possibleUserKeys.forEach(key => {
+    try {
+      const savedUser = JSON.parse(localStorage.getItem(key));
+
+      if (savedUser?.email || savedUser?.correo) {
+        userData.email = savedUser.email || savedUser.correo;
+      }
+
+      if (savedUser?.nombre || savedUser?.apellido) {
+        userData.name = `${savedUser.nombre || ""} ${savedUser.apellido || ""}`.trim();
+      }
+    } catch {}
+  });
+
+  return userData;
+}
+
+function renderCurrentUserBox() {
+  const user = getCurrentUserData();
+
+  checkoutUserName.textContent = user.name || "Cliente GOODISH";
+  checkoutUserEmail.textContent = user.email || "Correo registrado";
+
+  return user;
+}
+
+  function getFormData() {
+  const formData = new FormData(checkoutForm);
+  const user = getCurrentUserData();
+
+  return {
+    customerName: user.name,
+    customerEmail: user.email,
+    customerPhone: formData.get("customerPhone")?.trim(),
+    customerDistrict: formData.get("customerDistrict")?.trim(),
+    customerAddress: formData.get("customerAddress")?.trim() || "",
+    customerReference: formData.get("customerReference")?.trim() || "",
+    paymentMethod: formData.get("paymentMethod")
+  };
+}
 
   function validateCheckout(data, cart) {
     if (cart.length === 0) {
       showToast("Carrito vacío", "Agrega productos antes de crear un pedido.");
-      return false;
-    }
-
-    if (!data.customerName) {
-      showToast("Falta nombre", "Escribe tu nombre completo.");
-      return false;
-    }
-
-    if (!data.customerEmail) {
-      showToast("Falta correo", "Escribe tu correo electrónico.");
       return false;
     }
 
@@ -247,5 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 900);
   });
 
+  renderCurrentUserBox();
   renderCheckoutSummary();
 });
