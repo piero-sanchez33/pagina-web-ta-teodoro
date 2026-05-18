@@ -634,4 +634,31 @@ textarea {
     min-width: auto;
     max-width: none;
   }
+}  
+
+.logged-user-box {
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: rgba(255,62,165,.09);
+  border: 1px solid rgba(255,62,165,.18);
+}
+
+.logged-user-box span {
+  display: block;
+  color: var(--text-muted);
+  font-size: .84rem;
+  margin-bottom: 5px;
+}
+
+.logged-user-box strong {
+  display: block;
+  color: var(--text-main);
+  font-size: 1.12rem;
+  margin-bottom: 4px;
+}
+
+.logged-user-box small {
+  color: var(--pink-light);
+  font-weight: 700;
 }
