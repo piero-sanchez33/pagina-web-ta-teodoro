@@ -97,6 +97,90 @@
   gap: 12px;
 }
 
+.goodish-user-chip {
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 210px;
+  padding: 6px 8px 6px 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--border, rgba(255,255,255,.1));
+  color: var(--text-main, #fff);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.goodish-user-chip[hidden],
+.goodish-mobile-user[hidden] {
+  display: none !important;
+}
+
+.goodish-user-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--pink, #ff3ea5), #ff8ccb);
+  color: #fff;
+  font-size: .86rem;
+  font-weight: 900;
+}
+
+.goodish-user-text {
+  min-width: 0;
+  max-width: 82px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: .84rem;
+  font-weight: 800;
+  color: var(--text-main, #fff);
+}
+
+.goodish-logout-btn,
+.goodish-mobile-user button {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 11px;
+  background: rgba(255,255,255,.09);
+  color: var(--text-soft, #d8d8e8);
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+
+.goodish-logout-btn:hover,
+.goodish-mobile-user button:hover {
+  transform: translateY(-1px);
+  background: rgba(255,62,165,.2);
+  color: var(--pink-light, #ffb3dc);
+}
+
+.goodish-mobile-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,62,165,.12);
+  border: 1px solid rgba(255,62,165,.28);
+  color: var(--text-main, #fff);
+  font-weight: 800;
+}
+
+.goodish-mobile-user span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .goodish-theme-btn,
 .goodish-menu-btn {
   width: 46px;
@@ -194,6 +278,10 @@
   .goodish-navbar {
     border-radius: 30px;
   }
+
+  .goodish-user-chip {
+    max-width: 185px;
+  }
 }
 
 @media (max-width: 620px) {
@@ -226,6 +314,10 @@
 
   .goodish-btn-register {
     display: none;
+  }
+
+  .goodish-user-chip {
+    display: none !important;
   }
 }
 
