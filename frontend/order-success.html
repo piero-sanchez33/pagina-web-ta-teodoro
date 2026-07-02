@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GOODISH | Pedido confirmado</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/order-success.css">
+</head>
+
+<body>
+  <div class="bg-blur blur-1"></div>
+  <div class="bg-blur blur-2"></div>
+  <div class="bg-blur blur-3"></div>
+
+  <main class="success-page">
+    <section class="success-hero">
+      <div>
+        <div class="success-badge">Pedido creado</div>
+        <h1>
+          Tu pedido esta
+          <span class="gradient">confirmado</span>
+        </h1>
+        <p>
+          Guarda tu comprobante, revisa el resumen y coordina el pago o entrega con GOODISH.
+        </p>
+      </div>
+
+      <div class="success-status-card">
+        <span>Codigo de pedido</span>
+        <strong id="orderCodeHero">GOODISH</strong>
+        <small id="orderDateHero">Pendiente de pago</small>
+      </div>
+    </section>
+
+    <section class="success-layout" id="orderContent">
+      <article class="success-panel order-main-panel">
+        <div class="panel-head">
+          <div>
+            <h2>Resumen del pedido</h2>
+            <p>Este comprobante contiene los datos principales de tu compra.</p>
+          </div>
+          <span class="order-status" id="orderStatus">Pendiente de pago</span>
+        </div>
+
+        <div class="order-info-grid">
+          <div class="info-box">
+            <span>Cliente</span>
+            <strong id="customerName">Cliente GOODISH</strong>
+            <small id="customerEmail">correo-no-disponible@goodish.pe</small>
+          </div>
+
+          <div class="info-box">
+            <span>Contacto</span>
+            <strong id="customerPhone">Por confirmar</strong>
+            <small id="customerDistrict">Distrito no registrado</small>
+          </div>
+
+          <div class="info-box full">
+            <span>Entrega</span>
+            <strong id="customerAddress">Direccion no registrada</strong>
+            <small id="customerReference">Sin referencia adicional</small>
+          </div>
+        </div>
+
+        <div class="order-items-wrap">
+          <h3>Productos</h3>
+          <div class="order-items" id="orderItems"></div>
+        </div>
+      </article>
+
+      <aside class="success-panel order-side-panel">
+        <h2>Total</h2>
+
+        <div class="summary-box">
+          <div class="summary-line">
+            <span>Productos</span>
+            <strong id="totalItems">0</strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Subtotal</span>
+            <strong id="subtotalText">S/ 0.00</strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Delivery</span>
+            <strong>Por coordinar</strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Metodo de pago</span>
+            <strong id="paymentMethod">Por confirmar</strong>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-total">
+            <span>Total</span>
+            <strong id="totalText">S/ 0.00</strong>
+          </div>
+        </div>
+
+        <div class="business-card">
+          <span>Contacto GOODISH</span>
+          <strong id="businessPhoneText">WhatsApp del negocio</strong>
+          <small>Envia tu comprobante de pago con tu codigo de pedido.</small>
+        </div>
+
+        <div class="success-actions">
+          <button type="button" class="primary-action" id="downloadPdfBtn">Descargar PDF</button>
+          <a class="secondary-action" id="whatsappBtn" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+          <a class="ghost-action" href="products.html">Seguir comprando</a>
+        </div>
+      </aside>
+    </section>
+
+    <section class="missing-order" id="missingOrder" hidden>
+      <div class="missing-card">
+        <span>!</span>
+        <h2>No encontramos el pedido</h2>
+        <p>Vuelve al carrito o al catalogo para crear un nuevo pedido.</p>
+        <a href="products.html">Ver productos</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="js/order-success.js"></script>
+</body>
+</html>
