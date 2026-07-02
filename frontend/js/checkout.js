@@ -7,7 +7,9 @@ const CURRENT_ORDER_KEY = "goodish_current_order";
 const SUPABASE_URL = "https://oqojlcgkmvbxmmwoexih.supabase.co";
 const SUPABASE_KEY = "sb_publishable_FJvX6aKfJO-f-SAzx2vu0Q_F4ex4L0T";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   const checkoutForm = document.getElementById("checkoutForm");
@@ -49,14 +51,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
   }
 
+  function saveLocalOrder(order) {
+    const orders = getOrders().filter(savedOrder => savedOrder.code !== order.code);
+
+    orders.unshift(order);
+    saveOrders(orders);
+    localStorage.setItem(CURRENT_ORDER_KEY, JSON.stringify(order));
+  }
+
   function formatPrice(value) {
     return `S/ ${Number(value || 0).toFixed(2)}`;
   }
 
   function getCartTotalItems(cart) {
-    return cart.reduce((total, item) => {
-      return total + Number(item.quantity || 0);
-    }, 0);
+    return cart.reduce((total, item) => total + Number(item.quantity || 0), 0);
   }
 
   function getCartSubtotal(cart) {
@@ -70,17 +78,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     checkoutToastTitle.textContent = title;
     checkoutToastText.textContent = text;
-
     checkoutToast.classList.add("show");
 
     setTimeout(() => {
       checkoutToast.classList.remove("show");
-    }, 2800);
+    }, 3000);
   }
 
   function generateOrderCode() {
     const now = new Date();
-
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
@@ -90,10 +96,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function getCurrentUserData() {
+    if (!supabaseClient) {
+      showToast("Conexion no disponible", "No se pudo cargar Supabase. Recarga la pagina.");
+      return null;
+    }
+
     const { data: authData, error: authError } = await supabaseClient.auth.getUser();
 
     if (authError || !authData?.user) {
-      showToast("Inicia sesión", "Debes iniciar sesión antes de crear un pedido.");
+      showToast("Inicia sesion", "Debes iniciar sesion antes de crear un pedido.");
 
       setTimeout(() => {
         window.location.href = "login.html";
@@ -103,7 +114,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const user = authData.user;
-
     let userData = {
       id: user.id,
       name: "Cliente GOODISH",
@@ -171,8 +181,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderCheckoutSummary() {
     const cart = getCart();
 
-    console.log("CHECKOUT CART:", cart);
-
     checkoutItems.innerHTML = "";
 
     const totalItems = getCartTotalItems(cart);
@@ -189,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (cart.length === 0) {
       checkoutItems.innerHTML = `
         <div class="checkout-empty">
-          <span>🛍️</span>
+          <span>!</span>
           <p>No hay productos en el carrito.</p>
           <a href="products.html" class="back-cart-btn">Ver productos</a>
         </div>
@@ -215,7 +223,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div>
           <h3>${item.name || "Producto GOODISH"}</h3>
           <p>
-            ${item.size || "Talla única"} · ${item.category || "GOODISH"} · Cantidad: ${quantity}
+            ${item.size || "Talla unica"} - ${item.category || "GOODISH"} - Cantidad: ${quantity}
           </p>
           <strong>${formatPrice(itemSubtotal)}</strong>
         </div>
@@ -242,17 +250,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function validateCheckout(data, cart) {
     if (!currentUserData.id) {
-      showToast("Sesión requerida", "Inicia sesión para crear tu pedido.");
+      showToast("Sesion requerida", "Inicia sesion para crear tu pedido.");
       return false;
     }
 
     if (cart.length === 0) {
-      showToast("Carrito vacío", "Agrega productos antes de crear un pedido.");
+      showToast("Carrito vacio", "Agrega productos antes de crear un pedido.");
       return false;
     }
 
     if (!data.customerPhone) {
-      showToast("Falta celular", "Escribe tu número de celular o WhatsApp.");
+      showToast("Falta celular", "Escribe tu numero de celular o WhatsApp.");
       return false;
     }
 
@@ -262,16 +270,177 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (!data.customerAddress) {
-      showToast("Falta dirección", "Escribe la dirección de entrega.");
+      showToast("Falta direccion", "Escribe la direccion de entrega.");
       return false;
     }
 
     if (!data.paymentMethod) {
-      showToast("Falta método de pago", "Elige Yape, Plin, transferencia o contraentrega.");
+      showToast("Falta metodo de pago", "Elige Yape, Plin, transferencia o contraentrega.");
       return false;
     }
 
     return true;
+  }
+
+  async function findCodeByText(table, codeColumn, textColumn, value) {
+    if (!value) return null;
+
+    const { data, error } = await supabaseClient
+      .from(table)
+      .select(codeColumn)
+      .ilike(textColumn, `%${value}%`)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`No se pudo leer ${table}: ${error.message}`);
+    }
+
+    return data?.[codeColumn] || null;
+  }
+
+  async function getPaymentCode(paymentMethod) {
+    const paymentAliases = {
+      Yape: ["Yape"],
+      Plin: ["Plin"],
+      Transferencia: ["Transferencia", "Banco"],
+      Contraentrega: ["Contraentrega", "Contra entrega", "Efectivo"]
+    };
+
+    const aliases = paymentAliases[paymentMethod] || [paymentMethod];
+
+    for (const alias of aliases) {
+      const code = await findCodeByText("metodo_pago", "codigo_pago", "descripcion_pago", alias);
+
+      if (code) return code;
+    }
+
+    throw new Error(`No existe el metodo de pago "${paymentMethod}" en Supabase.`);
+  }
+
+  async function getDeliveryTypeCode() {
+    const aliases = ["delivery", "envio", "entrega", "domicilio"];
+
+    for (const alias of aliases) {
+      const code = await findCodeByText("tipo_entrega", "codigo_tipo_ent", "nombre_tipo_ent", alias);
+
+      if (code) return code;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("tipo_entrega")
+      .select("codigo_tipo_ent")
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`No se pudo leer tipo_entrega: ${error.message}`);
+    }
+
+    if (!data?.codigo_tipo_ent) {
+      throw new Error("No hay tipos de entrega registrados en Supabase.");
+    }
+
+    return data.codigo_tipo_ent;
+  }
+
+  async function getProductCode(item) {
+    const directCode = Number(item.codigo_pre || item.productCode || item.product_code);
+
+    if (Number.isInteger(directCode) && directCode > 0) {
+      return directCode;
+    }
+
+    const productName = item.name || item.nombre_pre;
+
+    if (!productName) {
+      throw new Error("Un producto del carrito no tiene nombre para buscarlo en Supabase.");
+    }
+
+    const { data, error } = await supabaseClient
+      .from("prenda")
+      .select("codigo_pre, nombre_pre")
+      .ilike("nombre_pre", `%${productName}%`)
+      .eq("activo", true)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`No se pudo buscar "${productName}" en prenda: ${error.message}`);
+    }
+
+    if (!data?.codigo_pre) {
+      throw new Error(`No encontre "${productName}" en la tabla prenda.`);
+    }
+
+    return data.codigo_pre;
+  }
+
+  async function syncOrderToSupabase(order) {
+    if (!supabaseClient) {
+      throw new Error("Supabase no esta disponible.");
+    }
+
+    const [codigoPago, codigoTipoEntrega] = await Promise.all([
+      getPaymentCode(order.paymentMethod),
+      getDeliveryTypeCode()
+    ]);
+
+    const detalleItems = [];
+
+    for (const item of order.items) {
+      const codigoPre = await getProductCode(item);
+
+      detalleItems.push({
+        codigo_pre: codigoPre,
+        cantidad: Number(item.quantity || 0),
+        precio_venta_final: Number(item.price || 0)
+      });
+    }
+
+    const ventaPayload = {
+      usuario_id: order.userId,
+      codigo_pago: codigoPago,
+      codigo_tipo_ent: codigoTipoEntrega,
+      fecha_venta: order.createdAt,
+      fecha_entrega_programada: null,
+      total_pagar: order.total,
+      codigo_prom: null,
+      estado_venta: "pendiente_pago",
+      direccion_entrega: order.customer.address,
+      distrito_entrega: order.customer.district,
+      referencia_entrega: order.customer.reference,
+      telefono_contacto: order.customer.phone,
+      codigo_pedido: order.code
+    };
+
+    const { data: venta, error: ventaError } = await supabaseClient
+      .from("venta")
+      .insert(ventaPayload)
+      .select("codigo_ven, codigo_pedido")
+      .single();
+
+    if (ventaError) {
+      throw new Error(`No se pudo registrar la venta: ${ventaError.message}`);
+    }
+
+    const detallePayload = detalleItems.map(item => ({
+      ...item,
+      codigo_ven: venta.codigo_ven
+    }));
+
+    const { error: detalleError } = await supabaseClient
+      .from("detalle_venta")
+      .insert(detallePayload);
+
+    if (detalleError) {
+      throw new Error(`La venta se creo, pero fallo el detalle: ${detalleError.message}`);
+    }
+
+    return {
+      codigoVenta: venta.codigo_ven,
+      codigoPedido: venta.codigo_pedido
+    };
   }
 
   function createOrder(data, cart) {
@@ -279,7 +448,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const totalItems = getCartTotalItems(cart);
     const orderCode = generateOrderCode();
 
-    const order = {
+    return {
       id: orderCode,
       code: orderCode,
       createdAt: new Date().toISOString(),
@@ -300,29 +469,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       totalItems,
       subtotal,
       delivery: null,
-      total: subtotal
+      total: subtotal,
+      syncStatus: "local",
+      syncMessage: "Pedido creado localmente."
     };
-
-    const orders = getOrders();
-    orders.unshift(order);
-
-    saveOrders(orders);
-    localStorage.setItem(CURRENT_ORDER_KEY, JSON.stringify(order));
-    localStorage.removeItem(CART_KEY);
-
-    if (window.updateNavbarCartCount) {
-      window.updateNavbarCartCount();
-    }
-
-    return order;
   }
 
-  checkoutForm.addEventListener("submit", event => {
+  checkoutForm.addEventListener("submit", async event => {
     event.preventDefault();
 
     const cart = getCart();
     const data = getFormData();
-
     const isValid = validateCheckout(data, cart);
 
     if (!isValid) return;
@@ -332,11 +489,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const order = createOrder(data, cart);
 
-    showToast("Pedido creado", `Tu código es ${order.code}`);
+    try {
+      const syncResult = await syncOrderToSupabase(order);
+
+      order.syncStatus = "synced";
+      order.syncMessage = "Pedido registrado correctamente en la base de datos.";
+      order.database = syncResult;
+
+      showToast("Pedido registrado", `Tu codigo es ${order.code}`);
+    } catch (error) {
+      console.error("No se pudo sincronizar el pedido:", error);
+
+      order.syncStatus = "pending";
+      order.syncMessage = error.message || "No se pudo registrar en la base de datos.";
+
+      showToast(
+        "Pedido guardado localmente",
+        "No se pudo registrar en la base. Envia tu codigo por WhatsApp."
+      );
+    }
+
+    saveLocalOrder(order);
+    localStorage.removeItem(CART_KEY);
+
+    if (window.updateNavbarCartCount) {
+      window.updateNavbarCartCount();
+    }
 
     setTimeout(() => {
       window.location.href = `order-success.html?order=${encodeURIComponent(order.code)}`;
-    }, 900);
+    }, 1300);
   });
 
   renderCheckoutSummary();

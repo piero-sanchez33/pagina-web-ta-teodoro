@@ -47,11 +47,16 @@ function setText(id, value) {
 }
 
 function buildWhatsAppMessage(order) {
+  const syncNote = order.syncStatus === "pending"
+    ? "Nota: mi pedido no pudo registrarse en la base y quedo guardado localmente."
+    : "El pedido fue generado desde la web.";
+
   const lines = [
     `Hola GOODISH, acabo de crear mi pedido ${order.code}.`,
     `Cliente: ${order.customer?.name || "Cliente GOODISH"}`,
     `Total: ${formatPrice(order.total || order.subtotal)}`,
     `Metodo de pago: ${order.paymentMethod || "Por confirmar"}`,
+    syncNote,
     "Quiero coordinar el pago/entrega."
   ];
 
@@ -93,9 +98,12 @@ function renderItems(order) {
 }
 
 function renderOrder(order) {
+  const isSynced = order.syncStatus === "synced";
+  const isPending = order.syncStatus === "pending";
+
   setText("orderCodeHero", order.code || order.id || "GOODISH");
   setText("orderDateHero", formatDate(order.createdAt));
-  setText("orderStatus", order.paymentStatus === "PAGADO" ? "Pagado" : "Pendiente de pago");
+  setText("orderStatus", isSynced ? "Registrado en sistema" : "Guardado localmente");
   setText("customerName", order.customer?.name || "Cliente GOODISH");
   setText("customerEmail", order.customer?.email || "correo-no-disponible@goodish.pe");
   setText("customerPhone", order.customer?.phone || "Por confirmar");
@@ -109,11 +117,37 @@ function renderOrder(order) {
   setText("businessPhoneText", BUSINESS_WHATSAPP_LABEL);
 
   renderItems(order);
+  renderSyncNotice(order);
 
   const whatsappBtn = document.getElementById("whatsappBtn");
   if (whatsappBtn) {
     whatsappBtn.href = `https://wa.me/${BUSINESS_WHATSAPP}?text=${buildWhatsAppMessage(order)}`;
   }
+}
+
+function renderSyncNotice(order) {
+  const orderContent = document.getElementById("orderContent");
+
+  if (!orderContent || document.getElementById("syncNotice")) return;
+
+  const isSynced = order.syncStatus === "synced";
+  const notice = document.createElement("div");
+
+  notice.id = "syncNotice";
+  notice.className = `sync-notice ${isSynced ? "synced" : "pending"}`;
+
+  notice.innerHTML = isSynced
+    ? `
+      <strong>Pedido registrado en la base de datos</strong>
+      <p>La tienda ya podra verlo desde Supabase o desde el futuro panel admin.</p>
+    `
+    : `
+      <strong>Pedido guardado en este dispositivo</strong>
+      <p>No se pudo registrar en la base de datos. Envia el codigo por WhatsApp para que la tienda lo confirme manualmente.</p>
+      <small>${order.syncMessage || "Sin detalle tecnico disponible."}</small>
+    `;
+
+  orderContent.parentNode.insertBefore(notice, orderContent);
 }
 
 function loadImageAsDataUrl(src) {
