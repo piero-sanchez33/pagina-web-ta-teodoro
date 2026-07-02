@@ -5,6 +5,7 @@ const ORDERS_KEY = "goodish_orders";
 const BUSINESS_WHATSAPP = "51977890648";
 const BUSINESS_WHATSAPP_LABEL = "+51 977 890 648";
 const BUSINESS_EMAIL = "goodish.peru@gmail.com";
+const API_BASE_URL = localStorage.getItem("goodish_api_base_url") || "https://pagina-web-ta-teodoro.onrender.com";
 
 function getStoredOrder() {
   const params = new URLSearchParams(window.location.search);
@@ -295,7 +296,7 @@ async function drawDocumentHeader(doc, order) {
   doc.line(14, 42, 196, 42);
 }
 
-async function generatePdf(order) {
+async function generatePdf(order, options = {}) {
   const jsPDF = window.jspdf?.jsPDF;
 
   if (!jsPDF) {
@@ -467,7 +468,80 @@ async function generatePdf(order) {
     drawPageFooter(doc, page, pageCount);
   }
 
+  if (options.output === "base64") {
+    return doc.output("datauristring").split(",")[1];
+  }
+
   doc.save(`${order.code || "pedido-goodish"}.pdf`);
+  return null;
+}
+
+function renderEmailNotice(status, message) {
+  const orderContent = document.getElementById("orderContent");
+  let notice = document.getElementById("emailNotice");
+
+  if (!orderContent) return;
+
+  if (!notice) {
+    notice = document.createElement("div");
+    notice.id = "emailNotice";
+    orderContent.parentNode.insertBefore(notice, orderContent);
+  }
+
+  notice.className = `email-notice ${status}`;
+  notice.innerHTML = `
+    <strong>${status === "sent" ? "Correo enviado" : status === "sending" ? "Enviando comprobante por correo" : "Correo no enviado"}</strong>
+    <p>${message}</p>
+  `;
+}
+
+function getEmailSentKey(order) {
+  return `goodish_email_sent_${order.code || order.id}`;
+}
+
+async function sendOrderEmail(order) {
+  const sentKey = getEmailSentKey(order);
+
+  if (localStorage.getItem(sentKey) === "true") {
+    renderEmailNotice("sent", "El comprobante ya fue enviado anteriormente.");
+    return;
+  }
+
+  if (!API_BASE_URL || API_BASE_URL.includes("TU-SERVICIO-RENDER")) {
+    renderEmailNotice(
+      "error",
+      "Falta configurar la URL del backend de Render en order-success.js."
+    );
+    return;
+  }
+
+  try {
+    renderEmailNotice("sending", "Estamos enviando el PDF al cliente y al negocio.");
+
+    const pdfBase64 = await generatePdf(order, { output: "base64" });
+    const response = await fetch(`${API_BASE_URL}/api/send-order-email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        order,
+        pdfBase64
+      })
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.ok) {
+      throw new Error(result.message || "El backend no pudo enviar el correo.");
+    }
+
+    localStorage.setItem(sentKey, "true");
+    renderEmailNotice("sent", "Se envio el PDF al correo del cliente y al correo del negocio.");
+  } catch (error) {
+    console.error("No se pudo enviar el correo:", error);
+    renderEmailNotice("error", error.message || "No se pudo enviar el correo automaticamente.");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -483,6 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   renderOrder(order);
+  sendOrderEmail(order);
 
   if (downloadPdfBtn) {
     downloadPdfBtn.addEventListener("click", async () => {
