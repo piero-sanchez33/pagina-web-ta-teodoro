@@ -630,6 +630,25 @@
       font-size:.79rem;
     }
 
+    .meta-pill.stock-pill{
+      background:rgba(255,62,165,.11);
+      border-color:rgba(255,62,165,.32);
+      color:var(--pink-light);
+      font-weight:800;
+    }
+
+    .meta-pill.stock-pill.low{
+      background:rgba(255,183,3,.12);
+      border-color:rgba(255,183,3,.32);
+      color:#ffd166;
+    }
+
+    .meta-pill.stock-pill.out{
+      background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.1);
+      color:rgba(255,255,255,.55);
+    }
+
     .product-actions{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -660,6 +679,15 @@
 
     .card-btn:hover{
       transform:translateY(-2px);
+    }
+
+    .card-btn:disabled,
+    .modal-add-btn:disabled,
+    .modal-qty-btn:disabled{
+      cursor:not-allowed;
+      opacity:.48;
+      transform:none !important;
+      box-shadow:none !important;
     }
 
     .subtle-social{
@@ -1874,11 +1902,15 @@ body.light .product-modal {
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/navbar.js"></script>
 
  <script>
 document.addEventListener("DOMContentLoaded", () => {
   const CART_KEY = "goodish_cart";
+  const SUPABASE_URL = "https://oqojlcgkmvbxmmwoexih.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_FJvX6aKfJO-f-SAzx2vu0Q_F4ex4L0T";
+  const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const productModalOverlay = document.getElementById("productModalOverlay");
   const modalCloseBtn = document.getElementById("modalCloseBtn");
@@ -1997,6 +2029,102 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/(^-|-$)/g, "");
   }
 
+  function normalizeProductName(text) {
+    return String(text || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+  }
+
+  function getStockLabel(stock) {
+    const value = Number(stock || 0);
+
+    if (value <= 0) return "Agotado";
+    if (value <= 5) return `Ultimas ${value}`;
+
+    return `Stock ${value}`;
+  }
+
+  function getStockClass(stock) {
+    const value = Number(stock || 0);
+
+    if (value <= 0) return "out";
+    if (value <= 5) return "low";
+
+    return "available";
+  }
+
+  function getStockPill(card) {
+    const pills = Array.from(card.querySelectorAll(".meta-pill"));
+    let stockPill = pills.find(pill => {
+      const text = pill.textContent.trim().toLowerCase();
+      return text.includes("stock") || text.includes("disponible") || text.includes("agotado") || text.includes("ultimas");
+    });
+
+    if (!stockPill) {
+      const meta = card.querySelector(".product-meta");
+      stockPill = document.createElement("span");
+      stockPill.className = "meta-pill stock-pill";
+      meta?.insertBefore(stockPill, meta.children[1] || null);
+    }
+
+    return stockPill;
+  }
+
+  function updateCardStock(card, stock) {
+    const stockValue = Number(stock || 0);
+    const stockPill = getStockPill(card);
+    const addButton = card.querySelector(".card-btn.primary");
+
+    card.dataset.stock = String(stockValue);
+
+    if (stockPill) {
+      stockPill.textContent = getStockLabel(stockValue);
+      stockPill.classList.add("stock-pill");
+      stockPill.classList.remove("available", "low", "out");
+      stockPill.classList.add(getStockClass(stockValue));
+    }
+
+    if (addButton) {
+      addButton.disabled = stockValue <= 0;
+      addButton.textContent = stockValue <= 0 ? "Agotado" : "Agregar";
+    }
+  }
+
+  async function loadProductStockFromSupabase() {
+    if (!supabaseClient) {
+      console.warn("Supabase no esta disponible para cargar stock.");
+      return;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("prenda")
+      .select("nombre_pre, stock_actual")
+      .eq("activo", true);
+
+    if (error) {
+      console.warn("No se pudo cargar el stock desde Supabase:", error);
+      return;
+    }
+
+    const stockByName = new Map(
+      (data || []).map(item => [
+        normalizeProductName(item.nombre_pre),
+        Number(item.stock_actual || 0)
+      ])
+    );
+
+    document.querySelectorAll(".product-card").forEach(card => {
+      const name = card.querySelector(".product-title-row h5")?.textContent.trim();
+      const stock = stockByName.get(normalizeProductName(name));
+
+      if (stock !== undefined) {
+        updateCardStock(card, stock);
+      }
+    });
+  }
+
   function parsePrice(priceText) {
     return Number(
       priceText
@@ -2013,10 +2141,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const category = card.querySelector(".product-badge")?.textContent.trim() || "GOODISH";
     const description = card.querySelector(".product-desc")?.textContent.trim() || "Prenda GOODISH seleccionada.";
     const metaPills = Array.from(card.querySelectorAll(".meta-pill")).map(pill => pill.textContent.trim());
+    const stockNumber = Number(card.dataset.stock ?? 0);
 
-    const size = metaPills[0] || "Talla única";
-    const stock = metaPills.find(item => item.toLowerCase().includes("stock")) || "Stock disponible";
-    const style = metaPills[2] || category;
+    const nonStockPills = metaPills.filter(item => {
+      const text = item.toLowerCase();
+      return !text.includes("stock") && !text.includes("disponible") && !text.includes("agotado") && !text.includes("ultimas");
+    });
+    const size = nonStockPills.find(item => {
+      const text = item.toLowerCase();
+      return text.includes("talla") || text.includes("unisex");
+    }) || "Talla única";
+    const stock = Number.isFinite(stockNumber) ? getStockLabel(stockNumber) : "Stock disponible";
+    const style = nonStockPills.find(item => item !== size) || category;
 
     return {
       id: slugify(`${name}-${size}-${priceText}`),
@@ -2028,6 +2164,7 @@ document.addEventListener("DOMContentLoaded", () => {
       description,
       size,
       stock,
+      stockNumber,
       style,
       meta: metaPills
     };
@@ -2036,9 +2173,23 @@ document.addEventListener("DOMContentLoaded", () => {
   function addProductToCart(product, quantity = 1) {
     const cart = getProductCart();
     const existingProduct = cart.find(item => item.id === product.id);
+    const stockLimit = Number(product.stockNumber || 0);
+    const currentQuantity = Number(existingProduct?.quantity || 0);
+
+    if (stockLimit <= 0) {
+      showAddedCartToast(product.name, 0, "Producto agotado");
+      return false;
+    }
+
+    if (currentQuantity + quantity > stockLimit) {
+      showAddedCartToast(product.name, stockLimit, "No hay mas stock disponible");
+      return false;
+    }
 
     if (existingProduct) {
       existingProduct.quantity += quantity;
+      existingProduct.stock = product.stock;
+      existingProduct.stockNumber = product.stockNumber;
     } else {
       cart.push({
         id: product.id,
@@ -2049,6 +2200,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description: product.description,
         size: product.size,
         stock: product.stock,
+        stockNumber: product.stockNumber,
         style: product.style,
         quantity
       });
@@ -2057,9 +2209,10 @@ document.addEventListener("DOMContentLoaded", () => {
     saveProductCart(cart);
     showAddedCartToast(product.name, quantity);
     animateCartBadge();
+    return true;
   }
 
-  function showAddedCartToast(productName, quantity) {
+  function showAddedCartToast(productName, quantity, customTitle = "Agregado al carrito") {
     const oldToast = document.querySelector(".added-cart-toast");
 
     if (oldToast) oldToast.remove();
@@ -2067,8 +2220,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const toast = document.createElement("div");
     toast.className = "added-cart-toast";
     toast.innerHTML = `
-      <strong>Agregado al carrito 🛒</strong>
-      <span>${quantity} × ${productName}</span>
+      <strong>${customTitle}</strong>
+      <span>${quantity > 0 ? `${quantity} x ${productName}` : productName}</span>
     `;
 
     document.body.appendChild(toast);
@@ -2110,7 +2263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     modalProductMeta.innerHTML = "";
 
-    [product.size, product.stock, product.style].forEach(item => {
+    [product.size, `${product.stockNumber} unidades disponibles`, product.style].forEach(item => {
       if (!item) return;
 
       const span = document.createElement("span");
@@ -2119,6 +2272,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     modalQtyNumber.textContent = selectedQuantity;
+    modalQtyMinus.disabled = true;
+    modalQtyPlus.disabled = product.stockNumber <= 1;
+    modalAddToCartBtn.disabled = product.stockNumber <= 0;
+    modalAddToCartBtn.textContent = product.stockNumber <= 0 ? "Producto agotado" : "Agregar al carrito";
     productModalOverlay.classList.add("show");
     document.body.style.overflow = "hidden";
   }
@@ -2147,23 +2304,40 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedQuantity--;
       modalQtyNumber.textContent = selectedQuantity;
     }
+
+    modalQtyMinus.disabled = selectedQuantity <= 1;
+    modalQtyPlus.disabled = selectedProduct ? selectedQuantity >= selectedProduct.stockNumber : false;
   });
 
   modalQtyPlus.addEventListener("click", () => {
+    if (!selectedProduct) return;
+    if (selectedQuantity >= selectedProduct.stockNumber) return;
+
     selectedQuantity++;
     modalQtyNumber.textContent = selectedQuantity;
+    modalQtyMinus.disabled = selectedQuantity <= 1;
+    modalQtyPlus.disabled = selectedQuantity >= selectedProduct.stockNumber;
   });
 
   modalAddToCartBtn.addEventListener("click", () => {
     if (!selectedProduct) return;
 
-    addProductToCart(selectedProduct, selectedQuantity);
-    closeProductModal();
+    const wasAdded = addProductToCart(selectedProduct, selectedQuantity);
+
+    if (wasAdded) {
+      closeProductModal();
+    }
   });
 
   document.querySelectorAll(".product-card").forEach(card => {
     const viewButton = card.querySelector(".card-btn.secondary");
     const addButton = card.querySelector(".card-btn.primary");
+    const initialStockText = Array.from(card.querySelectorAll(".meta-pill"))
+      .map(pill => pill.textContent.trim())
+      .find(text => text.toLowerCase().includes("stock"));
+    const initialStock = Number(initialStockText?.replace(/\D/g, "") || 0);
+
+    updateCardStock(card, initialStock);
 
     card.addEventListener("click", event => {
       if (event.target.closest("button")) return;
@@ -2192,6 +2366,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+
+  loadProductStockFromSupabase();
 });
 </script>
 
