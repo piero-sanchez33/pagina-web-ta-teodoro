@@ -522,7 +522,7 @@ async function sendOrderEmail(order) {
   }
 
   try {
-    renderEmailNotice("sending", "Estamos enviando el PDF al cliente y al negocio.");
+    renderEmailNotice("sending", "Estamos enviando el PDF al correo del negocio.");
 
     const pdfBase64 = await generatePdf(order, {
       output: "base64",
@@ -546,7 +546,7 @@ async function sendOrderEmail(order) {
     }
 
     localStorage.setItem(sentKey, "true");
-    renderEmailNotice("sent", "Se envio el PDF al correo del cliente y al correo del negocio.");
+    renderEmailNotice("sent", "Se envio el PDF al correo del negocio.");
   } catch (error) {
     console.error("No se pudo enviar el correo:", error);
     renderEmailNotice("error", error.message || "No se pudo enviar el correo automaticamente.");

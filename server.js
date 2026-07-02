@@ -196,40 +196,25 @@ async function sendResendEmail({ to, subject, html, pdfBase64, filename }) {
 app.post("/api/send-order-email", async (req, res) => {
   const { order, pdfBase64 } = req.body || {};
   const ownerEmail = process.env.BUSINESS_EMAIL || "goodish.peru@gmail.com";
-  const customerEmail = order?.customer?.email;
 
   if (!order?.code) {
     return res.status(400).json({ ok: false, message: "Falta el pedido." });
   }
 
-  if (!customerEmail) {
-    return res.status(400).json({ ok: false, message: "Falta el correo del cliente." });
-  }
-
   try {
     const filename = `${order.code}.pdf`;
 
-    const [customerResult, ownerResult] = await Promise.all([
-      sendResendEmail({
-        to: customerEmail,
-        subject: `Tu pedido GOODISH ${order.code}`,
-        html: buildOrderEmailHtml(order, "customer"),
-        pdfBase64,
-        filename
-      }),
-      sendResendEmail({
-        to: ownerEmail,
-        subject: `Nuevo pedido GOODISH ${order.code}`,
-        html: buildOrderEmailHtml(order, "owner"),
-        pdfBase64,
-        filename
-      })
-    ]);
+    const ownerResult = await sendResendEmail({
+      to: ownerEmail,
+      subject: `Nuevo pedido GOODISH ${order.code}`,
+      html: buildOrderEmailHtml(order, "owner"),
+      pdfBase64,
+      filename
+    });
 
     res.json({
       ok: true,
-      message: "Correos enviados correctamente.",
-      customerResult,
+      message: "Correo enviado correctamente al negocio.",
       ownerResult
     });
   } catch (error) {
