@@ -129,7 +129,7 @@ function loadImageAsDataUrl(src) {
       const context = canvas.getContext("2d");
       context.drawImage(image, 0, 0);
 
-      resolve(canvas.toDataURL("image/jpeg", 0.82));
+      resolve(canvas.toDataURL("image/png"));
     };
 
     image.onerror = () => resolve(null);
@@ -151,89 +151,114 @@ function addPdfText(doc, text, x, y, options = {}) {
   doc.text(String(text || ""), x, y, { maxWidth });
 }
 
-function addPdfCard(doc, x, y, width, height, title, lines) {
-  doc.setFillColor(255, 246, 251);
-  doc.setDrawColor(245, 193, 222);
-  doc.roundedRect(x, y, width, height, 4, 4, "FD");
-
-  addPdfText(doc, title, x + 5, y + 8, {
-    size: 9,
+function drawSectionTitle(doc, title, x, y, width = 84) {
+  addPdfText(doc, title.toUpperCase(), x, y, {
+    size: 8,
     weight: "bold",
     color: [239, 47, 152],
-    maxWidth: width - 10
+    maxWidth: width
   });
+  doc.setDrawColor(239, 47, 152);
+  doc.setLineWidth(0.4);
+  doc.line(x, y + 2, x + width, y + 2);
+}
 
-  lines.forEach((line, index) => {
-    addPdfText(doc, line, x + 5, y + 17 + index * 6, {
-      size: 9,
-      color: [65, 44, 69],
-      maxWidth: width - 10
+function drawInfoBlock(doc, title, rows, x, y, width) {
+  drawSectionTitle(doc, title, x, y, width);
+
+  let rowY = y + 10;
+  rows.forEach(row => {
+    addPdfText(doc, row.label, x, rowY, {
+      size: 8,
+      weight: "bold",
+      color: [87, 74, 91],
+      maxWidth: 26
     });
+
+    addPdfText(doc, row.value || "-", x + 30, rowY, {
+      size: 8.5,
+      color: [31, 22, 34],
+      maxWidth: width - 32
+    });
+
+    rowY += row.gap || 6;
   });
 }
 
-function addPdfFooter(doc, pageNumber, pageCount) {
-  doc.setDrawColor(245, 193, 222);
+function drawPageFooter(doc, pageNumber, pageCount) {
+  doc.setDrawColor(226, 214, 224);
+  doc.setLineWidth(0.25);
   doc.line(14, 282, 196, 282);
 
-  addPdfText(doc, `GOODISH | ${BUSINESS_WHATSAPP_LABEL} | ${BUSINESS_EMAIL}`, 14, 288, {
+  addPdfText(doc, "GOODISH", 14, 288, {
     size: 8,
-    color: [118, 98, 120],
-    maxWidth: 135
+    weight: "bold",
+    color: [239, 47, 152],
+    maxWidth: 28
   });
 
-  addPdfText(doc, `Pagina ${pageNumber} de ${pageCount}`, 170, 288, {
+  addPdfText(doc, `${BUSINESS_WHATSAPP_LABEL} | ${BUSINESS_EMAIL}`, 34, 288, {
     size: 8,
-    color: [118, 98, 120],
-    maxWidth: 30
+    color: [99, 86, 102],
+    maxWidth: 108
+  });
+
+  addPdfText(doc, `Pagina ${pageNumber} de ${pageCount}`, 171, 288, {
+    size: 8,
+    color: [99, 86, 102],
+    maxWidth: 28
   });
 }
 
-async function addPdfHeader(doc, order) {
+async function drawDocumentHeader(doc, order) {
   const logoDataUrl = await loadImageAsDataUrl("images/logo.png");
 
-  doc.setFillColor(255, 244, 251);
-  doc.rect(0, 0, 210, 42, "F");
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, 210, 297, "F");
+
   doc.setFillColor(239, 47, 152);
-  doc.rect(0, 0, 210, 8, "F");
+  doc.rect(0, 0, 210, 4, "F");
 
   if (logoDataUrl) {
-    doc.addImage(logoDataUrl, "JPEG", 14, 13, 22, 22);
-  } else {
-    doc.setFillColor(239, 47, 152);
-    doc.circle(25, 24, 11, "F");
+    doc.addImage(logoDataUrl, "PNG", 14, 14, 20, 20);
   }
 
-  addPdfText(doc, "GOODISH", 42, 23, {
-    size: 22,
+  addPdfText(doc, "GOODISH", 39, 22, {
+    size: 19,
     weight: "bold",
     color: [239, 47, 152],
-    maxWidth: 70
+    maxWidth: 56
   });
 
-  addPdfText(doc, "Comprobante de pedido", 42, 31, {
-    size: 9,
-    color: [118, 98, 120],
-    maxWidth: 70
+  addPdfText(doc, "Comprobante de pedido", 39, 29, {
+    size: 8.5,
+    color: [99, 86, 102],
+    maxWidth: 58
   });
 
-  doc.setFillColor(255, 255, 255);
-  doc.setDrawColor(245, 193, 222);
-  doc.roundedRect(128, 13, 68, 22, 4, 4, "FD");
-
-  addPdfText(doc, "Codigo de pedido", 133, 21, {
+  addPdfText(doc, "PEDIDO", 140, 17, {
     size: 8,
     weight: "bold",
-    color: [118, 98, 120],
-    maxWidth: 58
+    color: [99, 86, 102],
+    maxWidth: 56
   });
 
-  addPdfText(doc, order.code || order.id || "GOODISH", 133, 29, {
-    size: 10,
+  addPdfText(doc, order.code || order.id || "GOODISH", 140, 25, {
+    size: 11,
     weight: "bold",
-    color: [37, 21, 39],
-    maxWidth: 58
+    color: [31, 22, 34],
+    maxWidth: 56
   });
+
+  addPdfText(doc, formatDate(order.createdAt), 140, 32, {
+    size: 8,
+    color: [99, 86, 102],
+    maxWidth: 56
+  });
+
+  doc.setDrawColor(226, 214, 224);
+  doc.setLineWidth(0.25);
+  doc.line(14, 42, 196, 42);
 }
 
 async function generatePdf(order) {
@@ -245,68 +270,64 @@ async function generatePdf(order) {
   }
 
   const doc = new jsPDF();
-  await addPdfHeader(doc, order);
+  await drawDocumentHeader(doc, order);
 
-  addPdfText(doc, "Pedido creado correctamente", 14, 54, {
-    size: 16,
+  addPdfText(doc, "Pedido confirmado", 14, 56, {
+    size: 18,
     weight: "bold",
-    color: [37, 21, 39],
+    color: [31, 22, 34],
     maxWidth: 95
   });
 
-  addPdfText(doc, "Tu pedido fue registrado y queda pendiente de validacion de pago o coordinacion de entrega.", 14, 63, {
-    size: 9,
-    color: [118, 98, 120],
-    maxWidth: 112
+  addPdfText(doc, "Este documento resume la compra registrada. La validacion final queda sujeta a confirmacion de pago y disponibilidad.", 14, 65, {
+    size: 8.8,
+    color: [99, 86, 102],
+    maxWidth: 118
   });
 
-  doc.setFillColor(37, 21, 39);
-  doc.roundedRect(142, 50, 54, 18, 4, 4, "F");
-  addPdfText(doc, order.paymentStatus || "PENDIENTE", 148, 61, {
-    size: 10,
+  doc.setFillColor(255, 244, 251);
+  doc.setDrawColor(239, 47, 152);
+  doc.roundedRect(145, 52, 51, 16, 3, 3, "FD");
+  addPdfText(doc, order.paymentStatus || "PENDIENTE", 154, 62, {
+    size: 9.5,
     weight: "bold",
-    color: [255, 255, 255],
-    maxWidth: 42
+    color: [239, 47, 152],
+    maxWidth: 34
   });
 
-  addPdfCard(doc, 14, 78, 88, 40, "Cliente", [
-    order.customer?.name || "Cliente GOODISH",
-    order.customer?.email || "Correo no registrado",
-    `Celular: ${order.customer?.phone || "No registrado"}`
-  ]);
+  drawInfoBlock(doc, "Cliente", [
+    { label: "Nombre", value: order.customer?.name || "Cliente GOODISH" },
+    { label: "Correo", value: order.customer?.email || "Correo no registrado" },
+    { label: "Celular", value: order.customer?.phone || "No registrado" }
+  ], 14, 84, 84);
 
-  addPdfCard(doc, 108, 78, 88, 40, "Entrega", [
-    order.customer?.district || "Distrito no registrado",
-    order.customer?.address || "Direccion no registrada",
-    order.customer?.reference || "Sin referencia"
-  ]);
+  drawInfoBlock(doc, "Entrega", [
+    { label: "Distrito", value: order.customer?.district || "No registrado" },
+    { label: "Direccion", value: order.customer?.address || "No registrada", gap: 8 },
+    { label: "Referencia", value: order.customer?.reference || "Sin referencia" }
+  ], 112, 84, 84);
 
-  addPdfCard(doc, 14, 124, 88, 30, "Pago", [
-    `Metodo: ${order.paymentMethod || "Por confirmar"}`,
-    `Fecha: ${formatDate(order.createdAt)}`
-  ]);
+  drawInfoBlock(doc, "Pago", [
+    { label: "Metodo", value: order.paymentMethod || "Por confirmar" },
+    { label: "Estado", value: order.paymentStatus || "PENDIENTE" }
+  ], 14, 122, 84);
 
-  addPdfCard(doc, 108, 124, 88, 30, "Contacto GOODISH", [
-    `WhatsApp: ${BUSINESS_WHATSAPP_LABEL}`,
-    BUSINESS_EMAIL
-  ]);
+  drawInfoBlock(doc, "Negocio", [
+    { label: "WhatsApp", value: BUSINESS_WHATSAPP_LABEL },
+    { label: "Correo", value: BUSINESS_EMAIL }
+  ], 112, 122, 84);
 
-  let y = 169;
-  addPdfText(doc, "Detalle de productos", 14, y, {
-    size: 13,
-    weight: "bold",
-    color: [37, 21, 39],
-    maxWidth: 80
-  });
-
+  let y = 159;
+  drawSectionTitle(doc, "Detalle de productos", 14, y, 182);
   y += 8;
-  doc.setFillColor(239, 47, 152);
-  doc.roundedRect(14, y, 182, 10, 3, 3, "F");
-  addPdfText(doc, "Producto", 18, y + 7, { size: 8, weight: "bold", color: [255, 255, 255], maxWidth: 72 });
-  addPdfText(doc, "Cant.", 112, y + 7, { size: 8, weight: "bold", color: [255, 255, 255], maxWidth: 18 });
-  addPdfText(doc, "P. Unit.", 132, y + 7, { size: 8, weight: "bold", color: [255, 255, 255], maxWidth: 24 });
-  addPdfText(doc, "Subtotal", 164, y + 7, { size: 8, weight: "bold", color: [255, 255, 255], maxWidth: 26 });
-  y += 14;
+
+  doc.setFillColor(31, 22, 34);
+  doc.rect(14, y, 182, 9, "F");
+  addPdfText(doc, "Producto", 17, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 74 });
+  addPdfText(doc, "Cant.", 113, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 16 });
+  addPdfText(doc, "Precio", 134, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 22 });
+  addPdfText(doc, "Subtotal", 165, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 26 });
+  y += 13;
 
   const items = Array.isArray(order.items) ? order.items : [];
   for (const item of items) {
@@ -317,81 +338,99 @@ async function generatePdf(order) {
 
     if (y > 252) {
       doc.addPage();
-      await addPdfHeader(doc, order);
+      await drawDocumentHeader(doc, order);
       y = 56;
+
+      doc.setFillColor(31, 22, 34);
+      doc.rect(14, y, 182, 9, "F");
+      addPdfText(doc, "Producto", 17, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 74 });
+      addPdfText(doc, "Cant.", 113, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 16 });
+      addPdfText(doc, "Precio", 134, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 22 });
+      addPdfText(doc, "Subtotal", 165, y + 6.4, { size: 7.5, weight: "bold", color: [255, 255, 255], maxWidth: 26 });
+      y += 13;
     }
 
-    doc.setFillColor(255, 255, 255);
-    doc.setDrawColor(245, 222, 236);
-    doc.roundedRect(14, y, 182, 24, 3, 3, "FD");
+    doc.setDrawColor(232, 224, 231);
+    doc.setLineWidth(0.2);
+    doc.line(14, y + 21, 196, y + 21);
 
     const imageDataUrl = await loadImageAsDataUrl(item.image || "images/logo.png");
     if (imageDataUrl) {
-      doc.addImage(imageDataUrl, "JPEG", 18, y + 3, 18, 18);
+      doc.addImage(imageDataUrl, "PNG", 17, y, 16, 18);
     }
 
-    addPdfText(doc, name, 40, y + 8, {
-      size: 9,
+    addPdfText(doc, name, 38, y + 6, {
+      size: 8.8,
       weight: "bold",
-      color: [37, 21, 39],
-      maxWidth: 64
+      color: [31, 22, 34],
+      maxWidth: 68
     });
 
-    addPdfText(doc, `${item.category || "GOODISH"} | ${item.size || "Talla unica"}`, 40, y + 15, {
-      size: 8,
-      color: [118, 98, 120],
-      maxWidth: 64
+    addPdfText(doc, `${item.category || "GOODISH"} / ${item.size || "Talla unica"}`, 38, y + 13, {
+      size: 7.5,
+      color: [99, 86, 102],
+      maxWidth: 68
     });
 
-    addPdfText(doc, quantity, 114, y + 13, { size: 9, weight: "bold", maxWidth: 16 });
-    addPdfText(doc, formatPrice(price), 132, y + 13, { size: 9, maxWidth: 26 });
-    addPdfText(doc, formatPrice(subtotal), 164, y + 13, {
-      size: 9,
+    addPdfText(doc, quantity, 115, y + 10.5, { size: 8.5, color: [31, 22, 34], maxWidth: 12 });
+    addPdfText(doc, formatPrice(price), 132, y + 10.5, { size: 8.5, color: [31, 22, 34], maxWidth: 28 });
+    addPdfText(doc, formatPrice(subtotal), 164, y + 10.5, {
+      size: 8.8,
       weight: "bold",
-      color: [239, 47, 152],
-      maxWidth: 28
+      color: [31, 22, 34],
+      maxWidth: 30
     });
 
-    y += 29;
+    y += 24;
   }
 
-  if (y > 236) {
+  if (items.length === 0) {
+    addPdfText(doc, "No hay productos registrados en este pedido.", 17, y + 8, {
+      size: 9,
+      color: [99, 86, 102],
+      maxWidth: 120
+    });
+    y += 18;
+  }
+
+  if (y > 226) {
     doc.addPage();
-    await addPdfHeader(doc, order);
+    await drawDocumentHeader(doc, order);
     y = 56;
   }
 
-  doc.setFillColor(255, 246, 251);
-  doc.setDrawColor(245, 193, 222);
-  doc.roundedRect(116, y, 80, 36, 4, 4, "FD");
+  const totalBoxY = y + 6;
+  doc.setDrawColor(226, 214, 224);
+  doc.setFillColor(250, 250, 250);
+  doc.roundedRect(118, totalBoxY, 78, 38, 2, 2, "FD");
 
-  addPdfText(doc, `Productos: ${order.totalItems || 0}`, 122, y + 9, { size: 9, color: [65, 44, 69], maxWidth: 62 });
-  addPdfText(doc, `Subtotal: ${formatPrice(order.subtotal)}`, 122, y + 17, { size: 9, color: [65, 44, 69], maxWidth: 62 });
-  addPdfText(doc, "Total", 122, y + 28, { size: 10, weight: "bold", color: [37, 21, 39], maxWidth: 20 });
-  addPdfText(doc, formatPrice(order.total || order.subtotal), 150, y + 28, {
-    size: 14,
+  addPdfText(doc, "Productos", 124, totalBoxY + 9, { size: 8.5, color: [99, 86, 102], maxWidth: 32 });
+  addPdfText(doc, String(order.totalItems || 0), 180, totalBoxY + 9, { size: 8.5, weight: "bold", color: [31, 22, 34], maxWidth: 12 });
+  addPdfText(doc, "Subtotal", 124, totalBoxY + 17, { size: 8.5, color: [99, 86, 102], maxWidth: 32 });
+  addPdfText(doc, formatPrice(order.subtotal), 163, totalBoxY + 17, { size: 8.5, weight: "bold", color: [31, 22, 34], maxWidth: 28 });
+
+  doc.setDrawColor(226, 214, 224);
+  doc.line(124, totalBoxY + 23, 190, totalBoxY + 23);
+
+  addPdfText(doc, "TOTAL", 124, totalBoxY + 32, { size: 10, weight: "bold", color: [31, 22, 34], maxWidth: 26 });
+  addPdfText(doc, formatPrice(order.total || order.subtotal), 158, totalBoxY + 32, {
+    size: 13,
     weight: "bold",
     color: [239, 47, 152],
-    maxWidth: 42
+    maxWidth: 34
   });
 
-  addPdfText(doc, "Siguiente paso", 14, y + 8, {
-    size: 11,
-    weight: "bold",
-    color: [37, 21, 39],
-    maxWidth: 70
-  });
-
-  addPdfText(doc, "Envia tu comprobante por WhatsApp indicando tu codigo de pedido. GOODISH validara el pago y coordinara la entrega.", 14, y + 17, {
-    size: 9,
-    color: [118, 98, 120],
+  drawSectionTitle(doc, "Siguiente paso", 14, totalBoxY + 4, 80);
+  addPdfText(doc, "Envia el comprobante de pago por WhatsApp e incluye tu codigo de pedido. GOODISH validara el pago y coordinara la entrega.", 14, totalBoxY + 15, {
+    size: 8.5,
+    color: [99, 86, 102],
     maxWidth: 84
   });
 
   const pageCount = doc.internal.getNumberOfPages();
   for (let page = 1; page <= pageCount; page += 1) {
     doc.setPage(page);
-    addPdfFooter(doc, page, pageCount);
+    drawPageFooter(doc, page, pageCount);
   }
 
   doc.save(`${order.code || "pedido-goodish"}.pdf`);
