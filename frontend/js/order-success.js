@@ -245,8 +245,9 @@ function drawPageFooter(doc, pageNumber, pageCount) {
   });
 }
 
-async function drawDocumentHeader(doc, order) {
-  const logoDataUrl = await loadImageAsDataUrl("images/logo.png");
+async function drawDocumentHeader(doc, order, options = {}) {
+  const includeImages = options.includeImages !== false;
+  const logoDataUrl = includeImages ? await loadImageAsDataUrl("images/logo.png") : null;
 
   doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, 210, 297, "F");
@@ -305,7 +306,9 @@ async function generatePdf(order, options = {}) {
   }
 
   const doc = new jsPDF();
-  await drawDocumentHeader(doc, order);
+  const includeImages = options.includeImages !== false;
+
+  await drawDocumentHeader(doc, order, options);
 
   addPdfText(doc, "Pedido confirmado", 14, 56, {
     size: 18,
@@ -373,7 +376,7 @@ async function generatePdf(order, options = {}) {
 
     if (y > 252) {
       doc.addPage();
-      await drawDocumentHeader(doc, order);
+      await drawDocumentHeader(doc, order, options);
       y = 56;
 
       doc.setFillColor(31, 22, 34);
@@ -389,22 +392,25 @@ async function generatePdf(order, options = {}) {
     doc.setLineWidth(0.2);
     doc.line(14, y + 21, 196, y + 21);
 
-    const imageDataUrl = await loadImageAsDataUrl(item.image || "images/logo.png");
+    const productTextX = includeImages ? 38 : 17;
+    const productTextWidth = includeImages ? 68 : 89;
+    const imageDataUrl = includeImages ? await loadImageAsDataUrl(item.image || "images/logo.png") : null;
+
     if (imageDataUrl) {
       doc.addImage(imageDataUrl, "PNG", 17, y, 16, 18);
     }
 
-    addPdfText(doc, name, 38, y + 6, {
+    addPdfText(doc, name, productTextX, y + 6, {
       size: 8.8,
       weight: "bold",
       color: [31, 22, 34],
-      maxWidth: 68
+      maxWidth: productTextWidth
     });
 
-    addPdfText(doc, `${item.category || "GOODISH"} / ${item.size || "Talla unica"}`, 38, y + 13, {
+    addPdfText(doc, `${item.category || "GOODISH"} / ${item.size || "Talla unica"}`, productTextX, y + 13, {
       size: 7.5,
       color: [99, 86, 102],
-      maxWidth: 68
+      maxWidth: productTextWidth
     });
 
     addPdfText(doc, quantity, 115, y + 10.5, { size: 8.5, color: [31, 22, 34], maxWidth: 12 });
@@ -430,7 +436,7 @@ async function generatePdf(order, options = {}) {
 
   if (y > 226) {
     doc.addPage();
-    await drawDocumentHeader(doc, order);
+    await drawDocumentHeader(doc, order, options);
     y = 56;
   }
 
@@ -518,7 +524,10 @@ async function sendOrderEmail(order) {
   try {
     renderEmailNotice("sending", "Estamos enviando el PDF al cliente y al negocio.");
 
-    const pdfBase64 = await generatePdf(order, { output: "base64" });
+    const pdfBase64 = await generatePdf(order, {
+      output: "base64",
+      includeImages: false
+    });
     const response = await fetch(`${API_BASE_URL}/api/send-order-email`, {
       method: "POST",
       headers: {

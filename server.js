@@ -5,7 +5,7 @@ const { createClient } = require("@supabase/supabase-js");
 const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: "12mb" }));
+app.use(express.json({ limit: "25mb" }));
 
 // Tu carpeta frontend tiene index.html y register.html
 app.use(express.static("frontend"));
