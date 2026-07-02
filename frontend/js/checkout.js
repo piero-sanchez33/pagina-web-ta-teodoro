@@ -339,6 +339,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 900);
   });
 
-  await renderCurrentUserBox();
   renderCheckoutSummary();
+
+  try {
+    await renderCurrentUserBox();
+  } catch (error) {
+    console.error("No se pudo cargar el usuario en checkout:", error);
+  }
 });
