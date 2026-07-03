@@ -83,7 +83,9 @@
   const userChip = document.getElementById("goodishUserChip");
   const userAvatar = document.getElementById("goodishUserAvatar");
   const userText = document.getElementById("goodishUserText");
+  const profileLink = document.querySelector(".goodish-profile-link");
   const mobileUser = document.getElementById("goodishMobileUser");
+  const mobileProfileLink = document.getElementById("goodishMobileProfileLink");
   const mobileUserText = document.getElementById("goodishMobileUserText");
   const logoutBtn = document.getElementById("goodishLogoutBtn");
   const mobileLogoutBtn = document.getElementById("goodishMobileLogoutBtn");
@@ -238,17 +240,44 @@
       mobileUserText.textContent = `Hola, ${displayName}`;
     }
 
+    const goToProfile = event => {
+      if (event?.target?.closest(".goodish-logout-btn, #goodishMobileLogoutBtn")) {
+        return;
+      }
+
+      event?.preventDefault();
+      window.location.href = "perfil.html";
+    };
+
+    if (userChip) {
+      userChip.addEventListener("click", goToProfile);
+    }
+
+    if (profileLink) {
+      profileLink.addEventListener("click", goToProfile);
+    }
+
+    if (mobileProfileLink) {
+      mobileProfileLink.addEventListener("click", goToProfile);
+    }
+
     const logout = async () => {
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     };
 
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", logout);
+      logoutBtn.addEventListener("click", event => {
+        event.stopPropagation();
+        logout();
+      });
     }
 
     if (mobileLogoutBtn) {
-      mobileLogoutBtn.addEventListener("click", logout);
+      mobileLogoutBtn.addEventListener("click", event => {
+        event.stopPropagation();
+        logout();
+      });
     }
   }
 
