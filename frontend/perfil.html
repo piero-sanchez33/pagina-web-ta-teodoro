@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GOODISH | Mi perfil</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/perfil.css">
+</head>
+
+<body>
+  <div class="bg-blur blur-1"></div>
+  <div class="bg-blur blur-2"></div>
+  <div class="bg-blur blur-3"></div>
+
+  <main class="profile-page">
+    <section class="profile-hero">
+      <div>
+        <div class="profile-badge">Cuenta GOODISH</div>
+        <h1>
+          Mi
+          <span class="gradient">perfil</span>
+        </h1>
+        <p>
+          Mantén tus datos listos para comprar más rápido y revisar tu actividad dentro de GOODISH.
+        </p>
+      </div>
+
+      <article class="profile-card hero-card">
+        <span class="profile-avatar" id="profileAvatar">G</span>
+        <div>
+          <span>Comprando como</span>
+          <strong id="profileHeroName">Cliente GOODISH</strong>
+          <small id="profileHeroEmail">correo-no-disponible@goodish.pe</small>
+        </div>
+      </article>
+    </section>
+
+    <section class="profile-layout">
+      <article class="profile-card profile-main">
+        <div class="panel-head">
+          <div>
+            <h2>Datos de cuenta</h2>
+            <p>Esta información se toma de tu usuario registrado en GOODISH.</p>
+          </div>
+          <span class="profile-status" id="profileStatus">Activo</span>
+        </div>
+
+        <div class="profile-info-grid">
+          <div class="info-box">
+            <span>Nombres</span>
+            <strong id="profileName">Cliente</strong>
+          </div>
+
+          <div class="info-box">
+            <span>Apellidos</span>
+            <strong id="profileLastName">GOODISH</strong>
+          </div>
+
+          <div class="info-box full">
+            <span>Correo</span>
+            <strong id="profileEmail">correo-no-disponible@goodish.pe</strong>
+          </div>
+        </div>
+
+        <form class="profile-form" id="profileForm">
+          <div class="form-group">
+            <label for="profilePhone">Celular / WhatsApp</label>
+            <input
+              type="tel"
+              id="profilePhone"
+              name="profilePhone"
+              placeholder="Ej: 999 999 999"
+              autocomplete="tel"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="profileCity">Ciudad / distrito</label>
+            <input
+              type="text"
+              id="profileCity"
+              name="profileCity"
+              placeholder="Ej: Lima"
+              autocomplete="address-level2"
+            >
+          </div>
+
+          <button type="submit" class="profile-save-btn" id="profileSaveBtn">
+            Guardar cambios
+          </button>
+        </form>
+      </article>
+
+      <aside class="profile-side">
+        <article class="profile-card stats-card">
+          <h2>Resumen</h2>
+
+          <div class="stat-line">
+            <span>Pedidos</span>
+            <strong id="profileOrdersCount">0</strong>
+          </div>
+
+          <div class="stat-line">
+            <span>Total comprado</span>
+            <strong id="profileOrdersTotal">S/ 0.00</strong>
+          </div>
+
+          <div class="stat-line">
+            <span>Último pedido</span>
+            <strong id="profileLastOrder">Sin pedidos</strong>
+          </div>
+        </article>
+
+        <article class="profile-card quick-card">
+          <h2>Accesos rápidos</h2>
+          <a href="mis-pedidos.html">Ver mis pedidos</a>
+          <a href="products.html">Explorar catálogo</a>
+          <a href="cart.html">Ir al carrito</a>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <div class="profile-toast" id="profileToast">
+    <strong id="profileToastTitle">Perfil actualizado</strong>
+    <p id="profileToastText">Tus datos fueron guardados.</p>
+  </div>
+
+  <script src="js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/perfil.js"></script>
+</body>
+</html>

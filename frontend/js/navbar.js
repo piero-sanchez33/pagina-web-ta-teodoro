@@ -32,8 +32,10 @@
 
         <div class="goodish-nav-actions">
           <div class="goodish-user-chip" id="goodishUserChip" hidden>
-            <span class="goodish-user-avatar" id="goodishUserAvatar">G</span>
-            <span class="goodish-user-text" id="goodishUserText">Cliente</span>
+            <a href="perfil.html" class="goodish-profile-link page-link" aria-label="Ver perfil">
+              <span class="goodish-user-avatar" id="goodishUserAvatar">G</span>
+              <span class="goodish-user-text" id="goodishUserText">Cliente</span>
+            </a>
             <button type="button" class="goodish-logout-btn" id="goodishLogoutBtn">Salir</button>
           </div>
 
@@ -57,7 +59,9 @@
         <a href="login.html" class="page-link goodish-login-link">Login</a>
 
         <div class="goodish-mobile-user" id="goodishMobileUser" hidden>
-          <span id="goodishMobileUserText">Cliente GOODISH</span>
+          <a href="perfil.html" class="page-link" id="goodishMobileProfileLink">
+            <span id="goodishMobileUserText">Cliente GOODISH</span>
+          </a>
           <button type="button" id="goodishMobileLogoutBtn">Salir</button>
         </div>
 
