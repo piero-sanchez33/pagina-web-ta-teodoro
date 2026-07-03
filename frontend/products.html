@@ -379,6 +379,117 @@
       box-shadow:0 0 18px rgba(255,62,165,.08);
     }
 
+    .catalog-tools{
+      margin-top:28px;
+      padding:22px;
+      border-radius:28px;
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      box-shadow:0 20px 45px rgba(0,0,0,.14);
+    }
+
+    .catalog-search{
+      position:relative;
+      margin-bottom:16px;
+    }
+
+    .catalog-search input{
+      width:100%;
+      min-height:58px;
+      padding:0 54px 0 20px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      outline:none;
+      background:rgba(255,255,255,.06);
+      color:var(--text-main);
+      font:inherit;
+      font-weight:700;
+      transition:border .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+
+    .catalog-search input:focus{
+      border-color:rgba(255,62,165,.45);
+      box-shadow:0 0 0 4px rgba(255,62,165,.12);
+      background:rgba(255,255,255,.08);
+    }
+
+    .catalog-search input::placeholder{
+      color:var(--text-muted);
+      font-weight:600;
+    }
+
+    .catalog-search span{
+      position:absolute;
+      right:20px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--pink-light);
+      font-weight:900;
+    }
+
+    .catalog-filter-grid{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(140px,1fr)) auto;
+      gap:12px;
+      align-items:end;
+    }
+
+    .catalog-filter-field{
+      display:grid;
+      gap:8px;
+    }
+
+    .catalog-filter-field label{
+      color:var(--text-soft);
+      font-size:.78rem;
+      font-weight:900;
+    }
+
+    .catalog-filter-field select{
+      width:100%;
+      min-height:48px;
+      padding:0 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      outline:none;
+      background:rgba(255,255,255,.06);
+      color:var(--text-main);
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .catalog-filter-field select option{
+      color:#251527;
+      background:#fff4fb;
+    }
+
+    .clear-filters-btn{
+      min-height:48px;
+      padding:0 18px;
+      border-radius:16px;
+      border:1px solid rgba(255,62,165,.28);
+      background:rgba(255,62,165,.12);
+      color:var(--pink-light);
+      font:inherit;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .25s ease, border .25s ease;
+      white-space:nowrap;
+    }
+
+    .clear-filters-btn:hover{
+      transform:translateY(-2px);
+      border-color:rgba(255,62,165,.5);
+    }
+
+    .catalog-results-line{
+      margin-top:14px;
+      color:var(--text-muted);
+      font-size:.9rem;
+      font-weight:700;
+    }
+
     .catalog-section{
       padding-top:30px;
     }
@@ -1210,6 +1321,14 @@ body.light .product-modal {
         padding-top:20px;
       }
 
+      .catalog-filter-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
+      .clear-filters-btn{
+        grid-column:1 / -1;
+      }
+
       .hero-panel{
         min-height:auto;
       }
@@ -1274,6 +1393,15 @@ body.light .product-modal {
 
       .catalog-header{
         align-items:start;
+      }
+
+      .catalog-tools{
+        padding:16px;
+        border-radius:22px;
+      }
+
+      .catalog-filter-grid{
+        grid-template-columns:1fr;
       }
 
       .subtle-social a{
@@ -1353,12 +1481,77 @@ body.light .product-modal {
         </div>
 
         <div class="filter-row">
-          <button class="filter-chip active">Todos</button>
-          <button class="filter-chip">Jeans</button>
-          <button class="filter-chip">Gorros</button>
-          <button class="filter-chip">Polos Fairy</button>
-          <button class="filter-chip">Polos Retro</button>
+          <button class="filter-chip active" data-category-filter="all">Todos</button>
+          <button class="filter-chip" data-category-filter="jeans">Jeans</button>
+          <button class="filter-chip" data-category-filter="gorros">Gorros</button>
+          <button class="filter-chip" data-category-filter="fairy">Polos Fairy</button>
+          <button class="filter-chip" data-category-filter="retro">Polos Retro</button>
         </div>
+      </div>
+
+      <div class="catalog-tools reveal" id="catalogTools">
+        <div class="catalog-search">
+          <input
+            type="search"
+            id="catalogSearchInput"
+            placeholder="Buscar prendas, estilos, tallas..."
+            autocomplete="off"
+          >
+          <span>⌕</span>
+        </div>
+
+        <div class="catalog-filter-grid">
+          <div class="catalog-filter-field">
+            <label for="styleFilter">Estilo</label>
+            <select id="styleFilter">
+              <option value="all">Todos</option>
+            </select>
+          </div>
+
+          <div class="catalog-filter-field">
+            <label for="sizeFilter">Talla</label>
+            <select id="sizeFilter">
+              <option value="all">Todas</option>
+            </select>
+          </div>
+
+          <div class="catalog-filter-field">
+            <label for="priceFilter">Precio</label>
+            <select id="priceFilter">
+              <option value="all">Todos</option>
+              <option value="under-30">Menos de S/ 30</option>
+              <option value="30-50">S/ 30 a S/ 50</option>
+              <option value="50-80">S/ 50 a S/ 80</option>
+              <option value="over-80">Más de S/ 80</option>
+            </select>
+          </div>
+
+          <div class="catalog-filter-field">
+            <label for="stockFilter">Disponibilidad</label>
+            <select id="stockFilter">
+              <option value="all">Todos</option>
+              <option value="available">Disponibles</option>
+              <option value="out">Agotados</option>
+            </select>
+          </div>
+
+          <div class="catalog-filter-field">
+            <label for="sortFilter">Ordenar</label>
+            <select id="sortFilter">
+              <option value="default">Orden original</option>
+              <option value="price-asc">Precio menor</option>
+              <option value="price-desc">Precio mayor</option>
+              <option value="name-asc">Nombre A-Z</option>
+              <option value="stock-desc">Más stock</option>
+            </select>
+          </div>
+
+          <button class="clear-filters-btn" id="clearCatalogFiltersBtn" type="button">
+            Limpiar
+          </button>
+        </div>
+
+        <p class="catalog-results-line" id="catalogResultsLine">Cargando catálogo...</p>
       </div>
 
       <div class="catalog-section" id="catalogo">
@@ -1944,9 +2137,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalQtyPlus = document.getElementById("modalQtyPlus");
   const modalQtyNumber = document.getElementById("modalQtyNumber");
   const modalAddToCartBtn = document.getElementById("modalAddToCartBtn");
+  const catalogSearchInput = document.getElementById("catalogSearchInput");
+  const styleFilter = document.getElementById("styleFilter");
+  const sizeFilter = document.getElementById("sizeFilter");
+  const priceFilter = document.getElementById("priceFilter");
+  const stockFilter = document.getElementById("stockFilter");
+  const sortFilter = document.getElementById("sortFilter");
+  const clearCatalogFiltersBtn = document.getElementById("clearCatalogFiltersBtn");
+  const catalogResultsLine = document.getElementById("catalogResultsLine");
 
   let selectedProduct = null;
   let selectedQuantity = 1;
+  let allCatalogProducts = [];
+  let activeCategoryFilter = "all";
 
   document.querySelectorAll(".slider-btn").forEach(button => {
     button.addEventListener("click", () => {
@@ -1986,6 +2189,8 @@ document.addEventListener("DOMContentLoaded", () => {
     chip.addEventListener("click", () => {
       document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
       chip.classList.add("active");
+      activeCategoryFilter = chip.dataset.categoryFilter || "all";
+      applyCatalogFilters();
     });
   });
 
@@ -2392,11 +2597,189 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function getUniqueValues(products, key) {
+    return [...new Set(
+      products
+        .map(product => String(product[key] || "").trim())
+        .filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b, "es"));
+  }
+
+  function populateSelect(select, values, defaultLabel) {
+    if (!select) return;
+
+    select.innerHTML = `<option value="all">${defaultLabel}</option>`;
+
+    values.forEach(value => {
+      const option = document.createElement("option");
+      option.value = normalizeProductName(value);
+      option.textContent = value;
+      select.appendChild(option);
+    });
+  }
+
+  function setupCatalogFilterOptions(products) {
+    populateSelect(styleFilter, getUniqueValues(products, "estilo"), "Todos");
+    populateSelect(sizeFilter, getUniqueValues(products, "talla"), "Todas");
+  }
+
+  function getSearchText(prenda) {
+    return normalizeProductName([
+      prenda.nombre_pre,
+      prenda.descripcion,
+      prenda.talla,
+      prenda.estilo,
+      prenda.badge
+    ].join(" "));
+  }
+
+  function matchesCategory(prenda) {
+    if (activeCategoryFilter === "all") return true;
+
+    const sectionId = getProductSectionId(prenda);
+
+    return (
+      (activeCategoryFilter === "jeans" && sectionId === "slider-jeans") ||
+      (activeCategoryFilter === "gorros" && sectionId === "slider-gorros") ||
+      (activeCategoryFilter === "fairy" && sectionId === "slider-fairy") ||
+      (activeCategoryFilter === "retro" && sectionId === "slider-retro")
+    );
+  }
+
+  function matchesPrice(prenda) {
+    const value = priceFilter?.value || "all";
+    const price = Number(prenda.precio_unitario || 0);
+
+    if (value === "under-30") return price < 30;
+    if (value === "30-50") return price >= 30 && price <= 50;
+    if (value === "50-80") return price > 50 && price <= 80;
+    if (value === "over-80") return price > 80;
+
+    return true;
+  }
+
+  function matchesStock(prenda) {
+    const value = stockFilter?.value || "all";
+    const stock = Number(prenda.stock_actual || 0);
+
+    if (value === "available") return stock > 0;
+    if (value === "out") return stock <= 0;
+
+    return true;
+  }
+
+  function matchesCatalogFilters(prenda) {
+    const search = normalizeProductName(catalogSearchInput?.value || "");
+    const selectedStyle = styleFilter?.value || "all";
+    const selectedSize = sizeFilter?.value || "all";
+    const productStyle = normalizeProductName(prenda.estilo || "");
+    const productSize = normalizeProductName(prenda.talla || "");
+
+    if (search && !getSearchText(prenda).includes(search)) return false;
+    if (!matchesCategory(prenda)) return false;
+    if (selectedStyle !== "all" && productStyle !== selectedStyle) return false;
+    if (selectedSize !== "all" && productSize !== selectedSize) return false;
+    if (!matchesPrice(prenda)) return false;
+    if (!matchesStock(prenda)) return false;
+
+    return true;
+  }
+
+  function sortCatalogProducts(products) {
+    const sortValue = sortFilter?.value || "default";
+    const sortedProducts = [...products];
+
+    if (sortValue === "price-asc") {
+      sortedProducts.sort((a, b) => Number(a.precio_unitario || 0) - Number(b.precio_unitario || 0));
+    }
+
+    if (sortValue === "price-desc") {
+      sortedProducts.sort((a, b) => Number(b.precio_unitario || 0) - Number(a.precio_unitario || 0));
+    }
+
+    if (sortValue === "name-asc") {
+      sortedProducts.sort((a, b) => String(a.nombre_pre || "").localeCompare(String(b.nombre_pre || ""), "es"));
+    }
+
+    if (sortValue === "stock-desc") {
+      sortedProducts.sort((a, b) => Number(b.stock_actual || 0) - Number(a.stock_actual || 0));
+    }
+
+    return sortedProducts;
+  }
+
+  function renderNoCatalogResults() {
+    clearCatalogSliders();
+
+    const firstSlider = document.getElementById("slider-jeans");
+
+    if (firstSlider) {
+      firstSlider.innerHTML = `
+        <div class="catalog-empty">
+          <p>No encontramos prendas con esos filtros.</p>
+        </div>
+      `;
+    }
+
+    ["slider-gorros", "slider-fairy", "slider-retro"].forEach(id => {
+      const slider = document.getElementById(id);
+      if (slider) slider.innerHTML = "";
+    });
+  }
+
+  function updateCatalogResultsLine(filteredCount) {
+    if (!catalogResultsLine) return;
+
+    const total = allCatalogProducts.length;
+    const search = catalogSearchInput?.value?.trim();
+
+    if (filteredCount === total && !search) {
+      catalogResultsLine.textContent = `${total} prendas disponibles en el catalogo.`;
+      return;
+    }
+
+    catalogResultsLine.textContent = `${filteredCount} de ${total} prendas coinciden con tu busqueda.`;
+  }
+
+  function applyCatalogFilters() {
+    if (!allCatalogProducts.length) return;
+
+    const filteredProducts = sortCatalogProducts(
+      allCatalogProducts.filter(matchesCatalogFilters)
+    );
+
+    if (filteredProducts.length === 0) {
+      renderNoCatalogResults();
+    } else {
+      renderProducts(filteredProducts);
+    }
+
+    updateCatalogResultsLine(filteredProducts.length);
+  }
+
+  function clearCatalogFilters() {
+    if (catalogSearchInput) catalogSearchInput.value = "";
+    if (styleFilter) styleFilter.value = "all";
+    if (sizeFilter) sizeFilter.value = "all";
+    if (priceFilter) priceFilter.value = "all";
+    if (stockFilter) stockFilter.value = "all";
+    if (sortFilter) sortFilter.value = "default";
+
+    activeCategoryFilter = "all";
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+      chip.classList.toggle("active", (chip.dataset.categoryFilter || "all") === "all");
+    });
+
+    applyCatalogFilters();
+  }
+
   async function initDynamicCatalog() {
     try {
       renderCatalogLoading();
       const products = await loadProductsFromSupabase();
-      renderProducts(products);
+      allCatalogProducts = products;
+      setupCatalogFilterOptions(products);
+      applyCatalogFilters();
     } catch (error) {
       console.error(error);
       renderCatalogError("No se pudo cargar el catalogo. Intenta recargar la pagina.");
@@ -2608,6 +2991,20 @@ document.addEventListener("DOMContentLoaded", () => {
       closeProductModal();
     }
   });
+
+  if (catalogSearchInput) {
+    catalogSearchInput.addEventListener("input", applyCatalogFilters);
+  }
+
+  [styleFilter, sizeFilter, priceFilter, stockFilter, sortFilter].forEach(select => {
+    if (select) {
+      select.addEventListener("change", applyCatalogFilters);
+    }
+  });
+
+  if (clearCatalogFiltersBtn) {
+    clearCatalogFiltersBtn.addEventListener("click", clearCatalogFilters);
+  }
 
   initDynamicCatalog();
 });
