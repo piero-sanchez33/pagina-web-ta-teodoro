@@ -649,6 +649,26 @@
       color:rgba(255,255,255,.55);
     }
 
+    .stock-warning{
+      margin:-6px 0 14px;
+      color:#ff8fbf;
+      font-size:.82rem;
+      font-weight:800;
+    }
+
+    .catalog-empty{
+      min-height:240px;
+      display:grid;
+      place-items:center;
+      padding:28px;
+      border-radius:24px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text-soft);
+      text-align:center;
+      font-weight:700;
+    }
+
     .product-actions{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -2092,6 +2112,164 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function getProductImage(prenda) {
+    if (prenda.imagen_url) {
+      return prenda.imagen_url;
+    }
+
+    const text = normalizeProductName(`${prenda.nombre_pre || ""} ${prenda.badge || ""} ${prenda.estilo || ""}`);
+
+    if (text.includes("fairy") || text.includes("pastel") || text.includes("dreamy")) {
+      return "images/fairy.jpg";
+    }
+
+    if (text.includes("y2k")) {
+      return "images/y2k.jpg";
+    }
+
+    if (text.includes("jean") || text.includes("retro") || text.includes("classic") || text.includes("vintage")) {
+      return "images/vintage.jpg";
+    }
+
+    return "images/modelo1.jpg";
+  }
+
+  function getProductSectionId(prenda) {
+    const text = normalizeProductName(`${prenda.nombre_pre || ""} ${prenda.badge || ""} ${prenda.estilo || ""}`);
+
+    if (text.includes("jean") || text.includes("denim")) {
+      return "slider-jeans";
+    }
+
+    if (text.includes("gorro") || text.includes("beanie") || text.includes("accesorio") || text.includes("urban")) {
+      return "slider-gorros";
+    }
+
+    if (text.includes("fairy") || text.includes("dreamy") || text.includes("pastel") || text.includes("aesthetic") || text.includes("top")) {
+      return "slider-fairy";
+    }
+
+    return "slider-retro";
+  }
+
+  function getProductFromPrenda(prenda) {
+    const stockNumber = Number(prenda.stock_actual || 0);
+    const price = Number(prenda.precio_unitario || 0);
+    const size = prenda.talla || "Talla unica";
+    const name = prenda.nombre_pre || "Producto GOODISH";
+    const priceText = `S/ ${price.toFixed(2)}`;
+
+    return {
+      id: String(prenda.codigo_pre || slugify(`${name}-${size}-${priceText}`)),
+      codigo_pre: prenda.codigo_pre,
+      name,
+      priceText,
+      price,
+      image: getProductImage(prenda),
+      category: prenda.badge || "GOODISH",
+      description: prenda.descripcion || "Prenda GOODISH seleccionada.",
+      size,
+      stock: getStockLabel(stockNumber),
+      stockNumber,
+      style: prenda.estilo || prenda.badge || "GOODISH",
+      meta: [size, getStockLabel(stockNumber), prenda.estilo || prenda.badge || "GOODISH"]
+    };
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function createProductCard(product) {
+    const isOutOfStock = Number(product.stockNumber || 0) <= 0;
+    const card = document.createElement("article");
+    const safeName = escapeHtml(product.name);
+    const safeImage = escapeHtml(product.image);
+    const safeCategory = escapeHtml(product.category);
+    const safePrice = escapeHtml(product.priceText);
+    const safeDescription = escapeHtml(product.description);
+    const safeSize = escapeHtml(product.size);
+    const safeStock = escapeHtml(product.stock);
+    const safeStyle = escapeHtml(product.style);
+
+    card.className = "product-card";
+    card.dataset.codigoPre = product.codigo_pre || "";
+    card.dataset.stock = String(product.stockNumber || 0);
+
+    card.innerHTML = `
+      <div class="product-image">
+        <img src="${safeImage}" alt="${safeName}">
+        <span class="product-badge">${safeCategory}</span>
+        <div class="product-fav">♡</div>
+      </div>
+
+      <div class="product-content">
+        <div class="product-title-row">
+          <h5>${safeName}</h5>
+          <div class="price">${safePrice}</div>
+        </div>
+
+        <p class="product-desc">${safeDescription}</p>
+
+        <div class="product-meta">
+          <span class="meta-pill">${safeSize}</span>
+          <span class="meta-pill stock-pill ${getStockClass(product.stockNumber)}">${safeStock}</span>
+          <span class="meta-pill">${safeStyle}</span>
+        </div>
+
+        ${isOutOfStock ? '<p class="stock-warning">Sin stock disponible</p>' : ""}
+
+        <div class="product-actions">
+          <button class="card-btn secondary">Ver más</button>
+          <button class="card-btn primary" ${isOutOfStock ? "disabled" : ""}>
+            ${isOutOfStock ? "Agotado" : "Agregar"}
+          </button>
+        </div>
+      </div>
+    `;
+
+    setupProductCard(card, product);
+    return card;
+  }
+
+  function setupProductCard(card, product = null) {
+    const viewButton = card.querySelector(".card-btn.secondary");
+    const addButton = card.querySelector(".card-btn.primary");
+    const getProduct = () => product || getProductDataFromCard(card);
+
+    card.addEventListener("click", event => {
+      if (event.target.closest("button")) return;
+      openProductModal(getProduct());
+    });
+
+    if (viewButton) {
+      viewButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        openProductModal(getProduct());
+      });
+    }
+
+    if (addButton) {
+      addButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (addButton.disabled) {
+          showAddedCartToast(getProduct().name, 0, "Producto agotado");
+          return;
+        }
+
+        addProductToCart(getProduct(), 1);
+      });
+    }
+  }
+
   async function loadProductStockFromSupabase() {
     if (!supabaseClient) {
       console.warn("Supabase no esta disponible para cargar stock.");
@@ -2123,6 +2301,106 @@ document.addEventListener("DOMContentLoaded", () => {
         updateCardStock(card, stock);
       }
     });
+  }
+
+  async function loadProductsFromSupabase() {
+    if (!supabaseClient) {
+      throw new Error("Supabase no esta disponible para cargar el catalogo.");
+    }
+
+    const { data, error } = await supabaseClient
+      .from("prenda")
+      .select(`
+        codigo_pre,
+        nombre_pre,
+        descripcion,
+        precio_unitario,
+        stock_actual,
+        imagen_url,
+        talla,
+        estilo,
+        badge,
+        activo
+      `)
+      .eq("activo", true)
+      .order("codigo_pre", { ascending: true });
+
+    if (error) {
+      throw new Error(`No se pudo cargar el catalogo: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  function clearCatalogSliders() {
+    ["slider-jeans", "slider-gorros", "slider-fairy", "slider-retro"].forEach(id => {
+      const slider = document.getElementById(id);
+
+      if (slider) {
+        slider.innerHTML = "";
+      }
+    });
+  }
+
+  function renderCatalogError(message) {
+    clearCatalogSliders();
+
+    const firstSlider = document.getElementById("slider-jeans");
+
+    if (!firstSlider) return;
+
+    firstSlider.innerHTML = `
+      <div class="catalog-empty">
+        <p>${message}</p>
+      </div>
+    `;
+  }
+
+  function renderCatalogLoading() {
+    clearCatalogSliders();
+
+    document.querySelectorAll(".product-slider").forEach(slider => {
+      slider.innerHTML = `
+        <div class="catalog-empty">
+          <p>Cargando prendas GOODISH...</p>
+        </div>
+      `;
+    });
+  }
+
+  function renderProducts(products) {
+    clearCatalogSliders();
+
+    products.forEach(prenda => {
+      const product = getProductFromPrenda(prenda);
+      const sectionId = getProductSectionId(prenda);
+      const slider = document.getElementById(sectionId);
+
+      if (slider) {
+        slider.appendChild(createProductCard(product));
+      }
+    });
+
+    document.querySelectorAll(".product-slider").forEach(slider => {
+      if (slider.children.length === 0) {
+        slider.innerHTML = `
+          <div class="catalog-empty">
+            <p>No hay prendas disponibles en esta seccion.</p>
+          </div>
+        `;
+      }
+    });
+  }
+
+  async function initDynamicCatalog() {
+    try {
+      renderCatalogLoading();
+      const products = await loadProductsFromSupabase();
+      renderProducts(products);
+    } catch (error) {
+      console.error(error);
+      renderCatalogError("No se pudo cargar el catalogo. Intenta recargar la pagina.");
+    }
   }
 
   function parsePrice(priceText) {
@@ -2188,11 +2466,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (existingProduct) {
       existingProduct.quantity += quantity;
+      existingProduct.codigo_pre = product.codigo_pre;
       existingProduct.stock = product.stock;
       existingProduct.stockNumber = product.stockNumber;
     } else {
       cart.push({
         id: product.id,
+        codigo_pre: product.codigo_pre,
         name: product.name,
         price: product.price,
         image: product.image,
@@ -2329,45 +2609,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.querySelectorAll(".product-card").forEach(card => {
-    const viewButton = card.querySelector(".card-btn.secondary");
-    const addButton = card.querySelector(".card-btn.primary");
-    const initialStockText = Array.from(card.querySelectorAll(".meta-pill"))
-      .map(pill => pill.textContent.trim())
-      .find(text => text.toLowerCase().includes("stock"));
-    const initialStock = Number(initialStockText?.replace(/\D/g, "") || 0);
-
-    updateCardStock(card, initialStock);
-
-    card.addEventListener("click", event => {
-      if (event.target.closest("button")) return;
-
-      const product = getProductDataFromCard(card);
-      openProductModal(product);
-    });
-
-    if (viewButton) {
-      viewButton.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const product = getProductDataFromCard(card);
-        openProductModal(product);
-      });
-    }
-
-    if (addButton) {
-      addButton.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const product = getProductDataFromCard(card);
-        addProductToCart(product, 1);
-      });
-    }
-  });
-
-  loadProductStockFromSupabase();
+  initDynamicCatalog();
 });
 </script>
 

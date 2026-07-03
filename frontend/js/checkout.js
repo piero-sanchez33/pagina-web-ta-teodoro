@@ -376,6 +376,87 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.codigo_pre;
   }
 
+  async function getProductStockRecord(item) {
+    const directCode = Number(item.codigo_pre || item.productCode || item.product_code);
+
+    let query = supabaseClient
+      .from("prenda")
+      .select("codigo_pre, nombre_pre, stock_actual")
+      .eq("activo", true);
+
+    if (Number.isInteger(directCode) && directCode > 0) {
+      query = query.eq("codigo_pre", directCode);
+    } else {
+      const productName = item.name || item.nombre_pre;
+
+      if (!productName) {
+        throw new Error("Un producto del carrito no tiene nombre para validar stock.");
+      }
+
+      query = query.ilike("nombre_pre", `%${productName}%`);
+    }
+
+    const { data, error } = await query.limit(1).maybeSingle();
+
+    if (error) {
+      throw new Error(`No se pudo validar stock de "${item.name || "producto"}": ${error.message}`);
+    }
+
+    if (!data?.codigo_pre) {
+      throw new Error(`No encontre "${item.name || "producto"}" en la tabla prenda.`);
+    }
+
+    return data;
+  }
+
+  async function validateStockAvailability(cart) {
+    if (!supabaseClient) {
+      throw new Error("Supabase no esta disponible para validar stock.");
+    }
+
+    const checkedItems = [];
+    const requestedByProduct = new Map();
+
+    for (const item of cart) {
+      const product = await getProductStockRecord(item);
+      const quantity = Number(item.quantity || 0);
+
+      if (quantity <= 0) {
+        throw new Error(`La cantidad de "${item.name || product.nombre_pre}" no es valida.`);
+      }
+
+      const current = requestedByProduct.get(product.codigo_pre) || {
+        product,
+        quantity: 0,
+        names: []
+      };
+
+      current.quantity += quantity;
+      current.names.push(item.name || product.nombre_pre);
+      requestedByProduct.set(product.codigo_pre, current);
+
+      checkedItems.push({
+        ...item,
+        codigo_pre: product.codigo_pre,
+        stock_actual: Number(product.stock_actual || 0)
+      });
+    }
+
+    const insufficient = Array.from(requestedByProduct.values()).filter(item => {
+      return item.quantity > Number(item.product.stock_actual || 0);
+    });
+
+    if (insufficient.length > 0) {
+      const first = insufficient[0];
+      const productName = first.product.nombre_pre || first.names[0] || "Producto";
+      const available = Number(first.product.stock_actual || 0);
+
+      throw new Error(`${productName}: pediste ${first.quantity}, pero solo hay ${available} disponibles.`);
+    }
+
+    return checkedItems;
+  }
+
   async function syncOrderToSupabase(order) {
     if (!supabaseClient) {
       throw new Error("Supabase no esta disponible.");
@@ -487,7 +568,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     createOrderBtn.disabled = true;
     createOrderBtn.textContent = "Creando pedido...";
 
-    const order = createOrder(data, cart);
+    let checkedCart = [];
+
+    try {
+      checkedCart = await validateStockAvailability(cart);
+    } catch (error) {
+      console.error("No se pudo validar stock:", error);
+
+      showToast(
+        "Stock no disponible",
+        error.message || "No se pudo confirmar el stock de tus productos."
+      );
+
+      createOrderBtn.disabled = false;
+      createOrderBtn.textContent = "Crear pedido";
+      return;
+    }
+
+    const order = createOrder(data, checkedCart);
 
     try {
       const syncResult = await syncOrderToSupabase(order);
