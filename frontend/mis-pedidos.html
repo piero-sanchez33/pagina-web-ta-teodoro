@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GOODISH | Mis pedidos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/mis-pedidos.css">
+</head>
+
+<body>
+  <div class="bg-blur blur-1"></div>
+  <div class="bg-blur blur-2"></div>
+  <div class="bg-blur blur-3"></div>
+
+  <main class="orders-page">
+    <section class="orders-hero">
+      <div>
+        <div class="orders-badge">Historial GOODISH</div>
+        <h1>
+          Mis
+          <span class="gradient">pedidos</span>
+        </h1>
+        <p>
+          Revisa tus compras, descarga el comprobante y coordina el pago o entrega cuando lo necesites.
+        </p>
+      </div>
+
+      <div class="orders-summary-card">
+        <span>Pedidos</span>
+        <strong id="ordersTotal">0</strong>
+        <small>compras registradas</small>
+      </div>
+    </section>
+
+    <section class="orders-toolbar">
+      <div>
+        <h2>Historial de compras</h2>
+        <p id="ordersSubtitle">Cargando tus pedidos...</p>
+      </div>
+
+      <a href="products.html" class="orders-shop-link">Ver productos</a>
+    </section>
+
+    <section class="orders-list" id="ordersList">
+      <article class="orders-loading">
+        <span></span>
+        <strong>Cargando pedidos</strong>
+        <p>Estamos consultando tus compras registradas.</p>
+      </article>
+    </section>
+
+    <section class="orders-empty" id="ordersEmpty" hidden>
+      <div>
+        <span>GOODISH</span>
+        <h2>Aun no tienes pedidos</h2>
+        <p>Explora el catalogo y crea tu primer pedido cuando encuentres esa prenda que pide pista.</p>
+        <a href="products.html">Ir al catalogo</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="js/order-pdf.js"></script>
+  <script src="js/mis-pedidos.js"></script>
+</body>
+</html>

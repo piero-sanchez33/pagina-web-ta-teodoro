@@ -23,6 +23,7 @@
           <a href="products.html" class="page-link ${currentPage === "products.html" ? "active" : ""}">Productos</a>
           <a href="index.html#comprar">Cómo comprar</a>
           <a href="index.html#redes">Redes</a>
+          <a href="mis-pedidos.html" class="page-link goodish-orders-link ${currentPage === "mis-pedidos.html" ? "active" : ""}" hidden>Mis pedidos</a>
           <a href="login.html" class="page-link goodish-login-link ${currentPage === "login.html" ? "active" : ""}">Login</a>
           <a href="register.html" class="goodish-btn-register page-link goodish-register-link ${currentPage === "register.html" ? "active" : ""}">
             Registrarme
@@ -52,6 +53,7 @@
         <a href="products.html" class="page-link">Productos</a>
         <a href="index.html#comprar">Cómo comprar</a>
         <a href="index.html#redes">Redes</a>
+        <a href="mis-pedidos.html" class="page-link goodish-orders-link" hidden>Mis pedidos</a>
         <a href="login.html" class="page-link goodish-login-link">Login</a>
 
         <div class="goodish-mobile-user" id="goodishMobileUser" hidden>
@@ -202,6 +204,10 @@
   function setAuthLinksVisibility(isLoggedIn) {
     document.querySelectorAll(".goodish-login-link, .goodish-register-link").forEach(link => {
       link.style.display = isLoggedIn ? "none" : "";
+    });
+
+    document.querySelectorAll(".goodish-orders-link").forEach(link => {
+      link.hidden = !isLoggedIn;
     });
   }
 
