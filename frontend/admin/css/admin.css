@@ -351,6 +351,23 @@ a {
   grid-template-columns: minmax(320px, .35fr) minmax(0, .65fr);
 }
 
+body[data-admin-page="productos"] .admin-grid.form-and-list,
+body[data-admin-page="productos"] .admin-grid.form-and-list.small-form {
+  grid-template-columns: 1fr;
+}
+
+body[data-admin-page="productos"] .admin-panel {
+  width: 100%;
+}
+
+body[data-admin-page="productos"] .admin-form {
+  max-width: 980px;
+}
+
+body[data-admin-page="productos"] .admin-table {
+  min-width: 960px;
+}
+
 .admin-panel {
   min-width: 0;
   padding: 22px;
