@@ -17,6 +17,17 @@
     }).format(new Date(value));
   }
 
+  function resolveAssetUrl(src) {
+    const value = String(src || "").trim();
+
+    if (!value) return new URL("images/logo.png", `${window.location.origin}/`).href;
+    if (value.startsWith("data:") || value.startsWith("blob:")) return value;
+    if (/^https?:\/\//i.test(value)) return value;
+    if (value.startsWith("/")) return new URL(value, window.location.origin).href;
+
+    return new URL(value.replace(/^\.\.\//, ""), `${window.location.origin}/`).href;
+  }
+
   function loadImageAsDataUrl(src) {
     return new Promise(resolve => {
       const image = new Image();
@@ -34,7 +45,7 @@
       };
 
       image.onerror = () => resolve(null);
-      image.src = src;
+      image.src = resolveAssetUrl(src);
     });
   }
 
@@ -122,17 +133,17 @@
     doc.rect(0, 0, 210, 4, "F");
 
     if (logoDataUrl) {
-      doc.addImage(logoDataUrl, "PNG", 14, 14, 20, 20);
+      doc.addImage(logoDataUrl, "PNG", 14, 12, 24, 24);
     }
 
-    addPdfText(doc, "GOODISH", 39, 22, {
+    addPdfText(doc, "GOODISH", 43, 22, {
       size: 19,
       weight: "bold",
       color: [239, 47, 152],
       maxWidth: 56
     });
 
-    addPdfText(doc, "Comprobante de pedido", 39, 29, {
+    addPdfText(doc, "Comprobante de pedido", 43, 29, {
       size: 8.5,
       color: [99, 86, 102],
       maxWidth: 58
@@ -256,14 +267,16 @@
 
       doc.setDrawColor(232, 224, 231);
       doc.setLineWidth(0.2);
-      doc.line(14, y + 21, 196, y + 21);
+      doc.line(14, y + 25, 196, y + 25);
 
-      const productTextX = includeImages ? 38 : 17;
-      const productTextWidth = includeImages ? 68 : 89;
+      const productTextX = includeImages ? 45 : 17;
+      const productTextWidth = includeImages ? 61 : 89;
       const imageDataUrl = includeImages ? await loadImageAsDataUrl(item.image || "images/logo.png") : null;
 
       if (imageDataUrl) {
-        doc.addImage(imageDataUrl, "PNG", 17, y, 16, 18);
+        doc.setDrawColor(226, 214, 224);
+        doc.roundedRect(17, y, 22, 22, 2, 2, "S");
+        doc.addImage(imageDataUrl, "PNG", 18, y + 1, 20, 20);
       }
 
       addPdfText(doc, name, productTextX, y + 6, {
@@ -288,7 +301,7 @@
         maxWidth: 30
       });
 
-      y += 24;
+      y += 28;
     }
 
     if (items.length === 0) {
