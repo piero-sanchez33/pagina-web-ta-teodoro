@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOODISH Admin | Inventario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-admin-page="inventario">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+    <div class="admin-shell">
+      <header class="admin-topbar" id="adminTopbar"></header>
+
+      <main class="admin-content">
+        <section class="admin-page-head compact">
+          <div>
+            <p class="admin-eyebrow">Stock</p>
+            <h1>Inventario</h1>
+            <span>Registra entradas, salidas y ajustes con historial.</span>
+          </div>
+        </section>
+
+        <section class="admin-grid form-and-list small-form">
+          <article class="admin-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Movimiento de stock</h2>
+                <p>Entrada suma, salida resta y ajuste fija el stock final.</p>
+              </div>
+            </div>
+
+            <form class="admin-form" id="inventoryForm">
+              <label class="admin-field full">
+                <span>Prenda</span>
+                <select id="inventoryProduct" required>
+                  <option value="">Selecciona una prenda</option>
+                </select>
+              </label>
+
+              <div class="admin-form-grid">
+                <label class="admin-field">
+                  <span>Tipo</span>
+                  <select id="inventoryType" required>
+                    <option value="1">Entrada</option>
+                    <option value="2">Salida</option>
+                    <option value="3">Ajuste</option>
+                  </select>
+                </label>
+
+                <label class="admin-field">
+                  <span>Cantidad</span>
+                  <input id="inventoryQuantity" type="number" min="0" step="1" required>
+                </label>
+              </div>
+
+              <label class="admin-field full">
+                <span>Motivo</span>
+                <textarea id="inventoryReason" rows="3" required placeholder="Ej: compra a proveedor, correccion, perdida"></textarea>
+              </label>
+
+              <button class="admin-primary-btn" type="submit">Registrar movimiento</button>
+            </form>
+          </article>
+
+          <article class="admin-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Stock actual</h2>
+                <p id="inventoryProductsCounter">Cargando prendas...</p>
+              </div>
+            </div>
+            <div class="admin-list compact-list" id="inventoryProductsList"></div>
+          </article>
+        </section>
+
+        <section class="admin-panel">
+          <div class="admin-panel-head">
+            <div>
+              <h2>Historial de movimientos</h2>
+              <p id="inventoryMovementsCounter">Cargando movimientos...</p>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Prenda</th>
+                  <th>Tipo</th>
+                  <th>Cantidad</th>
+                  <th>Stock</th>
+                  <th>Motivo</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryMovementsBody">
+                <tr><td colspan="6">Cargando movimientos...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-layout.js"></script>
+  <script src="js/inventario.js"></script>
+</body>
+</html>

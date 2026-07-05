@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOODISH Admin | Configuracion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-admin-page="configuracion">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+    <div class="admin-shell">
+      <header class="admin-topbar" id="adminTopbar"></header>
+
+      <main class="admin-content">
+        <section class="admin-page-head compact">
+          <div>
+            <p class="admin-eyebrow">Sistema</p>
+            <h1>Configuracion</h1>
+            <span>Datos operativos, metodos de pago y tipos de entrega.</span>
+          </div>
+        </section>
+
+        <section class="admin-grid form-and-list">
+          <article class="admin-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Datos del negocio</h2>
+                <p>Guardado local por ahora. Luego puede moverse a una tabla de configuracion.</p>
+              </div>
+            </div>
+
+            <form class="admin-form" id="businessConfigForm">
+              <label class="admin-field full">
+                <span>WhatsApp</span>
+                <input id="businessWhatsapp" type="text" placeholder="51999999999">
+              </label>
+
+              <label class="admin-field full">
+                <span>Correo del negocio</span>
+                <input id="businessEmail" type="email" placeholder="goodish@gmail.com">
+              </label>
+
+              <label class="admin-field full">
+                <span>Mensaje base</span>
+                <textarea id="businessMessage" rows="4" placeholder="Mensaje para coordinar pedidos"></textarea>
+              </label>
+
+              <button class="admin-primary-btn" type="submit">Guardar configuracion</button>
+            </form>
+          </article>
+
+          <article class="admin-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Metodos de pago</h2>
+                <p>Opciones usadas en checkout y pedidos.</p>
+              </div>
+            </div>
+
+            <form class="admin-inline-form" id="paymentForm">
+              <input type="hidden" id="paymentId">
+              <input id="paymentName" type="text" placeholder="Ej: Yape" required>
+              <button class="admin-primary-btn" type="submit">Guardar</button>
+              <button class="admin-secondary-btn" type="button" id="resetPaymentBtn">Limpiar</button>
+            </form>
+
+            <div class="admin-list compact-list" id="paymentMethodsList"></div>
+          </article>
+        </section>
+
+        <section class="admin-panel">
+          <div class="admin-panel-head">
+            <div>
+              <h2>Tipos de entrega</h2>
+              <p>Formas de entrega disponibles para los pedidos.</p>
+            </div>
+          </div>
+
+          <form class="admin-inline-form" id="deliveryForm">
+            <input type="hidden" id="deliveryId">
+            <input id="deliveryName" type="text" placeholder="Ej: Delivery Lima" required>
+            <button class="admin-primary-btn" type="submit">Guardar</button>
+            <button class="admin-secondary-btn" type="button" id="resetDeliveryBtn">Limpiar</button>
+          </form>
+
+          <div class="admin-list compact-list" id="deliveryTypesList"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-layout.js"></script>
+  <script src="js/configuracion.js"></script>
+</body>
+</html>

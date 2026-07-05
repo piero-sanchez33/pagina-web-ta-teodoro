@@ -24,6 +24,7 @@
           <a href="index.html#comprar">Cómo comprar</a>
           <a href="index.html#redes">Redes</a>
           <a href="mis-pedidos.html" class="page-link goodish-orders-link ${currentPage === "mis-pedidos.html" ? "active" : ""}" hidden>Pedidos</a>
+          <a href="admin/dashboard.html" class="page-link goodish-admin-link" hidden>Admin</a>
           <a href="login.html" class="page-link goodish-login-link ${currentPage === "login.html" ? "active" : ""}">Login</a>
           <a href="register.html" class="goodish-btn-register page-link goodish-register-link ${currentPage === "register.html" ? "active" : ""}">
             Registrarme
@@ -56,6 +57,7 @@
         <a href="index.html#comprar">Cómo comprar</a>
         <a href="index.html#redes">Redes</a>
         <a href="mis-pedidos.html" class="page-link goodish-orders-link" hidden>Mis pedidos</a>
+        <a href="admin/dashboard.html" class="page-link goodish-admin-link" hidden>Admin</a>
         <a href="login.html" class="page-link goodish-login-link">Login</a>
 
         <div class="goodish-mobile-user" id="goodishMobileUser" hidden>
@@ -217,17 +219,26 @@
     });
   }
 
+  function setAdminLinksVisibility(isAdmin) {
+    document.querySelectorAll(".goodish-admin-link").forEach(link => {
+      link.hidden = !isAdmin;
+    });
+  }
+
   function renderNavbarUser(user, supabaseClient) {
     if (!user) {
       setAuthLinksVisibility(false);
+      setAdminLinksVisibility(false);
       return;
     }
 
     const displayName = getDisplayName(user);
     const firstName = displayName.split(" ")[0] || "Cliente";
     const initial = firstName.charAt(0).toUpperCase();
+    const isAdmin = String(user?.user_metadata?.rol || "").toLowerCase() === "admin";
 
     setAuthLinksVisibility(true);
+    setAdminLinksVisibility(isAdmin);
 
     if (userChip && userAvatar && userText) {
       userChip.hidden = false;
@@ -292,7 +303,7 @@
       if (user) {
         const { data: profile } = await supabaseClient
           .from("usuarios")
-          .select("nombre_cli, apellido_cli")
+          .select("nombre_cli, apellido_cli, rol")
           .eq("id", user.id)
           .maybeSingle();
 
@@ -300,7 +311,8 @@
           user.user_metadata = {
             ...user.user_metadata,
             nombre_cli: profile.nombre_cli || user.user_metadata?.nombre_cli,
-            apellido_cli: profile.apellido_cli || user.user_metadata?.apellido_cli
+            apellido_cli: profile.apellido_cli || user.user_metadata?.apellido_cli,
+            rol: profile.rol || user.user_metadata?.rol
           };
         }
       }
@@ -309,6 +321,7 @@
     } catch (error) {
       console.warn("No se pudo cargar el usuario en la navbar:", error);
       setAuthLinksVisibility(false);
+      setAdminLinksVisibility(false);
     }
   }
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOODISH Admin | Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-admin-page="dashboard">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+    <div class="admin-shell">
+      <header class="admin-topbar" id="adminTopbar"></header>
+
+      <main class="admin-content">
+        <section class="admin-page-head">
+          <div>
+            <p class="admin-eyebrow">Vista general</p>
+            <h1>Dashboard</h1>
+            <span>Resumen rapido para revisar ventas, pedidos y stock.</span>
+          </div>
+        </section>
+
+        <section class="admin-stats-grid" id="dashboardStats">
+          <article class="admin-stat-card skeleton"></article>
+          <article class="admin-stat-card skeleton"></article>
+          <article class="admin-stat-card skeleton"></article>
+          <article class="admin-stat-card skeleton"></article>
+        </section>
+
+        <section class="admin-grid two-columns">
+          <article class="admin-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Ultimos pedidos</h2>
+                <p>Pedidos recientes ordenados por fecha.</p>
+              </div>
+              <a class="admin-soft-link" href="pedidos.html">Ver todos</a>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Pedido</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardLatestOrders">
+                  <tr><td colspan="4">Cargando pedidos...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="admin-panel">
+            <div class="admin-panel-head">
+              <div>
+                <h2>Stock bajo</h2>
+                <p>Prendas con 5 unidades o menos.</p>
+              </div>
+              <a class="admin-soft-link" href="inventario.html">Gestionar</a>
+            </div>
+            <div class="admin-list" id="dashboardLowStock">
+              <div class="admin-empty-line">Cargando stock...</div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-layout.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

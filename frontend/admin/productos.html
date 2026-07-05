@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOODISH Admin | Productos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-admin-page="productos">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+    <div class="admin-shell">
+      <header class="admin-topbar" id="adminTopbar"></header>
+
+      <main class="admin-content">
+        <section class="admin-page-head compact">
+          <div>
+            <p class="admin-eyebrow">Catalogo</p>
+            <h1>Productos</h1>
+            <span>Gestiona prendas y categorias sin tocar codigo.</span>
+          </div>
+        </section>
+
+        <section class="admin-tabs" aria-label="Secciones de productos">
+          <button class="admin-tab active" type="button" data-tab-target="productsTab">Prendas</button>
+          <button class="admin-tab" type="button" data-tab-target="categoriesTab">Categorias</button>
+        </section>
+
+        <section class="admin-tab-panel active" id="productsTab">
+          <div class="admin-grid form-and-list">
+            <article class="admin-panel">
+              <div class="admin-panel-head">
+                <div>
+                  <h2 id="productFormTitle">Nueva prenda</h2>
+                  <p>Completa la informacion visible en el catalogo.</p>
+                </div>
+              </div>
+
+              <form class="admin-form" id="productForm">
+                <input type="hidden" id="productId">
+
+                <label class="admin-field full">
+                  <span>Nombre</span>
+                  <input id="productName" type="text" required placeholder="Ej: Jean wide leg azul">
+                </label>
+
+                <label class="admin-field full">
+                  <span>Descripcion</span>
+                  <textarea id="productDescription" rows="4" required placeholder="Descripcion corta para el catalogo"></textarea>
+                </label>
+
+                <div class="admin-form-grid">
+                  <label class="admin-field">
+                    <span>Precio</span>
+                    <input id="productPrice" type="number" min="0" step="0.01" required>
+                  </label>
+
+                  <label class="admin-field">
+                    <span>Stock</span>
+                    <input id="productStock" type="number" min="0" step="1" required>
+                  </label>
+                </div>
+
+                <div class="admin-form-grid">
+                  <label class="admin-field">
+                    <span>Talla</span>
+                    <input id="productSize" type="text" placeholder="Talla M">
+                  </label>
+
+                  <label class="admin-field">
+                    <span>Estilo</span>
+                    <input id="productStyle" type="text" placeholder="Vintage">
+                  </label>
+                </div>
+
+                <div class="admin-form-grid">
+                  <label class="admin-field">
+                    <span>Badge</span>
+                    <input id="productBadge" type="text" placeholder="Jean">
+                  </label>
+
+                  <label class="admin-field">
+                    <span>Categoria</span>
+                    <select id="productCategory">
+                      <option value="">Sin categoria</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label class="admin-field full">
+                  <span>Imagen URL o ruta</span>
+                  <input id="productImage" type="text" placeholder="images/fairy.jpg">
+                </label>
+
+                <label class="admin-switch">
+                  <input id="productActive" type="checkbox" checked>
+                  <span>Producto activo en catalogo</span>
+                </label>
+
+                <div class="admin-form-actions">
+                  <button class="admin-primary-btn" type="submit">Guardar prenda</button>
+                  <button class="admin-secondary-btn" type="button" id="resetProductFormBtn">Limpiar</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="admin-panel">
+              <div class="admin-panel-head">
+                <div>
+                  <h2>Prendas registradas</h2>
+                  <p id="productsCounter">Cargando productos...</p>
+                </div>
+                <label class="admin-mini-search">
+                  <input id="productsSearch" type="search" placeholder="Buscar prenda">
+                </label>
+              </div>
+
+              <div class="admin-table-wrap">
+                <table class="admin-table products-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Precio</th>
+                      <th>Stock</th>
+                      <th>Categoria</th>
+                      <th>Estado</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="productsTableBody">
+                    <tr><td colspan="6">Cargando productos...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="admin-tab-panel" id="categoriesTab">
+          <div class="admin-grid form-and-list small-form">
+            <article class="admin-panel">
+              <div class="admin-panel-head">
+                <div>
+                  <h2 id="categoryFormTitle">Nueva categoria</h2>
+                  <p>Las categorias organizan las prendas del catalogo.</p>
+                </div>
+              </div>
+
+              <form class="admin-form" id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <label class="admin-field full">
+                  <span>Nombre de categoria</span>
+                  <input id="categoryName" type="text" required placeholder="Ej: Jeans">
+                </label>
+
+                <div class="admin-form-actions">
+                  <button class="admin-primary-btn" type="submit">Guardar categoria</button>
+                  <button class="admin-secondary-btn" type="button" id="resetCategoryFormBtn">Limpiar</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="admin-panel">
+              <div class="admin-panel-head">
+                <div>
+                  <h2>Categorias</h2>
+                  <p id="categoriesCounter">Cargando categorias...</p>
+                </div>
+              </div>
+
+              <div class="admin-table-wrap">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Categoria</th>
+                      <th>Productos</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="categoriesTableBody">
+                    <tr><td colspan="3">Cargando categorias...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-layout.js"></script>
+  <script src="js/productos.js"></script>
+</body>
+</html>

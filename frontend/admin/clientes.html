@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOODISH Admin | Clientes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-admin-page="clientes">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+    <div class="admin-shell">
+      <header class="admin-topbar" id="adminTopbar"></header>
+
+      <main class="admin-content">
+        <section class="admin-page-head compact">
+          <div>
+            <p class="admin-eyebrow">Clientes</p>
+            <h1>Clientes</h1>
+            <span>Usuarios registrados, datos de contacto e historial de compras.</span>
+          </div>
+        </section>
+
+        <section class="admin-toolbar">
+          <label class="admin-search">
+            <span>Buscar cliente</span>
+            <input id="clientsSearch" type="search" placeholder="Nombre, correo, celular o ciudad">
+          </label>
+        </section>
+
+        <section class="admin-panel">
+          <div class="admin-panel-head">
+            <div>
+              <h2>Clientes registrados</h2>
+              <p id="clientsCounter">Cargando clientes...</p>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Contacto</th>
+                  <th>Ciudad</th>
+                  <th>Pedidos</th>
+                  <th>Total comprado</th>
+                  <th>Rol</th>
+                </tr>
+              </thead>
+              <tbody id="clientsTableBody">
+                <tr><td colspan="6">Cargando clientes...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-layout.js"></script>
+  <script src="js/clientes.js"></script>
+</body>
+</html>

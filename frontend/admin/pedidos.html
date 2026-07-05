@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GOODISH Admin | Pedidos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-admin-page="pedidos">
+  <div class="admin-app">
+    <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+    <div class="admin-shell">
+      <header class="admin-topbar" id="adminTopbar"></header>
+
+      <main class="admin-content">
+        <section class="admin-page-head compact">
+          <div>
+            <p class="admin-eyebrow">Operacion</p>
+            <h1>Pedidos</h1>
+            <span>Todos los pedidos ordenados por fecha, con detalle y cambio de estado.</span>
+          </div>
+        </section>
+
+        <section class="admin-toolbar">
+          <label class="admin-search">
+            <span>Buscar</span>
+            <input id="ordersSearch" type="search" placeholder="Codigo, cliente, correo o telefono">
+          </label>
+
+          <label class="admin-field small">
+            <span>Estado</span>
+            <select id="ordersStatusFilter">
+              <option value="all">Todos</option>
+              <option value="PENDIENTE_PAGO">Pendiente de pago</option>
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="PAGADO">Pagado</option>
+              <option value="EN_PREPARACION">En preparacion</option>
+              <option value="ENVIADO">Enviado</option>
+              <option value="ENTREGADO">Entregado</option>
+              <option value="CANCELADO">Cancelado</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="admin-panel">
+          <div class="admin-panel-head">
+            <div>
+              <h2>Historial de pedidos</h2>
+              <p id="ordersCounter">Cargando pedidos...</p>
+            </div>
+          </div>
+
+          <div class="admin-orders-list" id="ordersList">
+            <article class="admin-loading-card">Cargando pedidos...</article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="../js/order-pdf.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-layout.js"></script>
+  <script src="js/pedidos.js"></script>
+</body>
+</html>
