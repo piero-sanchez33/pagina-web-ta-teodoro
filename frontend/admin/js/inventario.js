@@ -8,13 +8,23 @@
   let movements = [];
 
   function movementLabel(type) {
+    const value = String(type || "").toLowerCase();
     const labels = {
-      1: "Entrada",
-      2: "Salida",
-      3: "Ajuste"
+      entrada: "Entrada",
+      salida: "Salida",
+      ajuste: "Ajuste"
     };
 
-    return labels[Number(type)] || "Movimiento";
+    return labels[value] || "Movimiento";
+  }
+
+  function movementBadgeClass(type) {
+    const value = String(type || "").toLowerCase();
+
+    if (value === "salida") return "pending";
+    if (value === "ajuste") return "enviado";
+
+    return "ok";
   }
 
   function renderProductSelect() {
@@ -84,7 +94,7 @@
             <strong class="admin-cell-title">${admin.escapeHtml(product?.nombre_pre || `Prenda ${movement.codigo_pre}`)}</strong>
             <span class="admin-cell-subtitle">Codigo ${admin.escapeHtml(movement.codigo_pre)}</span>
           </td>
-          <td><span class="admin-badge ${Number(movement.tipo_movimiento) === 2 ? "pending" : "ok"}">${admin.escapeHtml(movementLabel(movement.tipo_movimiento))}</span></td>
+          <td><span class="admin-badge ${movementBadgeClass(movement.tipo_movimiento)}">${admin.escapeHtml(movementLabel(movement.tipo_movimiento))}</span></td>
           <td>${Number(movement.cantidad || 0)}</td>
           <td>${Number(movement.stock_anterior || 0)} -> ${Number(movement.stock_nuevo || 0)}</td>
           <td>${admin.escapeHtml(movement.motivo || "Sin motivo")}</td>
@@ -121,7 +131,7 @@
     event.preventDefault();
 
     const productId = Number(document.getElementById("inventoryProduct").value);
-    const type = Number(document.getElementById("inventoryType").value);
+    const type = document.getElementById("inventoryType").value;
     const quantity = Number(document.getElementById("inventoryQuantity").value || 0);
     const reason = document.getElementById("inventoryReason").value.trim();
     const product = products.find(item => Number(item.codigo_pre) === productId);
@@ -134,9 +144,9 @@
     const previousStock = Number(product.stock_actual || 0);
     let nextStock = previousStock;
 
-    if (type === 1) nextStock = previousStock + quantity;
-    if (type === 2) nextStock = previousStock - quantity;
-    if (type === 3) nextStock = quantity;
+    if (type === "entrada") nextStock = previousStock + quantity;
+    if (type === "salida") nextStock = previousStock - quantity;
+    if (type === "ajuste") nextStock = quantity;
 
     if (nextStock < 0) {
       admin.showToast("La salida supera el stock actual.");
